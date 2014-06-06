@@ -1,4 +1,4 @@
-package GoIPPlayer;
+
 import java.awt.EventQueue;
 import java.text.DecimalFormat;
 import javax.swing.JFrame;
