@@ -1,4 +1,5 @@
-
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -17,7 +18,7 @@ import java.util.*;
 import java.text.SimpleDateFormat;
 
 public class GoIPDM {
-	public static JFrame frmGoipDmServer;
+	public static JFrame frame;
 	public static JTextField inputLine;
 	public static JTextArea chatArea;
 	public static JTextArea listPlayers;
@@ -27,7 +28,7 @@ public class GoIPDM {
 			public void run() {
 				try {
 					new GoIPDM();
-					frmGoipDmServer.setVisible(true);
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -128,14 +129,21 @@ public class GoIPDM {
 			String results = "";
 			int sum = 0; 
 			int D = 20; 
-			int dnum = 1;
-
+			int dnum = 0;
+			Integer adder = 0; 
 			for (int x = 1; x < banana.length; x++) 
 			{
+				if (banana[x].contains("+") || banana[x].contains("-")) {
+					//continue;
+					adder+=new Integer(banana[x]);
+					continue;
+				} 
 				if (banana[x].contains("d"))
 				{
 					if (banana[x].split("d")[0]!=null && !banana[x].split("d")[0].equals(""))
 						dnum = (int)Integer.parseInt(banana[x].split("d")[0]); 
+					else 
+						dnum =0; 
 					try {
 						D = (int)Integer.parseInt(banana[x].split("d")[1]); 
 					} catch (Exception e){
@@ -155,6 +163,7 @@ public class GoIPDM {
 					results += roll;
 					results += "("+D+") "; 
 				}
+
 			}
 			if (banana.length<2)
 			{
@@ -163,9 +172,10 @@ public class GoIPDM {
 				results += roll;
 				results += "["+D+"] "; 
 			}
-			return " rolled a "+sum +": "+results;
+			sum+=adder;
+			return " rolled a "+sum +"(+"+adder+"): "+results;
 		} catch (Exception e) { 
-			return "Error Rolling"; //System.out.println(encrypt(Message)e.getMessage());	
+			return " got an Error - "+ e.getMessage(); //System.out.println(encrypt(Message)e.getMessage());	
 		}
 	}
 	static String makeString(String[] arr){
@@ -204,11 +214,11 @@ public class GoIPDM {
 		listPlayers.setText(newplayerlist);
 	}
 	public static void kick(ClientHandler x){
-		
+
 		x.out.close();
 		try{
-		if(!x.listener.isClosed())
-			x.listener.close(); 
+			if(!x.listener.isClosed())
+				x.listener.close(); 
 		} catch (Exception e){} // should never fail; only attempts to close if it's not closed.
 		clientListener.removeClient(x);
 		refresh(); 
@@ -384,24 +394,24 @@ public class GoIPDM {
 	//standard GUI creation method
 	@SuppressWarnings("static-access")
 	private void initialize() {
-		frmGoipDmServer = new JFrame();
+		frame = new JFrame();
 		try { 					// try to find my IP via amazon's service. Should that service be down or inaccessible...
 			URL whatismyip = new URL("http://checkip.amazonaws.com");
 			BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
 			String ip = in.readLine(); //you get the IP as a String
-			frmGoipDmServer.setTitle("GoIP DM - Ext:"+ ip + " - LAN:" + ClientConnecter.serverSocket.getInetAddress().getLocalHost().toString().split("/")[1]);
+			frame.setTitle("GoIP DM - Ext:"+ ip + " - LAN:" + ClientConnecter.serverSocket.getInetAddress().getLocalHost().toString().split("/")[1]);
 		} catch (Exception e){ 
 			try {				// Try to find my local IP address at least and show it in the title bar. 
-				frmGoipDmServer.setTitle("GoIP DM - LAN:"+ ClientConnecter.serverSocket.getInetAddress().getLocalHost().toString().split("/")[1]);
+				frame.setTitle("GoIP DM - LAN:"+ ClientConnecter.serverSocket.getInetAddress().getLocalHost().toString().split("/")[1]);
 			} catch (Exception g){
 				//There's really no reason that should not work. 
-				frmGoipDmServer.setTitle("GoIP DM - Could not find local or external IP. That's some weird shit."); 
+				frame.setTitle("GoIP DM - Could not find local or external IP. That's some weird shit."); 
 			}
 		}		
-		frmGoipDmServer.setResizable(false);
-		frmGoipDmServer.setBounds(100, 100, 469, 238);
-		frmGoipDmServer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmGoipDmServer.getContentPane().setLayout(null);		
+		frame.setResizable(false);
+		frame.setBounds(100, 100, 469, 238);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);		
 
 		chatArea = new JTextArea();
 		chatArea.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -414,20 +424,21 @@ public class GoIPDM {
 		JScrollPane scrollPane = new JScrollPane(chatArea);
 		scrollPane.setBounds(10, 11, 349, 173);
 		scrollPane.setHorizontalScrollBarPolicy(scrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		frmGoipDmServer.getContentPane().add(scrollPane);
-		frmGoipDmServer.getContentPane().add(scrollPane);
+		frame.getContentPane().add(scrollPane);
+		frame.getContentPane().add(scrollPane);
 
 		listPlayers = new JTextArea();
 		listPlayers.setTabSize(3);
 		listPlayers.setEditable(false);
 		listPlayers.setBounds(369, 34, 91, 141);
+
 		JScrollPane scrollPane2 = new JScrollPane(listPlayers);
 		scrollPane2.setBounds(369, 34, 91, 141);
-		frmGoipDmServer.getContentPane().add(scrollPane2);
+		frame.getContentPane().add(scrollPane2);
 
 		final JLabel lblPlayers = new JLabel("Players List");
 		lblPlayers.setBounds(369, 17, 97, 14);
-		frmGoipDmServer.getContentPane().add(lblPlayers);
+		frame.getContentPane().add(lblPlayers);
 
 		inputLine = new JTextField();
 		inputLine.addKeyListener(new KeyAdapter() {
@@ -443,18 +454,18 @@ public class GoIPDM {
 			}
 		});
 		inputLine.setBounds(10, 187, 349, 20);
-		frmGoipDmServer.getContentPane().add(inputLine);
+		frame.getContentPane().add(inputLine);
 		inputLine.setColumns(10);
 
-		final JButton btnRoll = new JButton("Roll d20");
-		btnRoll.setToolTipText("Do it. I dare you.");
+		final JButton btnRoll = new JButton("Dice Bag");
 		btnRoll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				chatArea.append("You"+ GoIPDM.roll("roll".split(" "))+"\n");
+				DiceBag db = new DiceBag();
+				db.setVisible(true);
 			}
 		});
 		btnRoll.setBounds(369, 186, 91, 23);
-		frmGoipDmServer.getContentPane().add(btnRoll);
+		frame.getContentPane().add(btnRoll);
 		chatArea.setText("Quest has begun! Listening for players."+"\n");
 	}
 	/*
@@ -512,5 +523,369 @@ public class GoIPDM {
 		if (decrypter.length<1)
 			result = start;
 		return result; 
+	}
+
+	class DiceBag extends JFrame {
+
+		private JPanel contentPane;
+		private JTextField d100;
+		private JTextField d20;
+		private JTextField d12;
+		private JTextField d10;
+		private JTextField d8;
+		private JTextField d6;
+		private JTextField d4;
+		private JTextField cd;
+		private JTextField dc;
+		private JTextField add;
+
+		public DiceBag() {
+			setTitle("Dice Bag");
+			setBounds(100, 100, 243, 300);
+			contentPane = new JPanel();
+			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+			setContentPane(contentPane);
+			contentPane.setLayout(null);
+
+			d100 = new JTextField();
+			d100.setBounds(10, 11, 86, 20);
+			contentPane.add(d100);
+			d100.setColumns(10);
+
+			JLabel lblD = new JLabel("d100");
+			lblD.setBounds(103, 14, 46, 14);
+			contentPane.add(lblD);
+
+			JLabel lblD_1 = new JLabel("d20");
+			lblD_1.setBounds(103, 45, 46, 14);
+			contentPane.add(lblD_1);
+
+			d20 = new JTextField();
+			d20.setColumns(10);
+			d20.setBounds(10, 42, 86, 20);
+			contentPane.add(d20);
+
+			JLabel lblD_2 = new JLabel("d12");
+			lblD_2.setBounds(103, 73, 46, 14);
+			contentPane.add(lblD_2);
+
+			d12 = new JTextField();
+			d12.setColumns(10);
+			d12.setBounds(10, 70, 86, 20);
+			contentPane.add(d12);
+
+			JLabel lblD_3 = new JLabel("d10");
+			lblD_3.setBounds(103, 101, 46, 14);
+			contentPane.add(lblD_3);
+
+			d10 = new JTextField();
+			d10.setColumns(10);
+			d10.setBounds(10, 98, 86, 20);
+			contentPane.add(d10);
+
+			JLabel lblD_4 = new JLabel("d8");
+			lblD_4.setBounds(103, 129, 46, 14);
+			contentPane.add(lblD_4);
+
+			d8 = new JTextField();
+			d8.setColumns(10);
+			d8.setBounds(10, 126, 86, 20);
+			contentPane.add(d8);
+
+			JLabel lblD_5 = new JLabel("d6");
+			lblD_5.setBounds(103, 157, 46, 14);
+			contentPane.add(lblD_5);
+
+			d6 = new JTextField();
+			d6.setColumns(10);
+			d6.setBounds(10, 154, 86, 20);
+			contentPane.add(d6);
+
+			JLabel lblD_6 = new JLabel("d4");
+			lblD_6.setBounds(103, 185, 46, 14);
+			contentPane.add(lblD_6);
+
+			d4 = new JTextField();
+			d4.setColumns(10);
+			d4.setBounds(10, 182, 86, 20);
+			contentPane.add(d4);
+
+			cd = new JTextField();
+			cd.setColumns(10);
+			cd.setBounds(10, 210, 86, 20);
+			contentPane.add(cd);
+
+			JButton btnRoll = new JButton("Roll!");
+			btnRoll.setBounds(5, 241, 91, 23);
+			btnRoll.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					String temp = "roll "+d100.getText().trim()+"d100 "+d20.getText().trim()+"d20 "+d12.getText().trim()+"d12 "+d10.getText().trim()+"d10 "+d8.getText().trim()+"d8 "+d6.getText().trim()+"d6 ";
+					temp += d4.getText().trim()+"d4";
+					if (!dc.getText().trim().equals(""))
+						temp +=" "+cd.getText().trim()+"d"+dc.getText().trim();
+					if (!add.getText().trim().equals(""))
+						temp+=" +"+add.getText().trim();
+					System.out.println(temp);
+					chatArea.append("You"+roll(temp.split(" "))+"\n");
+				}
+			});
+			contentPane.add(btnRoll);
+
+			dc = new JTextField();
+			dc.setBounds(139, 210, 91, 20);
+			contentPane.add(dc);
+			dc.setColumns(10);
+
+			JLabel lblD_7 = new JLabel("d");
+			lblD_7.setBounds(103, 210, 11, 14);
+			contentPane.add(lblD_7);
+
+			JButton btnNewButton = new JButton("+");
+			btnNewButton.setFocusable(false);
+			btnNewButton.setBounds(137, 10, 46, 23);
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d100.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+						x++; 
+					d100.setText(x.toString());
+				}
+			});
+			contentPane.add(btnNewButton);
+			JButton button = new JButton("-");
+			button.setFocusable(false);
+			button.setBounds(184, 10, 46, 23);
+			button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d100.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+						x--; 
+					d100.setText(x.toString());
+				}
+			});
+			contentPane.add(button);
+
+			JButton button_1 = new JButton("+");
+			button_1.setFocusable(false);
+			button_1.setBounds(137, 39, 46, 23);
+			button_1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d20.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+						x++; 
+					d20.setText(x.toString());
+				}
+			});
+			contentPane.add(button_1);
+
+			JButton button_2 = new JButton("-");
+			button_2.setFocusable(false);
+			button_2.setBounds(184, 39, 46, 23);
+			button_2.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d20.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+						x--; 
+					d20.setText(x.toString());
+				}
+			});
+			contentPane.add(button_2);
+
+			JButton button_3 = new JButton("+");
+			button_3.setFocusable(false);
+			button_3.setBounds(137, 70, 46, 23);
+			button_3.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d12.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+						x++; 
+					d12.setText(x.toString());
+				}
+			});
+			contentPane.add(button_3);
+
+			JButton button_4 = new JButton("-");
+			button_4.setFocusable(false);
+			button_4.setBounds(184, 70, 46, 23);
+			button_4.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d12.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+						x--; 
+					d12.setText(x.toString());
+				}
+			});
+			contentPane.add(button_4);
+
+			JButton button_5 = new JButton("+");
+			button_5.setFocusable(false);
+			button_5.setBounds(137, 98, 46, 23);
+			button_5.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d10.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+						x++; 
+					d10.setText(x.toString());
+				}
+			});
+			contentPane.add(button_5);
+
+			JButton button_6 = new JButton("-");
+			button_6.setFocusable(false);
+			button_6.setBounds(184, 98, 46, 23);
+			button_6.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d10.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+						x--; 
+					d10.setText(x.toString());
+				}
+			});
+			contentPane.add(button_6);
+
+			JButton button_7 = new JButton("+");
+			button_7.setFocusable(false);
+			button_7.setBounds(137, 126, 46, 23);
+			button_7.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d8.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+						x++; 
+					d8.setText(x.toString());
+				}
+			});
+			contentPane.add(button_7);
+
+			JButton button_8 = new JButton("-");
+			button_8.setFocusable(false);
+			button_8.setBounds(184, 126, 46, 23);
+			button_8.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d8.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+						x--; 
+					d8.setText(x.toString());
+				}
+			});
+			contentPane.add(button_8);
+
+			JButton button_9 = new JButton("+");
+			button_9.setFocusable(false);
+			button_9.setBounds(137, 154, 46, 23);
+			button_9.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d6.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+						x++; 
+					d6.setText(x.toString());
+				}
+			});
+			contentPane.add(button_9);
+
+			JButton button_10 = new JButton("-");
+			
+			button_10.setFocusable(false);
+			button_10.setBounds(184, 154, 46, 23);
+			button_10.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d6.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+						x--; 
+					d6.setText(x.toString());
+				}
+			});
+			contentPane.add(button_10);
+
+			JButton button_11 = new JButton("+");
+			button_11.setFocusable(false);
+			button_11.setBounds(137, 182, 46, 23);
+			button_11.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d4.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+						x++; 
+					d4.setText(x.toString());
+				}
+			});
+			contentPane.add(button_11);
+
+			JButton button_12 = new JButton("-");
+			button_12.setFocusable(false);
+			button_12.setBounds(184, 182, 46, 23);
+			button_12.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d4.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+						x--; 
+					d4.setText(x.toString());
+				}
+			});
+			contentPane.add(button_12);
+
+			add = new JTextField();
+			add.setBounds(139, 242, 86, 20);
+			contentPane.add(add);
+			add.setColumns(10);
+
+			JLabel label = new JLabel("+");
+			label.setBounds(123, 245, 11, 14);
+			contentPane.add(label);
+		}
 	}
 }
