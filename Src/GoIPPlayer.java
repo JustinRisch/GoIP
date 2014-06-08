@@ -163,7 +163,7 @@ public class GoIPPlayer {
 					String input = inputLine.getText();
 					//it appends what you wrote to the chat box 
 					if (!input.contains("setname")) //avoid annoying double messages from commands and responses.  
-					chatArea.append(inputLine.getText()+"\n");
+						chatArea.append(inputLine.getText()+"\n");
 					if(!input.equals(null) && !input.equals(""))	
 					{	
 						if (!connected)
@@ -192,7 +192,7 @@ public class GoIPPlayer {
 						} else 
 							out.println(encrypt(input.trim()));	
 						lastSent = input;
-							inputLine.setText("");
+						inputLine.setText("");
 
 					}	
 				}	
@@ -398,6 +398,7 @@ public class GoIPPlayer {
 						temp +=" "+cd.getText().trim()+"d"+dc.getText().trim();
 					if (!add.getText().trim().equals(""))
 						temp+=" +"+add.getText().trim();
+
 					out.println(encrypt(temp));
 				}
 			});
@@ -415,71 +416,239 @@ public class GoIPPlayer {
 			JButton btnNewButton = new JButton("+");
 			btnNewButton.setFocusable(false);
 			btnNewButton.setBounds(137, 10, 46, 23);
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d100.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+					x++; 
+					d100.setText(x.toString());
+				}
+			});
 			contentPane.add(btnNewButton);
-
 			JButton button = new JButton("-");
 			button.setFocusable(false);
 			button.setBounds(184, 10, 46, 23);
+			button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d100.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+					x--; 
+					d100.setText(x.toString());
+				}
+			});
 			contentPane.add(button);
 
 			JButton button_1 = new JButton("+");
 			button_1.setFocusable(false);
 			button_1.setBounds(137, 39, 46, 23);
+			button_1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d20.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+					x++; 
+					d20.setText(x.toString());
+				}
+			});
 			contentPane.add(button_1);
 
 			JButton button_2 = new JButton("-");
 			button_2.setFocusable(false);
 			button_2.setBounds(184, 39, 46, 23);
+			button_2.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d20.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+					x--; 
+					d20.setText(x.toString());
+				}
+			});
 			contentPane.add(button_2);
 
 			JButton button_3 = new JButton("+");
 			button_3.setFocusable(false);
 			button_3.setBounds(137, 70, 46, 23);
+			button_3.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d12.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+					x++; 
+					d12.setText(x.toString());
+				}
+			});
 			contentPane.add(button_3);
 
 			JButton button_4 = new JButton("-");
 			button_4.setFocusable(false);
 			button_4.setBounds(184, 70, 46, 23);
+			button_4.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d12.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+					x--; 
+					d12.setText(x.toString());
+				}
+			});
 			contentPane.add(button_4);
 
 			JButton button_5 = new JButton("+");
 			button_5.setFocusable(false);
 			button_5.setBounds(137, 98, 46, 23);
+			button_5.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d10.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+					x++; 
+					d10.setText(x.toString());
+				}
+			});
 			contentPane.add(button_5);
 
 			JButton button_6 = new JButton("-");
 			button_6.setFocusable(false);
 			button_6.setBounds(184, 98, 46, 23);
+			button_6.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d10.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+					x--; 
+					d10.setText(x.toString());
+				}
+			});
 			contentPane.add(button_6);
 
 			JButton button_7 = new JButton("+");
 			button_7.setFocusable(false);
 			button_7.setBounds(137, 126, 46, 23);
+			button_7.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d8.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+					x++; 
+					d8.setText(x.toString());
+				}
+			});
 			contentPane.add(button_7);
 
 			JButton button_8 = new JButton("-");
 			button_8.setFocusable(false);
 			button_8.setBounds(184, 126, 46, 23);
+			button_8.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d8.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+					x--; 
+					d8.setText(x.toString());
+				}
+			});
 			contentPane.add(button_8);
 
 			JButton button_9 = new JButton("+");
 			button_9.setFocusable(false);
 			button_9.setBounds(137, 154, 46, 23);
+			button_9.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d6.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+					x++; 
+					d6.setText(x.toString());
+				}
+			});
 			contentPane.add(button_9);
 
 			JButton button_10 = new JButton("-");
+
 			button_10.setFocusable(false);
 			button_10.setBounds(184, 154, 46, 23);
+			button_10.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d6.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+					x--; 
+					d6.setText(x.toString());
+				}
+			});
 			contentPane.add(button_10);
 
 			JButton button_11 = new JButton("+");
 			button_11.setFocusable(false);
 			button_11.setBounds(137, 182, 46, 23);
+			button_11.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d4.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+					x++; 
+					d4.setText(x.toString());
+				}
+			});
 			contentPane.add(button_11);
 
 			JButton button_12 = new JButton("-");
 			button_12.setFocusable(false);
 			button_12.setBounds(184, 182, 46, 23);
+			button_12.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Integer x; 
+					try { 
+						x = new Integer(d4.getText());
+					} catch (Exception err){
+						x = 0;
+					}
+					x--; 
+					d4.setText(x.toString());
+				}
+			});
 			contentPane.add(button_12);
 
 			add = new JTextField();
