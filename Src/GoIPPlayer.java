@@ -3,7 +3,6 @@ import java.awt.EventQueue;
 import java.text.DecimalFormat;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
@@ -19,7 +18,7 @@ import java.io.*;
 
 import javax.swing.JLabel;
 import javax.swing.JButton; 
-import javax.swing.border.EmptyBorder;
+
 
 
 public class GoIPPlayer {
@@ -36,6 +35,8 @@ public class GoIPPlayer {
 	private static Socket transSocket; 
 	private static Socket playerListSocket; 
 	private static BufferedReader in; 
+	private JButton btnRollD;
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -110,7 +111,60 @@ public class GoIPPlayer {
 		return result; 
 	}
 
-	private JButton btnRollD;
+	public static String roll(String[] banana){
+		try {
+			String results = "";
+			int sum = 0; 
+			int D = 20; 
+			int dnum = 0;
+			Integer adder = 0; 
+			for (int x = 1; x < banana.length; x++) 
+			{
+				if (banana[x].contains("+") || banana[x].contains("-")) {
+					//continue;
+					adder+=new Integer(banana[x]);
+					continue;
+				} 
+				if (banana[x].contains("d"))
+				{
+					if (banana[x].split("d")[0]!=null && !banana[x].split("d")[0].equals(""))
+						dnum = (int)Integer.parseInt(banana[x].split("d")[0]); 
+					else 
+						dnum =0; 
+					try {
+						D = (int)Integer.parseInt(banana[x].split("d")[1]); 
+					} catch (Exception e){
+						D = 20;
+					}
+
+				} else {
+					if (banana[x]!=null && !banana[x].equals(""))
+						dnum = (int)Integer.parseInt(banana[x]); 
+					if (banana[x+1]!=null && !banana[x+1].equals(""))
+						D = (int)Integer.parseInt(banana[x+1]); 
+					x++;
+				}
+				for (int i = 0; i < dnum; i++) { 
+					int roll = (int)Math.floor(Math.random()*D+1); 
+					sum += roll; 
+					results += roll;
+					results += "("+D+") "; 
+				}
+
+			}
+			if (banana.length<2)
+			{
+				int roll = (int)Math.floor(Math.random()*D+1); 
+				sum += roll; 
+				results += roll;
+				results += "["+D+"] "; 
+			}
+			sum+=adder;
+			return " rolled a "+sum +"(+"+adder+"): "+results;
+		} catch (Exception e) { 
+			return " got an Error - "+ e.getMessage(); //System.out.println(encrypt(Message)e.getMessage());	
+		}
+	}
 	boolean makeconnection() 
 	{
 		try {  
@@ -221,7 +275,7 @@ public class GoIPPlayer {
 		scrollPane2.setBounds(7, 7, 422, 216);
 		scrollPane2.setHorizontalScrollBarPolicy(scrollPane2.HORIZONTAL_SCROLLBAR_NEVER);
 		frmGoIPPlayer.getContentPane().add(scrollPane2);
-		chatArea.setText("Type in the IP of your Server:");
+		chatArea.setText("Type in the IP of your DM or use the dice bag to roll without connecting.\n");
 
 		JLabel lblPlayerList = new JLabel("Player List");
 		lblPlayerList.setBounds(437, -2, 98, 28);
@@ -232,7 +286,33 @@ public class GoIPPlayer {
 		btnRollD.setToolTipText("Do it. I dare you.");
 		btnRollD.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DiceBag db = new DiceBag();
+				final DiceBag db = new DiceBag();
+				if (connected) {
+					db.btnRoll.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							String temp = "roll "+db.d100.getText().trim()+"d100 "+db.d20.getText().trim()+"d20 "+db.d12.getText().trim()+"d12 "+db.d10.getText().trim()+"d10 "+db.d8.getText().trim()+"d8 "+db.d6.getText().trim()+"d6 ";
+							temp += db.d4.getText().trim()+"d4";
+							if (!db.dc.getText().trim().equals(""))
+								temp +=" "+db.cd.getText().trim()+"d"+db.dc.getText().trim();
+							if (!db.add.getText().trim().equals(""))
+								temp+=" +"+db.add.getText().trim();
+							out.println(encrypt(temp));
+						}
+					});
+				}else{
+					db.btnRoll.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							String temp = "roll "+db.d100.getText().trim()+"d100 "+db.d20.getText().trim()+"d20 "+db.d12.getText().trim()+"d12 "+db.d10.getText().trim()+"d10 "+db.d8.getText().trim()+"d8 "+db.d6.getText().trim()+"d6 ";
+							temp += db.d4.getText().trim()+"d4";
+							if (!db.dc.getText().trim().equals(""))
+								temp +=" "+db.cd.getText().trim()+"d"+db.dc.getText().trim();
+							if (!db.add.getText().trim().equals(""))
+								temp+=" +"+db.add.getText().trim();
+							chatArea.append("You"+roll(temp.split(" "))+"\n");
+						}
+					});
+				}
+
 				db.setVisible(true);
 			}
 		});
@@ -296,369 +376,6 @@ public class GoIPPlayer {
 			}catch(Exception e) {
 				chatArea.append("");
 			} 
-		}
-	}
-	class DiceBag extends JFrame {
-
-		private JPanel contentPane;
-		private JTextField d100;
-		private JTextField d20;
-		private JTextField d12;
-		private JTextField d10;
-		private JTextField d8;
-		private JTextField d6;
-		private JTextField d4;
-		private JTextField cd;
-		private JTextField dc;
-		private JTextField add;
-
-		public DiceBag() {
-			setTitle("Dice Bag");
-			setBounds(100, 100, 243, 300);
-			contentPane = new JPanel();
-			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-			setContentPane(contentPane);
-			contentPane.setLayout(null);
-
-			d100 = new JTextField();
-			d100.setBounds(10, 11, 86, 20);
-			contentPane.add(d100);
-			d100.setColumns(10);
-
-			JLabel lblD = new JLabel("d100");
-			lblD.setBounds(103, 14, 46, 14);
-			contentPane.add(lblD);
-
-			JLabel lblD_1 = new JLabel("d20");
-			lblD_1.setBounds(103, 45, 46, 14);
-			contentPane.add(lblD_1);
-
-			d20 = new JTextField();
-			d20.setColumns(10);
-			d20.setBounds(10, 42, 86, 20);
-			contentPane.add(d20);
-
-			JLabel lblD_2 = new JLabel("d12");
-			lblD_2.setBounds(103, 73, 46, 14);
-			contentPane.add(lblD_2);
-
-			d12 = new JTextField();
-			d12.setColumns(10);
-			d12.setBounds(10, 70, 86, 20);
-			contentPane.add(d12);
-
-			JLabel lblD_3 = new JLabel("d10");
-			lblD_3.setBounds(103, 101, 46, 14);
-			contentPane.add(lblD_3);
-
-			d10 = new JTextField();
-			d10.setColumns(10);
-			d10.setBounds(10, 98, 86, 20);
-			contentPane.add(d10);
-
-			JLabel lblD_4 = new JLabel("d8");
-			lblD_4.setBounds(103, 129, 46, 14);
-			contentPane.add(lblD_4);
-
-			d8 = new JTextField();
-			d8.setColumns(10);
-			d8.setBounds(10, 126, 86, 20);
-			contentPane.add(d8);
-
-			JLabel lblD_5 = new JLabel("d6");
-			lblD_5.setBounds(103, 157, 46, 14);
-			contentPane.add(lblD_5);
-
-			d6 = new JTextField();
-			d6.setColumns(10);
-			d6.setBounds(10, 154, 86, 20);
-			contentPane.add(d6);
-
-			JLabel lblD_6 = new JLabel("d4");
-			lblD_6.setBounds(103, 185, 46, 14);
-			contentPane.add(lblD_6);
-
-			d4 = new JTextField();
-			d4.setColumns(10);
-			d4.setBounds(10, 182, 86, 20);
-			contentPane.add(d4);
-
-			cd = new JTextField();
-			cd.setColumns(10);
-			cd.setBounds(10, 210, 86, 20);
-			contentPane.add(cd);
-
-			JButton btnRoll = new JButton("Roll!");
-			btnRoll.setBounds(5, 241, 91, 23);
-			btnRoll.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					String temp = "roll "+d100.getText().trim()+"d100 "+d20.getText().trim()+"d20 "+d12.getText().trim()+"d12 "+d10.getText().trim()+"d10 "+d8.getText().trim()+"d8 "+d6.getText().trim()+"d6 ";
-					temp += d4.getText().trim()+"d4";
-					if (!dc.getText().trim().equals(""))
-						temp +=" "+cd.getText().trim()+"d"+dc.getText().trim();
-					if (!add.getText().trim().equals(""))
-						temp+=" +"+add.getText().trim();
-
-					out.println(encrypt(temp));
-				}
-			});
-			contentPane.add(btnRoll);
-
-			dc = new JTextField();
-			dc.setBounds(139, 210, 91, 20);
-			contentPane.add(dc);
-			dc.setColumns(10);
-
-			JLabel lblD_7 = new JLabel("d");
-			lblD_7.setBounds(103, 210, 11, 14);
-			contentPane.add(lblD_7);
-
-			JButton btnNewButton = new JButton("+");
-			btnNewButton.setFocusable(false);
-			btnNewButton.setBounds(137, 10, 46, 23);
-			btnNewButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Integer x; 
-					try { 
-						x = new Integer(d100.getText());
-					} catch (Exception err){
-						x = 0;
-					}
-					x++; 
-					d100.setText(x.toString());
-				}
-			});
-			contentPane.add(btnNewButton);
-			JButton button = new JButton("-");
-			button.setFocusable(false);
-			button.setBounds(184, 10, 46, 23);
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Integer x; 
-					try { 
-						x = new Integer(d100.getText());
-					} catch (Exception err){
-						x = 0;
-					}
-					x--; 
-					d100.setText(x.toString());
-				}
-			});
-			contentPane.add(button);
-
-			JButton button_1 = new JButton("+");
-			button_1.setFocusable(false);
-			button_1.setBounds(137, 39, 46, 23);
-			button_1.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Integer x; 
-					try { 
-						x = new Integer(d20.getText());
-					} catch (Exception err){
-						x = 0;
-					}
-					x++; 
-					d20.setText(x.toString());
-				}
-			});
-			contentPane.add(button_1);
-
-			JButton button_2 = new JButton("-");
-			button_2.setFocusable(false);
-			button_2.setBounds(184, 39, 46, 23);
-			button_2.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Integer x; 
-					try { 
-						x = new Integer(d20.getText());
-					} catch (Exception err){
-						x = 0;
-					}
-					x--; 
-					d20.setText(x.toString());
-				}
-			});
-			contentPane.add(button_2);
-
-			JButton button_3 = new JButton("+");
-			button_3.setFocusable(false);
-			button_3.setBounds(137, 70, 46, 23);
-			button_3.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Integer x; 
-					try { 
-						x = new Integer(d12.getText());
-					} catch (Exception err){
-						x = 0;
-					}
-					x++; 
-					d12.setText(x.toString());
-				}
-			});
-			contentPane.add(button_3);
-
-			JButton button_4 = new JButton("-");
-			button_4.setFocusable(false);
-			button_4.setBounds(184, 70, 46, 23);
-			button_4.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Integer x; 
-					try { 
-						x = new Integer(d12.getText());
-					} catch (Exception err){
-						x = 0;
-					}
-					x--; 
-					d12.setText(x.toString());
-				}
-			});
-			contentPane.add(button_4);
-
-			JButton button_5 = new JButton("+");
-			button_5.setFocusable(false);
-			button_5.setBounds(137, 98, 46, 23);
-			button_5.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Integer x; 
-					try { 
-						x = new Integer(d10.getText());
-					} catch (Exception err){
-						x = 0;
-					}
-					x++; 
-					d10.setText(x.toString());
-				}
-			});
-			contentPane.add(button_5);
-
-			JButton button_6 = new JButton("-");
-			button_6.setFocusable(false);
-			button_6.setBounds(184, 98, 46, 23);
-			button_6.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Integer x; 
-					try { 
-						x = new Integer(d10.getText());
-					} catch (Exception err){
-						x = 0;
-					}
-					x--; 
-					d10.setText(x.toString());
-				}
-			});
-			contentPane.add(button_6);
-
-			JButton button_7 = new JButton("+");
-			button_7.setFocusable(false);
-			button_7.setBounds(137, 126, 46, 23);
-			button_7.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Integer x; 
-					try { 
-						x = new Integer(d8.getText());
-					} catch (Exception err){
-						x = 0;
-					}
-					x++; 
-					d8.setText(x.toString());
-				}
-			});
-			contentPane.add(button_7);
-
-			JButton button_8 = new JButton("-");
-			button_8.setFocusable(false);
-			button_8.setBounds(184, 126, 46, 23);
-			button_8.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Integer x; 
-					try { 
-						x = new Integer(d8.getText());
-					} catch (Exception err){
-						x = 0;
-					}
-					x--; 
-					d8.setText(x.toString());
-				}
-			});
-			contentPane.add(button_8);
-
-			JButton button_9 = new JButton("+");
-			button_9.setFocusable(false);
-			button_9.setBounds(137, 154, 46, 23);
-			button_9.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Integer x; 
-					try { 
-						x = new Integer(d6.getText());
-					} catch (Exception err){
-						x = 0;
-					}
-					x++; 
-					d6.setText(x.toString());
-				}
-			});
-			contentPane.add(button_9);
-
-			JButton button_10 = new JButton("-");
-
-			button_10.setFocusable(false);
-			button_10.setBounds(184, 154, 46, 23);
-			button_10.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Integer x; 
-					try { 
-						x = new Integer(d6.getText());
-					} catch (Exception err){
-						x = 0;
-					}
-					x--; 
-					d6.setText(x.toString());
-				}
-			});
-			contentPane.add(button_10);
-
-			JButton button_11 = new JButton("+");
-			button_11.setFocusable(false);
-			button_11.setBounds(137, 182, 46, 23);
-			button_11.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Integer x; 
-					try { 
-						x = new Integer(d4.getText());
-					} catch (Exception err){
-						x = 0;
-					}
-					x++; 
-					d4.setText(x.toString());
-				}
-			});
-			contentPane.add(button_11);
-
-			JButton button_12 = new JButton("-");
-			button_12.setFocusable(false);
-			button_12.setBounds(184, 182, 46, 23);
-			button_12.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Integer x; 
-					try { 
-						x = new Integer(d4.getText());
-					} catch (Exception err){
-						x = 0;
-					}
-					x--; 
-					d4.setText(x.toString());
-				}
-			});
-			contentPane.add(button_12);
-
-			add = new JTextField();
-			add.setBounds(139, 242, 86, 20);
-			contentPane.add(add);
-			add.setColumns(10);
-
-			JLabel label = new JLabel("+");
-			label.setBounds(123, 245, 11, 14);
-			contentPane.add(label);
 		}
 	}
 }
