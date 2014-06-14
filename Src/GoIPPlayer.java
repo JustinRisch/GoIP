@@ -13,12 +13,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.net.*;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.io.*;
 
 import javax.swing.JLabel;
 import javax.swing.JButton; 
-
 
 
 public class GoIPPlayer {
@@ -165,6 +165,15 @@ public class GoIPPlayer {
 			return " got an Error - "+ e.getMessage(); //System.out.println(encrypt(Message)e.getMessage());	
 		}
 	}
+	public static String statroll(){
+		String result=""; 
+		int[] rolls = new int[4];
+		for (int i = 0; i<4; i++)
+			rolls[i]=(int)(Math.random()*6)+1; 
+		Arrays.sort(rolls);	
+		result = "Total="+(rolls[3]+rolls[2]+rolls[1])+"; ["+rolls[3]+"] "+"["+rolls[2]+"] "+"["+rolls[1]+"] "+"["+rolls[0]+"]\n";
+		return result; 
+	}
 	boolean makeconnection() 
 	{
 		try {  
@@ -300,6 +309,11 @@ public class GoIPPlayer {
 						}
 					});
 				}else{
+					db.statbutt.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							chatArea.append(statroll());
+						}
+					});
 					db.btnRoll.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							String temp = "roll "+db.d100.getText().trim()+"d100 "+db.d20.getText().trim()+"d20 "+db.d12.getText().trim()+"d12 "+db.d10.getText().trim()+"d10 "+db.d8.getText().trim()+"d8 "+db.d6.getText().trim()+"d6 ";

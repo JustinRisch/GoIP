@@ -25,12 +25,10 @@ public class DiceBag extends JFrame {
 	public JTextField dc;
 	public JTextField add;
 	public JButton btnRoll;
+	public JButton statbutt;
 	private JPanel contentPane;
 	private JTextField NoteBox;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -44,10 +42,12 @@ public class DiceBag extends JFrame {
 		});
 	}
 	public DiceBag() {
+		setType(Type.POPUP);
+		setResizable(false);
 
 
 		this.setTitle("Dice Bag");
-		this.setBounds(100, 100, 243, 323);
+		this.setBounds(100, 100, 237, 337);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.setContentPane(contentPane);
@@ -130,7 +130,7 @@ public class DiceBag extends JFrame {
 		contentPane.add(cd);
 
 		btnRoll = new JButton("Roll!");
-		btnRoll.setBounds(0, 262, 91, 23);
+		btnRoll.setBounds(5, 262, 91, 23);
 		// the behavior of the roll button is added by the DM / Player programs.
 		contentPane.add(btnRoll);
 
@@ -389,7 +389,7 @@ public class DiceBag extends JFrame {
 		add.setColumns(10);
 
 		JLabel label = new JLabel("+");
-		label.setBounds(118, 266, 11, 14);
+		label.setBounds(121, 266, 11, 14);
 		contentPane.add(label);
 		
 		NoteBox = new JTextField();
@@ -399,6 +399,10 @@ public class DiceBag extends JFrame {
 		NoteBox.setBounds(5, 1, 220, 20);
 		contentPane.add(NoteBox);
 		NoteBox.setColumns(10);
+		
+		statbutt = new JButton("Stat Roll (4d6 choose 3)");
+		statbutt.setBounds(5, 291, 215, 16);
+		contentPane.add(statbutt);
 	}
 }
 

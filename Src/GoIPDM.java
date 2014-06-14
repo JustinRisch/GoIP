@@ -1,13 +1,19 @@
 import java.awt.EventQueue;
+
 import javax.swing.JFrame;
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
+
 import java.awt.Component;
+
 import javax.swing.JScrollPane;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.net.*;
@@ -121,6 +127,15 @@ public class GoIPDM {
 	 */
 	public GoIPDM() {
 		initialize();
+	}
+	public static String statroll(){
+		String result=""; 
+		int[] rolls = new int[4];
+		for (int i = 0; i<4; i++)
+			rolls[i]=(int)(Math.random()*6)+1; 
+		Arrays.sort(rolls);	
+		result = "Total="+(rolls[3]+rolls[2]+rolls[1])+"; ["+rolls[3]+"] "+"["+rolls[2]+"] "+"["+rolls[1]+"] "+"["+rolls[0]+"]\n";
+		return result; 
 	}
 	public static String roll(String[] banana){
 		try {
@@ -241,6 +256,8 @@ public class GoIPDM {
 			} else if (banana[0].equalsIgnoreCase("msg")){
 				Message(clientListener, outter); 
 				chatArea.append(inputLine.getText());
+			} else if (banana[0].equalsIgnoreCase("statroll")) {
+				statroll();
 			} else if (banana[0].equalsIgnoreCase("help")) {
 				chatArea.append(help()+"\n");
 			} else if (banana[0].equalsIgnoreCase("lt") || banana[0].equalsIgnoreCase("loot")) {
@@ -468,6 +485,11 @@ public class GoIPDM {
 						if (!db.add.getText().trim().equals(""))
 							temp+=" +"+db.add.getText().trim();
 						chatArea.append("You"+roll(temp.split(" "))+"\n");
+					}
+				});
+				db.statbutt.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						chatArea.append(statroll());
 					}
 				});
 				db.setVisible(true);
