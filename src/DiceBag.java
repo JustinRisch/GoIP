@@ -1,7 +1,5 @@
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -9,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.SwingConstants;
+import java.awt.Font;
 
 
 public class DiceBag extends JFrame {
@@ -28,19 +27,6 @@ public class DiceBag extends JFrame {
 	public JButton statbutt;
 	private JPanel contentPane;
 	private JTextField NoteBox;
-
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					DiceBag frame = new DiceBag();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 	public DiceBag() {
 		setType(Type.POPUP);
 		setResizable(false);
@@ -130,10 +116,12 @@ public class DiceBag extends JFrame {
 		contentPane.add(cd);
 
 		btnRoll = new JButton("Roll!");
+		btnRoll.setFont(new Font("Arial Black", Font.BOLD, 11));
+		btnRoll.setFocusCycleRoot(true);
 		btnRoll.setBounds(5, 262, 91, 23);
 		// the behavior of the roll button is added by the DM / Player programs.
 		contentPane.add(btnRoll);
-
+		contentPane.getRootPane().setDefaultButton(btnRoll);
 		dc = new JTextField();
 		dc.setHorizontalAlignment(SwingConstants.LEFT);
 		dc.setBounds(134, 231, 91, 20);
@@ -401,6 +389,7 @@ public class DiceBag extends JFrame {
 		NoteBox.setColumns(10);
 		
 		statbutt = new JButton("Stat Roll (4d6 choose 3)");
+		statbutt.setFocusable(false);
 		statbutt.setBounds(5, 291, 215, 16);
 		contentPane.add(statbutt);
 	}
