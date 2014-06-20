@@ -79,6 +79,15 @@ public class GoIPDM {
 		public ArrayList<ClientHandler> getClients(){
 			return clients; 
 		}
+		public boolean checkIPs(String IP){
+			int count = 0; 
+			for (ClientHandler x : clients)
+				if (IP.equals(x.IP))
+					count++;
+			if (count>1)
+				return true;
+			return false;
+		}
 		public void removeClient(ClientHandler x){
 			clients.remove(x);
 		}
@@ -319,8 +328,10 @@ public class GoIPDM {
 
 		public void run () { 
 			try{	
-
+				
 				out = new PrintWriter(listener.getOutputStream(), true);
+				if(clientListener.checkIPs(this.IP))// && IP.startsWith("192.168."))
+					throw new Exception("Duplicate LAN connection.");
 				BufferedReader input = new BufferedReader(new InputStreamReader(listener.getInputStream()));
 				PlayerListWriter = new PrintWriter(playerListSocket.getOutputStream(), true);
 				String inLine;
@@ -331,6 +342,7 @@ public class GoIPDM {
 				clientListener.sendList();
 				chatArea.append(this.Name + " has connected."+"\n");
 				refresh();
+
 				while((inLine = input.readLine()) != null){
 					//first things first, decrypt the message
 					inLine = decrypt(inLine);
@@ -368,8 +380,8 @@ public class GoIPDM {
 							String newName = params[1]; 
 							//enforces unique names. 
 							boolean taken = false; 
-							for (ClientHandler x : clientListener.getClients())
-								if (x.Name.equalsIgnoreCase(newName))
+							for (ClientHandler tempClient : clientListener.getClients())
+								if (tempClient.Name.equalsIgnoreCase(newName))
 								{
 									out.println(encrypt("Could not change name: Username taken."));
 									taken = true; 
@@ -379,8 +391,8 @@ public class GoIPDM {
 								Name = newName; 
 								out.println(encrypt("Name changed to " + params[1]));
 								String newplayerlist = "";
-								for (ClientHandler x : clientListener.getClients())
-									newplayerlist += x.Name + "\n";
+								for (ClientHandler tempClient : clientListener.getClients())
+									newplayerlist += tempClient.Name + "\n";
 								String[] temperpedic = newplayerlist.split("\n");
 								newplayerlist="";
 								for (String y : temperpedic)
@@ -400,6 +412,14 @@ public class GoIPDM {
 			}catch(IOException e){
 				chatArea.append(Name + " has disconnected. \n");
 				out.close();
+				clientListener.removeClient(this);
+				refresh();
+				clientListener.sendList(); 
+
+			}catch(Exception e){
+				out.println(encrypt("Only one connection is allowed per computer over a LAN."));
+				out.close();
+				chatArea.append(Name + " has disconnected. \n--"+e.getMessage()+"--");
 				clientListener.removeClient(this);
 				refresh();
 				clientListener.sendList(); 
