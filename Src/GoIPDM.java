@@ -1,25 +1,21 @@
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JButton;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
-
 import java.awt.Component;
-
 import javax.swing.JScrollPane;
-
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.text.SimpleDateFormat;
+import javax.swing.JDesktopPane;
+import java.awt.Font;
 
 public class GoIPDM {
 	public static JFrame frame;
@@ -328,7 +324,7 @@ public class GoIPDM {
 
 		public void run () { 
 			try{	
-				
+
 				out = new PrintWriter(listener.getOutputStream(), true);
 				if(clientListener.checkIPs(this.IP))// && IP.startsWith("192.168."))
 					throw new Exception("Duplicate LAN connection.");
@@ -439,40 +435,45 @@ public class GoIPDM {
 			try {				// Try to find my local IP address at least and show it in the title bar. 
 				frame.setTitle("GoIP DM - LAN:"+ ClientConnecter.serverSocket.getInetAddress().getLocalHost().toString().split("/")[1]);
 			} catch (Exception g){
-				//There's really no reason that should not work. 
+				//There's really no reason that should not work... unless they lack any sort of LAN connection. 
 				frame.setTitle("GoIP DM - Could not find local or external IP. That's some weird shit."); 
 			}
 		}		
 		frame.setResizable(false);
-		frame.setBounds(100, 100, 469, 238);
+		frame.setBounds(100, 100, 542, 302);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);		
-
-		chatArea = new JTextArea();
-		chatArea.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		chatArea.setWrapStyleWord(true);
-		chatArea.setLineWrap(true);
-		chatArea.setEditable(false);
-		chatArea.setBounds(10, 11, 349, 173);
-		chatArea.setWrapStyleWord(true);
-		chatArea.setLineWrap(true);
-		JScrollPane scrollPane = new JScrollPane(chatArea);
-		scrollPane.setBounds(10, 11, 349, 173);
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 11, 409, 222);
 		scrollPane.setHorizontalScrollBarPolicy(scrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		frame.getContentPane().add(scrollPane);
 		frame.getContentPane().add(scrollPane);
 
-		listPlayers = new JTextArea();
-		listPlayers.setTabSize(3);
-		listPlayers.setEditable(false);
-		listPlayers.setBounds(369, 34, 91, 141);
+		chatArea = new JTextArea();
+		scrollPane.setViewportView(chatArea);
+		chatArea.setFocusable(false);
+		chatArea.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		chatArea.setWrapStyleWord(true);
+		chatArea.setLineWrap(true);
+		chatArea.setEditable(false);
+		chatArea.setWrapStyleWord(true);
+		chatArea.setLineWrap(true);
+		chatArea.setText("Quest has begun! Listening for players."+"\n");
 
-		JScrollPane scrollPane2 = new JScrollPane(listPlayers);
-		scrollPane2.setBounds(369, 34, 91, 141);
+		JScrollPane scrollPane2 = new JScrollPane();
+		scrollPane2.setBounds(429, 24, 97, 209);
 		frame.getContentPane().add(scrollPane2);
 
+		listPlayers = new JTextArea();
+		listPlayers.setLineWrap(true);
+		listPlayers.setFocusable(false);
+		scrollPane2.setViewportView(listPlayers);
+		listPlayers.setTabSize(3);
+		listPlayers.setEditable(false);
+
 		final JLabel lblPlayers = new JLabel("Players List");
-		lblPlayers.setBounds(369, 17, 97, 14);
+		lblPlayers.setFont(new Font("Palatino Linotype", Font.BOLD, 12));
+		lblPlayers.setBounds(429, 11, 91, 14);
 		frame.getContentPane().add(lblPlayers);
 
 		inputLine = new JTextField();
@@ -488,11 +489,12 @@ public class GoIPDM {
 
 			}
 		});
-		inputLine.setBounds(10, 187, 349, 20);
+		inputLine.setBounds(10, 244, 409, 22);
 		frame.getContentPane().add(inputLine);
 		inputLine.setColumns(10);
 
 		final JButton btnRoll = new JButton("Dice Bag");
+		btnRoll.setFocusable(false);
 		btnRoll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				final DiceBag db = new DiceBag();
@@ -515,9 +517,12 @@ public class GoIPDM {
 				db.setVisible(true);
 			}
 		});
-		btnRoll.setBounds(369, 186, 91, 23);
+		btnRoll.setBounds(429, 244, 97, 23);
 		frame.getContentPane().add(btnRoll);
-		chatArea.setText("Quest has begun! Listening for players."+"\n");
+
+		JDesktopPane desktopPane = new JDesktopPane();
+		desktopPane.setBounds(160, 21, 1, -21);
+		frame.getContentPane().add(desktopPane);
 	}
 	/*
 		Note: this encryption is *not* meant to uphold to any real scrutiny. Rather, it's meant to deter passive searching. 
@@ -575,6 +580,4 @@ public class GoIPDM {
 			result = start;
 		return result; 
 	}
-
-
 }
