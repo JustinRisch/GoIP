@@ -28,10 +28,7 @@ public class DiceBag extends JFrame {
 	private JPanel contentPane;
 	private JTextField NoteBox;
 	public DiceBag() {
-		setType(Type.POPUP);
 		setResizable(false);
-
-
 		this.setTitle("Dice Bag");
 		this.setBounds(100, 100, 237, 337);
 		contentPane = new JPanel();
