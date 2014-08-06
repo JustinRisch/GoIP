@@ -161,7 +161,7 @@ public class DiceBag extends JFrame {
 			}
 		});
 		contentPane.add(button);
-
+		
 		JButton button_1 = new JButton("+");
 		button_1.setFocusable(false);
 		button_1.setBounds(132, 60, 46, 23);

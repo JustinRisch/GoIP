@@ -210,7 +210,7 @@ public class GoIPDM {
 			String Message = makeString(params);
 			Message = Message.substring(2);
 			for (Socket x : ClientConnecter.listeners) 
-				(new PrintWriter(x.getOutputStream(), true)).println(encrypt(Message));
+				(new PrintWriter(x.getOutputStream(), true)).println(encrypt("DM: "+ Message));
 		} catch (Exception e){}
 	}
 	// this is a player broadcasting
