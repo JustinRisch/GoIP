@@ -39,6 +39,7 @@ public class GoIPDM {
 	}
 
 	public static String help(){ // the internal "readme" for the DM. Can't send to player as it contains line returns, and that screws up everything. 
+		
 		String message = "Action - syntax - explanation\n";
 		message+= "Broadcasting - bc [message] - sends a message to all players.\n";
 		message+= "Message - msg (player) [message] - sends a message to a single player. \n";
