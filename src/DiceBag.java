@@ -50,9 +50,8 @@ public class DiceBag extends JFrame {
 		lblD_1.setBounds(98, 66, 46, 14);
 		contentPane.add(lblD_1);
 
-		d20 = new JTextField();
+		d20 = new JTextField(10);
 		d20.setHorizontalAlignment(SwingConstants.RIGHT);
-		d20.setColumns(10);
 		d20.setBounds(5, 63, 86, 20);
 		contentPane.add(d20);
 
@@ -60,9 +59,8 @@ public class DiceBag extends JFrame {
 		lblD_2.setBounds(98, 94, 46, 14);
 		contentPane.add(lblD_2);
 
-		d12 = new JTextField();
+		d12 = new JTextField(10);
 		d12.setHorizontalAlignment(SwingConstants.RIGHT);
-		d12.setColumns(10);
 		d12.setBounds(5, 91, 86, 20);
 		contentPane.add(d12);
 
@@ -70,9 +68,8 @@ public class DiceBag extends JFrame {
 		lblD_3.setBounds(98, 122, 46, 14);
 		contentPane.add(lblD_3);
 
-		d10 = new JTextField();
+		d10 = new JTextField(10);
 		d10.setHorizontalAlignment(SwingConstants.RIGHT);
-		d10.setColumns(10);
 		d10.setBounds(5, 119, 86, 20);
 		contentPane.add(d10);
 
@@ -80,9 +77,8 @@ public class DiceBag extends JFrame {
 		lblD_4.setBounds(98, 150, 46, 14);
 		contentPane.add(lblD_4);
 
-		d8 = new JTextField();
+		d8 = new JTextField(10);
 		d8.setHorizontalAlignment(SwingConstants.RIGHT);
-		d8.setColumns(10);
 		d8.setBounds(5, 147, 86, 20);
 		contentPane.add(d8);
 
@@ -90,9 +86,8 @@ public class DiceBag extends JFrame {
 		lblD_5.setBounds(98, 178, 46, 14);
 		contentPane.add(lblD_5);
 
-		d6 = new JTextField();
+		d6 = new JTextField(10);
 		d6.setHorizontalAlignment(SwingConstants.RIGHT);
-		d6.setColumns(10);
 		d6.setBounds(5, 175, 86, 20);
 		contentPane.add(d6);
 
@@ -100,15 +95,13 @@ public class DiceBag extends JFrame {
 		lblD_6.setBounds(98, 206, 46, 14);
 		contentPane.add(lblD_6);
 
-		d4 = new JTextField();
+		d4 = new JTextField(10);
 		d4.setHorizontalAlignment(SwingConstants.RIGHT);
-		d4.setColumns(10);
 		d4.setBounds(5, 203, 86, 20);
 		contentPane.add(d4);
 
-		cd = new JTextField();
+		cd = new JTextField(10);
 		cd.setHorizontalAlignment(SwingConstants.RIGHT);
-		cd.setColumns(10);
 		cd.setBounds(5, 231, 86, 20);
 		contentPane.add(cd);
 
