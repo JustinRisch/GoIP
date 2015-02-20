@@ -15,13 +15,13 @@ public class Encryption {
 			'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
 			'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 	public static String superEncrypt(String start){
-	
-		start = keyEncrypt(start);
+		start = scramble(start, 7);
+		start = keyEncrypt(7, start);
 		return start;
 	}
 	public static String superDecrypt(String start){
-		start = keyDecrypt(start);
-	
+		start = keyDecrypt(7, start);
+		start = descramble(start,7);
 		return start;
 	}
 	public static String scramble(String start, int count) {
