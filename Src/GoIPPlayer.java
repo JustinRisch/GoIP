@@ -225,8 +225,7 @@ public class GoIPPlayer {
 			try {
 				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
 					// keyDecrypting and trimming input.
-					from.map(e -> Encryption.superDecrypt(e))
-							.map(e -> e.trim())
+					from.map(e -> Encryption.superDecrypt(e).trim())
 							.filter(fromServer -> !fromServer.equals("")
 									&& !fromServer.equals("\n"))
 							.ifPresent(
@@ -260,7 +259,7 @@ public class GoIPPlayer {
 
 		@Override
 		public void run() {
-			Optional<String> from = null;
+			Optional<String> from;
 			try {
 				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
 					from.filter(

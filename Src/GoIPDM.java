@@ -387,7 +387,6 @@ public class GoIPDM {
 						break;
 					case "roll":
 					case "r":
-
 						String result = DiceRoll.roll(params);
 						out.println(Encryption.superEncrypt("You " + result));
 						chatArea.append(Name + result + "\n");
