@@ -40,7 +40,7 @@ public class GoIPDM {
 				}
 			}
 		});
-		Thread heh = new Thread(clientListener); 
+		Thread heh = new Thread(clientListener);
 		heh.start(); // begin listening for clients
 	}
 
