@@ -1,20 +1,25 @@
 import java.awt.EventQueue;
+
 import javax.swing.JFrame;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
+import javax.swing.ScrollPaneConstants;
+
 import java.awt.Component;
+
 import javax.swing.JScrollPane;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.text.SimpleDateFormat;
+
 import javax.swing.JDesktopPane;
+
 import java.awt.Font;
 
 public class GoIPDM {
@@ -25,6 +30,7 @@ public class GoIPDM {
 	public static ClientConnecter clientListener = new ClientConnecter();
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					new GoIPDM();
@@ -103,6 +109,7 @@ public class GoIPDM {
 				System.exit(1337);
 			}
 		}
+		@Override
 		public void run (){
 			while(true) { 
 				try{
@@ -160,20 +167,20 @@ public class GoIPDM {
 				if (banana[x].contains("d"))
 				{
 					if (banana[x].split("d")[0]!=null && !banana[x].split("d")[0].equals(""))
-						dnum = (int)Integer.parseInt(banana[x].split("d")[0]); 
+						dnum = Integer.parseInt(banana[x].split("d")[0]); 
 					else 
 						dnum =0; 
 					try {
-						D = (int)Integer.parseInt(banana[x].split("d")[1]); 
+						D = Integer.parseInt(banana[x].split("d")[1]); 
 					} catch (Exception e){
 						D = 20;
 					}
 
 				} else {
 					if (banana[x]!=null && !banana[x].equals(""))
-						dnum = (int)Integer.parseInt(banana[x]); 
+						dnum = Integer.parseInt(banana[x]); 
 					if (banana[x+1]!=null && !banana[x+1].equals(""))
-						D = (int)Integer.parseInt(banana[x+1]); 
+						D = Integer.parseInt(banana[x+1]); 
 					x++;
 				}
 				for (int i = 0; i < dnum; i++) { 
@@ -323,6 +330,7 @@ public class GoIPDM {
 			this.playerListSocket = temp2; 
 		}
 
+		@Override
 		public void run () { 
 			try{	
 
@@ -446,7 +454,7 @@ public class GoIPDM {
 		frame.getContentPane().setLayout(null);		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 11, 409, 222);
-		scrollPane.setHorizontalScrollBarPolicy(scrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		frame.getContentPane().add(scrollPane);
 		frame.getContentPane().add(scrollPane);
 
@@ -496,11 +504,9 @@ public class GoIPDM {
 
 		final JButton btnRoll = new JButton("Dice Bag");
 		btnRoll.setFocusable(false);
-		btnRoll.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		btnRoll.addActionListener(e-> {
 				final DiceBag db = new DiceBag();
-				db.btnRoll.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+				db.btnRoll.addActionListener(y-> {
 						String temp = "roll "+db.d100.getText().trim()+"d100 "+db.d20.getText().trim()+"d20 "+db.d12.getText().trim()+"d12 "+db.d10.getText().trim()+"d10 "+db.d8.getText().trim()+"d8 "+db.d6.getText().trim()+"d6 ";
 						temp += db.d4.getText().trim()+"d4";
 						if (!db.dc.getText().trim().equals(""))
@@ -508,15 +514,9 @@ public class GoIPDM {
 						if (!db.add.getText().trim().equals(""))
 							temp+=" +"+db.add.getText().trim();
 						chatArea.append("You"+roll(temp.split(" "))+"\n");
-					}
 				});
-				db.statbutt.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						chatArea.append(statroll());
-					}
-				});
+				db.statbutt.addActionListener(x->chatArea.append(statroll()));
 				db.setVisible(true);
-			}
 		});
 		btnRoll.setBounds(429, 244, 97, 23);
 		frame.getContentPane().add(btnRoll);
@@ -570,9 +570,9 @@ public class GoIPDM {
 		{
 			result+=decrypter[i];
 			if (decrypter.length%2==0){
-				result+=decrypter[i+(int)(decrypter.length)/2]; 
+				result+=decrypter[i+(decrypter.length)/2]; 
 			} else { 
-				result+=decrypter[i+(int)decrypter.length/2+1]; 
+				result+=decrypter[i+decrypter.length/2+1]; 
 				if (i==(decrypter.length/2)-1)
 					result +=decrypter[(int)Math.floor(decrypter.length/2)];
 			}

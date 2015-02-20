@@ -1,10 +1,13 @@
 
 import java.awt.EventQueue;
 import java.text.DecimalFormat;
+
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
@@ -14,8 +17,10 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.io.*;
+
 import javax.swing.JLabel;
 import javax.swing.JButton;
+
 import java.awt.Dialog.ModalExclusionType;
 
 
@@ -37,6 +42,7 @@ public class GoIPPlayer {
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					window = new GoIPPlayer();
@@ -97,9 +103,9 @@ public class GoIPPlayer {
 		{
 			result+=decrypter[i]; 
 			if (decrypter.length%2==0){
-				result+=decrypter[i+(int)(decrypter.length)/2]; 
+				result+=decrypter[i+(decrypter.length)/2]; 
 			} else { 
-				result+=decrypter[i+(int)decrypter.length/2+1]; 
+				result+=decrypter[i+decrypter.length/2+1]; 
 				if (i==(decrypter.length/2)-1)
 					result +=decrypter[(int)Math.floor(decrypter.length/2)];
 			}
@@ -126,20 +132,20 @@ public class GoIPPlayer {
 				if (banana[x].contains("d"))
 				{
 					if (banana[x].split("d")[0]!=null && !banana[x].split("d")[0].equals(""))
-						dnum = (int)Integer.parseInt(banana[x].split("d")[0]); 
+						dnum = Integer.parseInt(banana[x].split("d")[0]); 
 					else 
 						dnum =0; 
 					try {
-						D = (int)Integer.parseInt(banana[x].split("d")[1]); 
+						D = Integer.parseInt(banana[x].split("d")[1]); 
 					} catch (Exception e){
 						D = 20;
 					}
 
 				} else {
 					if (banana[x]!=null && !banana[x].equals(""))
-						dnum = (int)Integer.parseInt(banana[x]); 
+						dnum = Integer.parseInt(banana[x]); 
 					if (banana[x+1]!=null && !banana[x+1].equals(""))
-						D = (int)Integer.parseInt(banana[x+1]); 
+						D = Integer.parseInt(banana[x+1]); 
 					x++;
 				}
 				for (int i = 0; i < dnum; i++) { 
@@ -277,7 +283,7 @@ public class GoIPPlayer {
 
 		JScrollPane scrollPane2 = new JScrollPane(chatArea);
 		scrollPane2.setBounds(7, 7, 422, 216);
-		scrollPane2.setHorizontalScrollBarPolicy(scrollPane2.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		frmGoIPPlayer.getContentPane().add(scrollPane2);
 		chatArea.setText("Type in the IP of your DM or use the dice bag to roll without connecting.\n");
 
@@ -289,10 +295,12 @@ public class GoIPPlayer {
 		btnRollD.setBounds(439, 226, 91, 23);
 		btnRollD.setToolTipText("Do it. I dare you.");
 		btnRollD.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				final DiceBag db = new DiceBag();
 				if (connected) {
 					db.btnRoll.addActionListener(new ActionListener() {
+						@Override
 						public void actionPerformed(ActionEvent e) {
 							String temp = "roll "+db.d100.getText().trim()+"d100 "+db.d20.getText().trim()+"d20 "+db.d12.getText().trim()+"d12 "+db.d10.getText().trim()+"d10 "+db.d8.getText().trim()+"d8 "+db.d6.getText().trim()+"d6 ";
 							temp += db.d4.getText().trim()+"d4";
@@ -305,11 +313,13 @@ public class GoIPPlayer {
 					});
 				}else{
 					db.statbutt.addActionListener(new ActionListener() {
+						@Override
 						public void actionPerformed(ActionEvent e) {
 							chatArea.append(statroll());
 						}
 					});
 					db.btnRoll.addActionListener(new ActionListener() {
+						@Override
 						public void actionPerformed(ActionEvent e) {
 							String temp = "roll "+db.d100.getText().trim()+"d100 "+db.d20.getText().trim()+"d20 "+db.d12.getText().trim()+"d12 "+db.d10.getText().trim()+"d10 "+db.d8.getText().trim()+"d8 "+db.d6.getText().trim()+"d6 ";
 							temp += db.d4.getText().trim()+"d4";
@@ -334,6 +344,7 @@ public class GoIPPlayer {
 		public Ears (Socket listener, BufferedReader in) {  // the constructor that should always be used  
 			this.in = in; 
 		}
+		@Override
 		public void run(){
 			String fromServer = null;
 			try {
@@ -372,6 +383,7 @@ public class GoIPPlayer {
 		public playerListener (BufferedReader in) {  // the constructor that should always be used  
 			this.in = in; 
 		}
+		@Override
 		public void run(){
 			String fromServer = null;
 			try {
