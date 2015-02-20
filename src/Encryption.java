@@ -24,6 +24,8 @@ public class Encryption {
 	}
 
 	public static String superDecrypt(String start) {
+		if (start.length()<1)
+			return start;
 		for (int i = 0; i < 3; i++) {
 			start = keyDecrypt(7, start);
 			start = descramble(start, 7);
@@ -58,7 +60,6 @@ public class Encryption {
 	public static String descramble(final String start) {
 		StringBuilder result = new StringBuilder();
 		char[] decrypter = start.toCharArray();
-
 		for (int i = 0; i < ((decrypter.length) / 2); i++) {
 			result.append(decrypter[i]);
 			if (decrypter.length % 2 == 0) {
@@ -99,6 +100,7 @@ public class Encryption {
 		StringBuilder result = new StringBuilder("");
 		Arrays.stream(start.split(""))
 				.map(e -> e.toCharArray())
+				.filter(e->e.length==1)
 				.forEach(
 						e -> {
 							char c = (char) (e[0] + Character
@@ -115,6 +117,7 @@ public class Encryption {
 		StringBuilder result = new StringBuilder("");
 		Arrays.stream(start.split(""))
 				.map(e -> e.toCharArray())
+				.filter(e->e.length==1)
 				.forEach(
 						e -> {
 							char c = (char) (e[0] - Character

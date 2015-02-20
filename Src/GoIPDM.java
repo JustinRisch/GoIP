@@ -39,8 +39,10 @@ public class GoIPDM {
 			}
 
 		});
-		Thread heh = new Thread(clientListener);
-		heh.start(); // begin listening for clients
+		// begin listening for clients
+		new Thread(clientListener).start();
+		;
+
 	}
 
 	public static String help() { // the internal "readme" for the DM. Can't
@@ -102,8 +104,8 @@ public class GoIPDM {
 			clients.stream().forEach(x -> temp.append(x.Name + "|"));
 
 			clients.stream().forEach(
-					x -> x.PlayerListWriter.println(Encryption.superEncrypt(temp
-							.toString())));
+					x -> x.PlayerListWriter.println(Encryption
+							.superEncrypt(temp.toString())));
 		}
 
 		public ClientConnecter() {
@@ -125,8 +127,9 @@ public class GoIPDM {
 							.size() - 1), serverSocket.accept()));
 
 					// Each client gets their own thread.
-					Thread client = new Thread(clients.get(clients.size() - 1));
-					client.start(); // starts said thread
+					new Thread(clients.get(clients.size() - 1)).start(); // starts
+																			// said
+																			// thread
 				} catch (IOException e) {
 					System.err.println("Can't Accept connection attempt");
 				}
@@ -158,14 +161,18 @@ public class GoIPDM {
 
 		final String Message = String.join(" ", params).substring(2);
 
-		ClientConnecter.listeners.stream().forEach(
-				x -> {
-					try {
-						(new PrintWriter(x.getOutputStream(), true))
-								.println(Encryption.superEncrypt("DM: " + Message));
-					} catch (Exception e) {
-					}
-				});
+		ClientConnecter.listeners
+				.stream()
+				.filter(x -> x.isConnected())
+				.forEach(
+						x -> {
+							try {
+								(new PrintWriter(x.getOutputStream(), true))
+										.println(Encryption.superEncrypt("DM: "
+												+ Message));
+							} catch (Exception e) {
+							}
+						});
 	}
 
 	// this is a player broadcasting
@@ -173,16 +180,18 @@ public class GoIPDM {
 
 		final String Message = String.join(" ", params).substring(2);
 
-		ClientConnecter.listeners
-				.stream()
+		ClientConnecter.listeners.stream()
+				// don't spam the client that sent the message :P
 				.filter(x -> x != that.listener)
+				.filter(x -> x.isConnected())
 				.forEach(
 						x -> {
 							try {
 
 								(new PrintWriter(x.getOutputStream(), true))
-										.println(Encryption.superEncrypt(that.Name
-												+ ": " + Message));
+										.println(Encryption
+												.superEncrypt(that.Name + ": "
+														+ Message));
 							} catch (Exception e) {
 
 							}
@@ -377,7 +386,8 @@ public class GoIPDM {
 						} else if (params[0].equalsIgnoreCase("roll")
 								|| params[0].equalsIgnoreCase("r")) {
 							String result = DiceRoll.roll(params);
-							out.println(Encryption.superEncrypt("You " + result));
+							out.println(Encryption
+									.superEncrypt("You " + result));
 							chatArea.append(Name + result + "\n");
 						} else if (params[0].equalsIgnoreCase("bc")) {
 							broadcast(params, this);
@@ -406,7 +416,8 @@ public class GoIPDM {
 								chatArea.append(Name);
 								Name = newName;
 								out.println(Encryption
-										.superEncrypt("Name changed to " + params[1]));
+										.superEncrypt("Name changed to "
+												+ params[1]));
 								StringBuilder newplayerlist = new StringBuilder(
 										"");
 								clientListener

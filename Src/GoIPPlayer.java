@@ -63,12 +63,11 @@ public class GoIPPlayer {
 			out = new PrintWriter(transSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(
 					transSocket.getInputStream()));
-			Thread playerListThread = new Thread(new playerListener(
-					new BufferedReader(new InputStreamReader(
-							playerListSocket.getInputStream()))));
-			listenUp = new Thread(new Ears(transSocket, in));
-			playerListThread.start();
-			listenUp.start();
+			new Thread(new playerListener(new BufferedReader(
+					new InputStreamReader(playerListSocket.getInputStream()))))
+			.start();
+			new Thread(new Ears(transSocket, in)).start();
+
 			return true;
 		} catch (UnknownHostException e) {
 			chatArea.setText("Host Unknown Exception.. yeah you should probably google that.");
@@ -88,7 +87,7 @@ public class GoIPPlayer {
 		frmGoIPPlayer = new JFrame();
 		frmGoIPPlayer.setResizable(false);
 		frmGoIPPlayer
-				.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
+		.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
 		frmGoIPPlayer.setTitle("GoIP Player");
 		frmGoIPPlayer.setBounds(100, 100, 552, 282);
 		frmGoIPPlayer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -160,7 +159,7 @@ public class GoIPPlayer {
 		JScrollPane scrollPane2 = new JScrollPane(chatArea);
 		scrollPane2.setBounds(7, 7, 422, 216);
 		scrollPane2
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		frmGoIPPlayer.getContentPane().add(scrollPane2);
 		chatArea.setText("Type in the IP of your DM or use the dice bag to roll without connecting.\n");
 
@@ -226,12 +225,14 @@ public class GoIPPlayer {
 		@Override
 		public void run() {
 			Optional<String> from = null;
+
 			try {
 				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
 					// keyDecrypting and trimming input.
-					from.map(e->Encryption.superDecrypt(e)).map(e -> e.trim()).filter(
-							fromServer -> !fromServer.equals("")
-									&& !fromServer.equals("\n"))
+					from.map(e -> Encryption.superDecrypt(e))
+					.map(e -> e.trim())
+					.filter(fromServer -> !fromServer.equals("")
+							&& !fromServer.equals("\n"))
 							.ifPresent(
 									fromServer -> {
 										if (!lastSent.equalsIgnoreCase("ping"))
@@ -253,19 +254,19 @@ public class GoIPPlayer {
 																.parseDouble(x)
 																- Double.parseDouble(fromServer
 																		.split(":")[i])))
-														.doubleValue()
-														+ ":";
+												.doubleValue()
+												+ ":";
 												i++;
 											}
 
 											chatArea.append(results + "\n");
 										}
 									});
-
 				}
-			} catch (Exception e) {
-				chatArea.append("");
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
+
 		}
 	}
 
@@ -286,15 +287,17 @@ public class GoIPPlayer {
 				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
 					from.filter(
 							fromServer -> !fromServer.equals("")
-									&& !fromServer.equals("\n")).ifPresent(
-							fromServer -> {
-								fromServer = Encryption.superDecrypt(fromServer);
-								listPlayers.setText(fromServer.replace("|",
-										"\n"));
-							});
+							&& !fromServer.equals("\n")).ifPresent(
+									fromServer -> {
+										fromServer = Encryption
+												.superDecrypt(fromServer);
+										listPlayers.setText(fromServer.replace("|",
+												"\n"));
+									});
 				}
 			} catch (Exception e) {
 				chatArea.append("");
+				e.printStackTrace();
 			}
 		}
 	}

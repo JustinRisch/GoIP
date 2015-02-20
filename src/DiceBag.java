@@ -179,13 +179,13 @@ public class DiceBag extends JFrame {
 		JButton button_8 = new JButton("-");
 		button_8.setFocusable(false);
 		button_8.setBounds(179, 147, 46, 23);
-		button_8.addActionListener(new ButtonListener(d8,-1));
+		button_8.addActionListener(new ButtonListener(d8, -1));
 		contentPane.add(button_8);
 
 		JButton button_9 = new JButton("+");
 		button_9.setFocusable(false);
 		button_9.setBounds(132, 175, 46, 23);
-		button_9.addActionListener(new ButtonListener(d6,1));
+		button_9.addActionListener(new ButtonListener(d6, 1));
 		contentPane.add(button_9);
 
 		JButton button_10 = new JButton("-");
@@ -232,12 +232,12 @@ public class DiceBag extends JFrame {
 	}
 
 	class ButtonListener implements ActionListener {
-		JTextField JTF;
-		int increment;
+		JTextField JTF;// where the button should get it's info from.
+		int increment;// how much it should increment the number in that JTF
 
 		public ButtonListener(JTextField JTF, int increment) {
 			this.JTF = JTF;
-			this.increment=increment;
+			this.increment = increment;
 		}
 
 		@Override
@@ -248,9 +248,9 @@ public class DiceBag extends JFrame {
 			} catch (Exception err) {
 				x = 0;
 			}
-			x+=increment;
-			if (x<0)
-				x=0;
+			x += increment;
+			if (x < 0)
+				x = 0;
 			JTF.setText(x.toString());
 
 		}
