@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 import java.io.*;
 
 import javax.swing.JLabel;
@@ -224,36 +225,45 @@ public class GoIPPlayer {
 
 		@Override
 		public void run() {
-			String fromServer = null;
+			Optional<String> from = null;
 			try {
-				while ((fromServer = in.readLine()) != null) {
-					fromServer = Encryption.decrypt(fromServer);
-					if (!fromServer.trim().equals("")
-							&& !fromServer.trim().equals("\n")) // filter
-					{
-						if (!lastSent.equalsIgnoreCase("ping"))
-							chatArea.append(fromServer + "\n");
-						else {
-							String results = "";
-							int i = 0;
-							Date date = new Date();
-							SimpleDateFormat sdf = new SimpleDateFormat(
-									"h:mm:ss.SSSS");
-							String formattedDate = sdf.format(date);
-							for (String x : formattedDate.split(":")) {
-								DecimalFormat df2 = new DecimalFormat(
-										"#,###,###,##0.00");
-								results += new Double(df2.format(Double
-										.parseDouble(x)
-										- Double.parseDouble(fromServer
-												.split(":")[i]))).doubleValue()
-										+ ":";
-								i++;
-							}
+				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
+					// decrypting and trimming input.
+					from = from.map(Encryption::decrypt).map(e -> e.trim());
 
-							chatArea.append(results + "\n");
-						}
-					}
+					from.filter(
+							fromServer -> !fromServer.equals("")
+									&& !fromServer.equals("\n"))
+							.ifPresent(
+									fromServer -> {
+										if (!lastSent.equalsIgnoreCase("ping"))
+											chatArea.append(fromServer + "\n");
+										else {
+											String results = "";
+											int i = 0;
+											Date date = new Date();
+											SimpleDateFormat sdf = new SimpleDateFormat(
+													"h:mm:ss.SSSS");
+											String formattedDate = sdf
+													.format(date);
+											for (String x : formattedDate
+													.split(":")) {
+												DecimalFormat df2 = new DecimalFormat(
+														"#,###,###,##0.00");
+												results += new Double(
+														df2.format(Double
+																.parseDouble(x)
+																- Double.parseDouble(fromServer
+																		.split(":")[i])))
+														.doubleValue()
+														+ ":";
+												i++;
+											}
+
+											chatArea.append(results + "\n");
+										}
+									});
+
 				}
 			} catch (Exception e) {
 				chatArea.append("");
@@ -267,21 +277,26 @@ public class GoIPPlayer {
 		private BufferedReader in;
 
 		public playerListener(BufferedReader in) { // the constructor that
-													// should always be used
+			// should always be used
 			this.in = in;
 		}
 
 		@Override
 		public void run() {
-			String fromServer = null;
+			Optional<String> from = null;
 			try {
-				while ((fromServer = in.readLine()) != null) {
-					if (!fromServer.trim().equals("")
-							&& !fromServer.trim().equals("\n")) // filter
-					{
-						fromServer = Encryption.decrypt(fromServer);
-						listPlayers.setText(fromServer.replace("|", "\n"));
-					}
+				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
+
+					from.filter(
+							fromServer -> !fromServer.equals("")
+									&& !fromServer.equals("\n")).ifPresent(
+							fromServer -> {
+								fromServer = Encryption.decrypt(fromServer);
+								listPlayers.setText(fromServer.replace("|",
+										"\n"));
+							});
+					;
+
 				}
 			} catch (Exception e) {
 				chatArea.append("");

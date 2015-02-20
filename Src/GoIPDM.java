@@ -155,44 +155,49 @@ public class GoIPDM {
 
 	// this one is for the DM to broadcast
 	public static void broadcast(String[] params) {
-		try {
-			final String Message = String.join(" ", params).substring(2);
 
-			ClientConnecter.listeners.stream().forEach(
-					x -> {
-						try {
-							(new PrintWriter(
-									new PrintWriter(x.getOutputStream()), true))
-									.println(Encryption.encrypt("DM: "
-											+ Message));
-						} catch (Exception e) {
-						}
-					});
+		final String Message = String.join(" ", params).substring(2);
 
-		} catch (Exception e) {
-		}
+		ClientConnecter.listeners.stream().forEach(
+				x -> {
+					try {
+						(new PrintWriter(x.getOutputStream(), true))
+								.println(Encryption.encrypt("DM: " + Message));
+					} catch (Exception e) {
+					}
+				});
 	}
 
 	// this is a player broadcasting
 	public static void broadcast(String[] params, ClientHandler that) {
-		try {
-			String Message = String.join(" ", params);
-			Message = Message.substring(2);
-			for (Socket x : ClientConnecter.listeners)
-				if (x != that.listener)
-					(new PrintWriter(x.getOutputStream(), true))
-							.println(Encryption.encrypt(that.Name + ": "
-									+ Message));
-		} catch (Exception e) {
-		}
+
+		final String Message = String.join(" ", params).substring(2);
+
+		ClientConnecter.listeners
+				.stream()
+				.filter(x -> x != that.listener)
+				.forEach(
+						x -> {
+							try {
+
+								(new PrintWriter(x.getOutputStream(), true))
+										.println(Encryption.encrypt(that.Name
+												+ ": " + Message));
+							} catch (Exception e) {
+
+							}
+						});
+
 	}
 
 	// refreshes the player list
 	public static void refresh() {
-		String newplayerlist = "";
-		for (ClientHandler x : clientListener.getClients())
-			newplayerlist += x.Name + "\n";
-		listPlayers.setText(newplayerlist);
+		StringBuilder newplayerlist = new StringBuilder("");
+
+		clientListener.getClients().stream()
+				.forEach(x -> newplayerlist.append(x.Name + "\n"));
+
+		listPlayers.setText(newplayerlist.toString());
 	}
 
 	public static void kick(ClientHandler x) {
@@ -245,18 +250,35 @@ public class GoIPDM {
 				for (String param : params) {
 					String[] temper = param.split(":");
 					String[] users = temper[0].split(" ");
-					for (String user : users) {
-						user = user.trim();
-						if (user == null || user.equals("") || user.equals(" "))
-							continue;
-						if (user.equalsIgnoreCase("all"))
-							for (Socket x : ClientConnecter.listeners)
-								(new PrintWriter(x.getOutputStream(), true))
-										.println("Loot_ " + temper[1]);
-						else
-							Message(clientListener, "msg " + user + " Loot_ "
-									+ temper[1]);
-					}
+					Arrays.stream(users)
+							.map(user -> user.trim())
+							.filter(user -> user != null && !user.equals(""))
+							.forEach(
+									user -> {
+										user = user.trim();
+
+										if (user.equalsIgnoreCase("all")) {
+
+											ClientConnecter.listeners
+													.stream()
+													.forEach(
+															x -> {
+																try {
+																	(new PrintWriter(
+																			x.getOutputStream(),
+																			true))
+																			.println("Loot_ "
+																					+ temper[1]);
+																} catch (Exception e) {
+																}
+															});
+
+										} else {
+											Message(clientListener, "msg "
+													+ user + " Loot_ "
+													+ temper[1]);
+										}
+									});
 				}
 			} else if (banana[0].equalsIgnoreCase("bc")) {
 				broadcast(banana);
@@ -525,8 +547,8 @@ public class GoIPDM {
 						+ db.d12.getText().trim() + "d12 "
 						+ db.d10.getText().trim() + "d10 "
 						+ db.d8.getText().trim() + "d8 "
-						+ db.d6.getText().trim() + "d6 ";
-				temp += db.d4.getText().trim() + "d4";
+						+ db.d6.getText().trim() + "d6 "
+						+ db.d4.getText().trim() + "d4";
 				if (!db.dc.getText().trim().equals(""))
 					temp += " " + db.cd.getText().trim() + "d"
 							+ db.dc.getText().trim();
