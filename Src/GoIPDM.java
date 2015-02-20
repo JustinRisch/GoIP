@@ -16,7 +16,6 @@ import java.awt.event.KeyEvent;
 import java.net.*;
 import java.io.*;
 import java.util.*;
-import java.text.SimpleDateFormat;
 
 import javax.swing.JDesktopPane;
 
@@ -383,13 +382,8 @@ public class GoIPDM {
 						listener.close();
 						break;
 					case "ping":
-						Date date = new Date();
-						SimpleDateFormat sdf = new SimpleDateFormat(
-								"h:mm:ss.SSSS");
-						String formattedDate = sdf.format(date);
-						out.println(Encryption.superEncrypt(formattedDate)); // 12/01/2011
-						// 4:48:16
-						// PM
+						long date = System.currentTimeMillis();
+						out.println(Encryption.superEncrypt(date+"")); 
 						break;
 					case "roll":
 					case "r":

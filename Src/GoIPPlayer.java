@@ -1,6 +1,4 @@
 import java.awt.EventQueue;
-import java.text.DecimalFormat;
-
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -10,8 +8,6 @@ import javax.swing.ScrollPaneConstants;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.net.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Optional;
 import java.io.*;
 
@@ -65,7 +61,7 @@ public class GoIPPlayer {
 					transSocket.getInputStream()));
 			new Thread(new playerListener(new BufferedReader(
 					new InputStreamReader(playerListSocket.getInputStream()))))
-			.start();
+					.start();
 			new Thread(new Ears(transSocket, in)).start();
 
 			return true;
@@ -87,7 +83,7 @@ public class GoIPPlayer {
 		frmGoIPPlayer = new JFrame();
 		frmGoIPPlayer.setResizable(false);
 		frmGoIPPlayer
-		.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
+				.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
 		frmGoIPPlayer.setTitle("GoIP Player");
 		frmGoIPPlayer.setBounds(100, 100, 552, 282);
 		frmGoIPPlayer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -159,7 +155,7 @@ public class GoIPPlayer {
 		JScrollPane scrollPane2 = new JScrollPane(chatArea);
 		scrollPane2.setBounds(7, 7, 422, 216);
 		scrollPane2
-		.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		frmGoIPPlayer.getContentPane().add(scrollPane2);
 		chatArea.setText("Type in the IP of your DM or use the dice bag to roll without connecting.\n");
 
@@ -230,35 +226,17 @@ public class GoIPPlayer {
 				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
 					// keyDecrypting and trimming input.
 					from.map(e -> Encryption.superDecrypt(e))
-					.map(e -> e.trim())
-					.filter(fromServer -> !fromServer.equals("")
-							&& !fromServer.equals("\n"))
+							.map(e -> e.trim())
+							.filter(fromServer -> !fromServer.equals("")
+									&& !fromServer.equals("\n"))
 							.ifPresent(
 									fromServer -> {
 										if (!lastSent.equalsIgnoreCase("ping"))
 											chatArea.append(fromServer + "\n");
 										else {
-											String results = "";
-											int i = 0;
-											Date date = new Date();
-											SimpleDateFormat sdf = new SimpleDateFormat(
-													"h:mm:ss.SSSS");
-											String formattedDate = sdf
-													.format(date);
-											for (String x : formattedDate
-													.split(":")) {
-												DecimalFormat df2 = new DecimalFormat(
-														"#,###,###,##0.00");
-												results += new Double(
-														df2.format(Double
-																.parseDouble(x)
-																- Double.parseDouble(fromServer
-																		.split(":")[i])))
-												.doubleValue()
-												+ ":";
-												i++;
-											}
-
+											long results = System
+													.currentTimeMillis()
+													- Long.parseLong(fromServer);
 											chatArea.append(results + "\n");
 										}
 									});
@@ -287,13 +265,13 @@ public class GoIPPlayer {
 				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
 					from.filter(
 							fromServer -> !fromServer.equals("")
-							&& !fromServer.equals("\n")).ifPresent(
-									fromServer -> {
-										fromServer = Encryption
-												.superDecrypt(fromServer);
-										listPlayers.setText(fromServer.replace("|",
-												"\n"));
-									});
+									&& !fromServer.equals("\n")).ifPresent(
+							fromServer -> {
+								fromServer = Encryption
+										.superDecrypt(fromServer);
+								listPlayers.setText(fromServer.replace("|",
+										"\n"));
+							});
 				}
 			} catch (Exception e) {
 				chatArea.append("");
