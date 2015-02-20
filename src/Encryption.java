@@ -14,16 +14,23 @@ public class Encryption {
 			'@', '#', '$', '%', '^', '&', '*', '(', ')', 'a', 'b', 'c', 'd',
 			'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
 			'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
-	public static String superEncrypt(String start){
-		start = scramble(start, 7);
-		start = keyEncrypt(7, start);
+
+	public static String superEncrypt(String start) {
+		for (int i = 0; i < 3; i++) {
+			start = scramble(start, 7);
+			start = keyEncrypt(7, start);
+		}
 		return start;
 	}
-	public static String superDecrypt(String start){
-		start = keyDecrypt(7, start);
-		start = descramble(start,7);
+
+	public static String superDecrypt(String start) {
+		for (int i = 0; i < 3; i++) {
+			start = keyDecrypt(7, start);
+			start = descramble(start, 7);
+		}
 		return start;
 	}
+
 	public static String scramble(String start, int count) {
 		for (int i = 0; i < count; i++)
 			start = scramble(start);
@@ -51,7 +58,7 @@ public class Encryption {
 	public static String descramble(final String start) {
 		StringBuilder result = new StringBuilder();
 		char[] decrypter = start.toCharArray();
-		
+
 		for (int i = 0; i < ((decrypter.length) / 2); i++) {
 			result.append(decrypter[i]);
 			if (decrypter.length % 2 == 0) {
