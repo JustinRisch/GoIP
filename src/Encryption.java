@@ -15,16 +15,13 @@ public class Encryption {
 			'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
 			'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 	public static String superEncrypt(String start){
-		start = scramble(start, 7); //7 chosen by fair di roll. 
-									// it was a strange di.
 	
-		start = keyEncrypt(alphabet.toString(),start);
+		start = keyEncrypt(start);
 		return start;
 	}
 	public static String superDecrypt(String start){
-		start = keyDecrypt(alphabet.toString(),start);
-		start = descramble(start, 7); //7 chosen by fair di roll. 
-											// it was a strange di.
+		start = keyDecrypt(start);
+	
 		return start;
 	}
 	public static String scramble(String start, int count) {
@@ -141,7 +138,7 @@ public class Encryption {
 
 	// in this version, the key is hidden inside the message itself.
 	// Unfortunately, this doubles the length of the message.
-	public static String encrypt(String start) {
+	public static String keyEncrypt(String start) {
 		StringBuilder result = new StringBuilder("");
 		start = start.replace("\n", " ").trim();
 		final char[] temp = start.toCharArray();
@@ -170,7 +167,7 @@ public class Encryption {
 		return result.toString();
 	}
 
-	public static String decrypt(String start) {
+	public static String keyDecrypt(String start) {
 		StringBuilder result = new StringBuilder("");
 		char[] decrypter = start.toCharArray();
 		if (decrypter.length < 1)

@@ -353,7 +353,7 @@ public class GoIPDM {
 				refresh();
 
 				while ((inLine = input.readLine()) != null) {
-					// first things first, supersuperDecrypt the message
+					// first things first, superDecrypt the message
 					inLine = Encryption.superDecrypt(inLine);
 					String[] params = inLine.split(" ");
 					// if they didn't make a roll, say what they typed

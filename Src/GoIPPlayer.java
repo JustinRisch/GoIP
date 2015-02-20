@@ -228,10 +228,8 @@ public class GoIPPlayer {
 			Optional<String> from = null;
 			try {
 				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
-					// superDecrypting and trimming input.
-					from = from.map(Encryption::superDecrypt).map(e -> e.trim());
-
-					from.filter(
+					// keyDecrypting and trimming input.
+					from.map(e->Encryption.superDecrypt(e)).map(e -> e.trim()).filter(
 							fromServer -> !fromServer.equals("")
 									&& !fromServer.equals("\n"))
 							.ifPresent(
@@ -286,7 +284,6 @@ public class GoIPPlayer {
 			Optional<String> from = null;
 			try {
 				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
-
 					from.filter(
 							fromServer -> !fromServer.equals("")
 									&& !fromServer.equals("\n")).ifPresent(
@@ -295,8 +292,6 @@ public class GoIPPlayer {
 								listPlayers.setText(fromServer.replace("|",
 										"\n"));
 							});
-					;
-
 				}
 			} catch (Exception e) {
 				chatArea.append("");
