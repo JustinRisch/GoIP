@@ -69,7 +69,7 @@ public class GoIPDM {
 				Message.append(params[i] + " ");
 			// send message down the socket's output stream. Probably should
 			// find a way to access the variable associated with this.
-			x.out.println(Encryption.encrypt(Message.toString()));
+			x.out.println(Encryption.superEncrypt(Message.toString()));
 		} catch (Exception e) {
 			chatArea.append("Player not found: " + params[1]);
 
@@ -102,7 +102,7 @@ public class GoIPDM {
 			clients.stream().forEach(x -> temp.append(x.Name + "|"));
 
 			clients.stream().forEach(
-					x -> x.PlayerListWriter.println(Encryption.encrypt(temp
+					x -> x.PlayerListWriter.println(Encryption.superEncrypt(temp
 							.toString())));
 		}
 
@@ -162,7 +162,7 @@ public class GoIPDM {
 				x -> {
 					try {
 						(new PrintWriter(x.getOutputStream(), true))
-								.println(Encryption.encrypt("DM: " + Message));
+								.println(Encryption.superEncrypt("DM: " + Message));
 					} catch (Exception e) {
 					}
 				});
@@ -181,7 +181,7 @@ public class GoIPDM {
 							try {
 
 								(new PrintWriter(x.getOutputStream(), true))
-										.println(Encryption.encrypt(that.Name
+										.println(Encryption.superEncrypt(that.Name
 												+ ": " + Message));
 							} catch (Exception e) {
 
@@ -341,20 +341,20 @@ public class GoIPDM {
 				PlayerListWriter = new PrintWriter(
 						playerListSocket.getOutputStream(), true);
 				String inLine;
-				out.println(Encryption.encrypt("Connected!"));
+				out.println(Encryption.superEncrypt("Connected!"));
 				out.println(Encryption
-						.encrypt("Please change your username with setname [username]"));
+						.superEncrypt("Please change your username with setname [username]"));
 				out.println(Encryption
-						.encrypt("You may also use roll xdy to roll x number of y sided dice!"));
+						.superEncrypt("You may also use roll xdy to roll x number of y sided dice!"));
 				out.println(Encryption
-						.encrypt("msg [username] to message a player."));
+						.superEncrypt("msg [username] to message a player."));
 				clientListener.sendList();
 				chatArea.append(this.Name + " has connected." + "\n");
 				refresh();
 
 				while ((inLine = input.readLine()) != null) {
-					// first things first, decrypt the message
-					inLine = Encryption.decrypt(inLine);
+					// first things first, supersuperDecrypt the message
+					inLine = Encryption.superDecrypt(inLine);
 					String[] params = inLine.split(" ");
 					// if they didn't make a roll, say what they typed
 					if (!params[0].equalsIgnoreCase("roll")
@@ -371,13 +371,13 @@ public class GoIPDM {
 							SimpleDateFormat sdf = new SimpleDateFormat(
 									"h:mm:ss.SSSS");
 							String formattedDate = sdf.format(date);
-							out.println(Encryption.encrypt(formattedDate)); // 12/01/2011
+							out.println(Encryption.superEncrypt(formattedDate)); // 12/01/2011
 							// 4:48:16
 							// PM
 						} else if (params[0].equalsIgnoreCase("roll")
 								|| params[0].equalsIgnoreCase("r")) {
 							String result = DiceRoll.roll(params);
-							out.println(Encryption.encrypt("You " + result));
+							out.println(Encryption.superEncrypt("You " + result));
 							chatArea.append(Name + result + "\n");
 						} else if (params[0].equalsIgnoreCase("bc")) {
 							broadcast(params, this);
@@ -400,13 +400,13 @@ public class GoIPDM {
 											.equalsIgnoreCase(newName)).count();
 							if (sharedNames > 0) {
 								out.println(Encryption
-										.encrypt("Could not change name: Username taken."));
+										.superEncrypt("Could not change name: Username taken."));
 
 							} else {
 								chatArea.append(Name);
 								Name = newName;
 								out.println(Encryption
-										.encrypt("Name changed to " + params[1]));
+										.superEncrypt("Name changed to " + params[1]));
 								StringBuilder newplayerlist = new StringBuilder(
 										"");
 								clientListener
@@ -426,7 +426,7 @@ public class GoIPDM {
 										// same as kicking yourself.
 						} else if (params[0].equalsIgnoreCase("help")) {
 							out.println(Encryption
-									.encrypt("Roll x y - Roll x number of dice each with y sides. You can specify 2 or more types of dice as so: Roll a b y z where a and y are number of dice and b/z are number of sides per dice. A 1d6 + 2d4 attack would be Roll 1 6 2 4. Use setname (name) to change your username. "));
+									.superEncrypt("Roll x y - Roll x number of dice each with y sides. You can specify 2 or more types of dice as so: Roll a b y z where a and y are number of dice and b/z are number of sides per dice. A 1d6 + 2d4 attack would be Roll 1 6 2 4. Use setname (name) to change your username. "));
 						} else
 							out.println(" "); // signals that the message was
 												// recieved and allows the
@@ -444,7 +444,7 @@ public class GoIPDM {
 
 			} catch (Exception e) {
 				out.println(Encryption
-						.encrypt("Only one connection is allowed per computer over a LAN."));
+						.superEncrypt("Only one connection is allowed per computer over a LAN."));
 				out.close();
 				chatArea.append(Name + " has disconnected. \n--"
 						+ e.getMessage() + "--");

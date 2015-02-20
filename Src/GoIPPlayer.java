@@ -135,7 +135,7 @@ public class GoIPPlayer {
 								chatArea.setText("Failed to reconnect.");
 							}
 						} else
-							out.println(Encryption.encrypt(input.trim()));
+							out.println(Encryption.superEncrypt(input.trim()));
 						lastSent = input;
 						inputLine.setText("");
 
@@ -187,7 +187,7 @@ public class GoIPPlayer {
 								+ db.dc.getText().trim();
 					if (!db.add.getText().trim().equals(""))
 						temp += " +" + db.add.getText().trim();
-					out.println(Encryption.encrypt(temp));
+					out.println(Encryption.superEncrypt(temp));
 				});
 			} else {
 				db.statbutt.addActionListener(x -> chatArea.append(DiceRoll
@@ -228,8 +228,8 @@ public class GoIPPlayer {
 			Optional<String> from = null;
 			try {
 				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
-					// decrypting and trimming input.
-					from = from.map(Encryption::decrypt).map(e -> e.trim());
+					// superDecrypting and trimming input.
+					from = from.map(Encryption::superDecrypt).map(e -> e.trim());
 
 					from.filter(
 							fromServer -> !fromServer.equals("")
@@ -291,7 +291,7 @@ public class GoIPPlayer {
 							fromServer -> !fromServer.equals("")
 									&& !fromServer.equals("\n")).ifPresent(
 							fromServer -> {
-								fromServer = Encryption.decrypt(fromServer);
+								fromServer = Encryption.superDecrypt(fromServer);
 								listPlayers.setText(fromServer.replace("|",
 										"\n"));
 							});

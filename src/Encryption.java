@@ -1,3 +1,6 @@
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Encryption {
 	/*
 	 * Note: this encryption is *not* meant to uphold to any real scrutiny.
@@ -11,7 +14,133 @@ public class Encryption {
 			'@', '#', '$', '%', '^', '&', '*', '(', ')', 'a', 'b', 'c', 'd',
 			'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
 			'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+	public static String superEncrypt(String start){
+		start = scramble(start, 7); //7 chosen by fair di roll. 
+									// it was a strange di.
+	
+		start = keyEncrypt(alphabet.toString(),start);
+		return start;
+	}
+	public static String superDecrypt(String start){
+		start = keyDecrypt(alphabet.toString(),start);
+		start = descramble(start, 7); //7 chosen by fair di roll. 
+											// it was a strange di.
+		return start;
+	}
+	public static String scramble(String start, int count) {
+		for (int i = 0; i < count; i++)
+			start = scramble(start);
+		return start;
+	}
 
+	public static String descramble(String start, int count) {
+		for (int i = 0; i < count; i++)
+			start = descramble(start);
+		return start;
+	}
+
+	public static String scramble(final String start) {
+		StringBuilder result = new StringBuilder();
+		char[] temp = start.toCharArray();
+		for (int i = 0; i < start.length(); i += 2) {
+			result.append(temp[i]);
+		}
+		for (int i = 1; i < start.length(); i += 2) {
+			result.append(temp[i]);
+		}
+		return result.toString();
+	}
+
+	public static String descramble(final String start) {
+		StringBuilder result = new StringBuilder();
+		char[] decrypter = start.toCharArray();
+		
+		for (int i = 0; i < ((decrypter.length) / 2); i++) {
+			result.append(decrypter[i]);
+			if (decrypter.length % 2 == 0) {
+				result.append(decrypter[i + (decrypter.length) / 2]);
+			} else {
+				result.append(decrypter[i + decrypter.length / 2 + 1]);
+				if (i == (decrypter.length / 2) - 1)
+					result.append(decrypter[(int) Math
+							.floor(decrypter.length / 2)]);
+			}
+		}
+		return result.toString();
+	}
+
+	public static String keyEncrypt(final String key, final String start) {
+
+		AtomicInteger ai = new AtomicInteger(0);
+		char[] keyArray = key.toCharArray();
+		if (keyArray.length < 1)
+			return start;
+		StringBuilder result = new StringBuilder("");
+		Arrays.stream(start.split(""))
+				.map(e -> e.toCharArray())
+				.forEachOrdered(
+						e -> {
+							char c = (char) (e[0] + Character
+									.getNumericValue(keyArray[ai
+											.incrementAndGet()
+											% keyArray.length]));
+							result.append(c);
+						});
+
+		return result.toString();
+	}
+
+	public static String keyEncrypt(final int key, final String start) {
+		AtomicInteger ai = new AtomicInteger(0);
+		StringBuilder result = new StringBuilder("");
+		Arrays.stream(start.split(""))
+				.map(e -> e.toCharArray())
+				.forEach(
+						e -> {
+							char c = (char) (e[0] + Character
+									.getNumericValue(ai.incrementAndGet() % key));
+							result.append(c);
+						});
+
+		return result.toString();
+	}
+
+	public static String keyDecrypt(final int key, String start) {
+		AtomicInteger ai = new AtomicInteger(0);
+
+		StringBuilder result = new StringBuilder("");
+		Arrays.stream(start.split(""))
+				.map(e -> e.toCharArray())
+				.forEach(
+						e -> {
+							char c = (char) (e[0] - Character
+									.getNumericValue(ai.incrementAndGet() % key));
+							result.append(c);
+						});
+		return result.toString();
+	}
+
+	public static String keyDecrypt(String key, String start) {
+		AtomicInteger ai = new AtomicInteger(0);
+		char[] keyArray = key.toCharArray();
+		if (keyArray.length < 1)
+			return start;
+		StringBuilder result = new StringBuilder("");
+		Arrays.stream(start.split(""))
+				.map(e -> e.toCharArray())
+				.forEach(
+						e -> {
+							char c = (char) (e[0] - Character
+									.getNumericValue(keyArray[ai
+											.incrementAndGet()
+											% keyArray.length]));
+							result.append(c);
+						});
+		return result.toString();
+	}
+
+	// in this version, the key is hidden inside the message itself.
+	// Unfortunately, this doubles the length of the message.
 	public static String encrypt(String start) {
 		StringBuilder result = new StringBuilder("");
 		start = start.replace("\n", " ").trim();
@@ -38,7 +167,6 @@ public class Encryption {
 					.getNumericValue(key))));
 			result.append(key);
 		}
-
 		return result.toString();
 	}
 
@@ -48,12 +176,12 @@ public class Encryption {
 		if (decrypter.length < 1)
 			return start;
 
-		String temp = "";
+		StringBuilder temp = new StringBuilder("");
 		for (int i = 0; i < decrypter.length - 1; i += 2) {
-			temp += Character.toString((char) (decrypter[i] - Character
-					.getNumericValue(decrypter[i + 1])));
+			temp.append(Character.toString((char) (decrypter[i] - Character
+					.getNumericValue(decrypter[i + 1]))));
 		}
-		decrypter = temp.toCharArray();
+		decrypter = temp.toString().toCharArray();
 
 		for (int i = 0; i < ((decrypter.length) / 2); i++) {
 			result.append(decrypter[i]);
