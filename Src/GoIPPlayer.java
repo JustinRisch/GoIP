@@ -197,8 +197,8 @@ public class GoIPPlayer {
 							+ db.d12.getText().trim() + "d12 "
 							+ db.d10.getText().trim() + "d10 "
 							+ db.d8.getText().trim() + "d8 "
-							+ db.d6.getText().trim() + "d6 ";
-					temp += db.d4.getText().trim() + "d4";
+							+ db.d6.getText().trim() + "d6 "
+							+ db.d4.getText().trim() + "d4";
 					if (!db.dc.getText().trim().equals(""))
 						temp += " " + db.cd.getText().trim() + "d"
 								+ db.dc.getText().trim();

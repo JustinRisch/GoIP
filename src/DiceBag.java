@@ -5,7 +5,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.SwingConstants;
+
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class DiceBag extends JFrame {
 	// auto generated this thing, or it would yell at me.
@@ -123,213 +126,85 @@ public class DiceBag extends JFrame {
 		JButton btnNewButton = new JButton("+");
 		btnNewButton.setFocusable(false);
 		btnNewButton.setBounds(132, 31, 46, 23);
-		btnNewButton.addActionListener(e-> {
-			Integer x;
-			try {
-				x = new Integer(d100.getText());
-			} catch (Exception err) {
-				x = 0;
-			}
-			x++;
-			d100.setText(x.toString());
-		});
+		btnNewButton.addActionListener(new ButtonListener(d100, 1));
 		contentPane.add(btnNewButton);
 		JButton button = new JButton("-");
 		button.setFocusable(false);
 		button.setBounds(179, 31, 46, 23);
-		button.addActionListener(e -> {
-			Integer x;
-			try {
-				x = new Integer(d100.getText());
-			} catch (Exception err) {
-				x = 0;
-			}
-			x--;
-			d100.setText(x.toString());
-		});
+		button.addActionListener(new ButtonListener(d100, -1));
 		contentPane.add(button);
 
 		JButton button_1 = new JButton("+");
 		button_1.setFocusable(false);
 		button_1.setBounds(132, 60, 46, 23);
-		button_1.addActionListener(e -> {
-			Integer x;
-			try {
-				x = new Integer(d20.getText());
-			} catch (Exception err) {
-				x = 0;
-			}
-			x++;
-			d20.setText(x.toString());
-
-		});
+		button_1.addActionListener(new ButtonListener(d20, 1));
 		contentPane.add(button_1);
 
 		JButton button_2 = new JButton("-");
 		button_2.setFocusable(false);
 		button_2.setBounds(179, 60, 46, 23);
-		button_2.addActionListener(e -> {
-			Integer x;
-			try {
-				x = new Integer(d20.getText());
-			} catch (Exception err) {
-				x = 0;
-			}
-			x--;
-			d20.setText(x.toString());
-		});
+		button_2.addActionListener(new ButtonListener(d20, -1));
 		contentPane.add(button_2);
 
 		JButton button_3 = new JButton("+");
 		button_3.setFocusable(false);
 		button_3.setBounds(132, 91, 46, 23);
-		button_3.addActionListener(e -> {
-			Integer x;
-			try {
-				x = new Integer(d12.getText());
-			} catch (Exception err) {
-				x = 0;
-			}
-			x++;
-			d12.setText(x.toString());
-
-		});
+		button_3.addActionListener(new ButtonListener(d12, 1));
 		contentPane.add(button_3);
 
 		JButton button_4 = new JButton("-");
 		button_4.setFocusable(false);
 		button_4.setBounds(179, 91, 46, 23);
-		button_4.addActionListener(e -> {
-			Integer x;
-			try {
-				x = new Integer(d12.getText());
-			} catch (Exception err) {
-				x = 0;
-			}
-			x--;
-			d12.setText(x.toString());
-		});
+		button_4.addActionListener(new ButtonListener(d12, -1));
 		contentPane.add(button_4);
 
 		JButton button_5 = new JButton("+");
 		button_5.setFocusable(false);
 		button_5.setBounds(132, 119, 46, 23);
-		button_5.addActionListener(e -> {
-			Integer x;
-			try {
-				x = new Integer(d10.getText());
-			} catch (Exception err) {
-				x = 0;
-			}
-			x++;
-			d10.setText(x.toString());
-		});
+		button_5.addActionListener(new ButtonListener(d10, 1));
 		contentPane.add(button_5);
 
 		JButton button_6 = new JButton("-");
 		button_6.setFocusable(false);
 		button_6.setBounds(179, 119, 46, 23);
-		button_6.addActionListener(e -> {
-			Integer x;
-			try {
-				x = new Integer(d10.getText());
-			} catch (Exception err) {
-				x = 0;
-			}
-			x--;
-			d10.setText(x.toString());
-		});
+		button_6.addActionListener(new ButtonListener(d10, -1));
 		contentPane.add(button_6);
 
 		JButton button_7 = new JButton("+");
 		button_7.setFocusable(false);
 		button_7.setBounds(132, 147, 46, 23);
-		button_7.addActionListener(e -> {
-			Integer x;
-			try {
-				x = new Integer(d8.getText());
-			} catch (Exception err) {
-				x = 0;
-			}
-			x++;
-			d8.setText(x.toString());
-		});
+		button_7.addActionListener(new ButtonListener(d8, 1));
 		contentPane.add(button_7);
 
 		JButton button_8 = new JButton("-");
 		button_8.setFocusable(false);
 		button_8.setBounds(179, 147, 46, 23);
-		button_8.addActionListener(e -> {
-			Integer x;
-			try {
-				x = new Integer(d8.getText());
-			} catch (Exception err) {
-				x = 0;
-			}
-			x--;
-			d8.setText(x.toString());
-		});
+		button_8.addActionListener(new ButtonListener(d8,-1));
 		contentPane.add(button_8);
 
 		JButton button_9 = new JButton("+");
 		button_9.setFocusable(false);
 		button_9.setBounds(132, 175, 46, 23);
-		button_9.addActionListener(e -> {
-			Integer x;
-			try {
-				x = new Integer(d6.getText());
-			} catch (Exception err) {
-				x = 0;
-			}
-			x++;
-			d6.setText(x.toString());
-		});
+		button_9.addActionListener(new ButtonListener(d6,1));
 		contentPane.add(button_9);
 
 		JButton button_10 = new JButton("-");
 
 		button_10.setFocusable(false);
 		button_10.setBounds(179, 175, 46, 23);
-		button_10.addActionListener(e -> {
-			Integer x;
-			try {
-				x = new Integer(d6.getText());
-			} catch (Exception err) {
-				x = 0;
-			}
-			x--;
-			d6.setText(x.toString());
-		});
+		button_10.addActionListener(new ButtonListener(d6, -1));
 		contentPane.add(button_10);
 
 		JButton button_11 = new JButton("+");
 		button_11.setFocusable(false);
 		button_11.setBounds(132, 203, 46, 23);
-		button_11.addActionListener(e -> {
-			Integer x;
-			try {
-				x = new Integer(d4.getText());
-			} catch (Exception err) {
-				x = 0;
-			}
-			x++;
-			d4.setText(x.toString());
-		});
+		button_11.addActionListener(new ButtonListener(d4, 1));
 		contentPane.add(button_11);
 
 		JButton button_12 = new JButton("-");
 		button_12.setFocusable(false);
 		button_12.setBounds(179, 203, 46, 23);
-		button_12.addActionListener(e -> {
-			Integer x;
-			try {
-				x = new Integer(d4.getText());
-			} catch (Exception err) {
-				x = 0;
-			}
-			x--;
-			d4.setText(x.toString());
-		});
+		button_12.addActionListener(new ButtonListener(d4, -1));
 		contentPane.add(button_12);
 
 		add = new JTextField();
@@ -354,5 +229,31 @@ public class DiceBag extends JFrame {
 		statbutt.setFocusable(false);
 		statbutt.setBounds(5, 291, 215, 16);
 		contentPane.add(statbutt);
+	}
+
+	class ButtonListener implements ActionListener {
+		JTextField JTF;
+		int increment;
+
+		public ButtonListener(JTextField JTF, int increment) {
+			this.JTF = JTF;
+			this.increment=increment;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Integer x;
+			try {
+				x = new Integer(JTF.getText());
+			} catch (Exception err) {
+				x = 0;
+			}
+			x+=increment;
+			if (x<0)
+				x=0;
+			JTF.setText(x.toString());
+
+		}
+
 	}
 }
