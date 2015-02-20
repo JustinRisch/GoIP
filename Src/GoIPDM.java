@@ -41,13 +41,11 @@ public class GoIPDM {
 		});
 		// begin listening for clients
 		new Thread(clientListener).start();
-		;
-
 	}
 
 	public static String help() { // the internal "readme" for the DM. Can't
-									// send to player as it contains line
-									// returns, and that screws up everything.
+		// send to player as it contains line
+		// returns, and that screws up everything.
 
 		String message = "Action - syntax - explanation\n";
 		message += "Broadcasting - bc [message] - sends a message to all players.\n";
@@ -122,14 +120,14 @@ public class GoIPDM {
 			while (true) {
 				try {
 					listeners.add(serverSocket.accept()); // try to connect
-															// client here
+					// client here
 					clients.add(new ClientHandler(listeners.get(listeners
 							.size() - 1), serverSocket.accept()));
 
 					// Each client gets their own thread.
 					new Thread(clients.get(clients.size() - 1)).start(); // starts
-																			// said
-																			// thread
+					// said
+					// thread
 				} catch (IOException e) {
 					System.err.println("Can't Accept connection attempt");
 				}
@@ -224,87 +222,95 @@ public class GoIPDM {
 
 	// looks for commands in the server-side chat
 	public void Decipher(String outter) {
-		try {
-			// it's a banana split! Well I thought it was funny.
-			String[] banana = outter.split(" ");
-			if (banana[0].equalsIgnoreCase("cls")) {
-				chatArea.setText(chatArea.getText().split("\n")[chatArea
-						.getText().split("\n").length - 1] + "\n");
-			} else if (banana[0].equalsIgnoreCase("kick")) {
-				ClientHandler noob = clientListener.getClient(banana[1]);
-				kick(noob);// kicking target player
-			} else if (banana[0].equalsIgnoreCase("Info")) {
-				clientListener.getClients().stream()
-						.filter(x -> x.Name.equalsIgnoreCase(banana[1]))
-						.forEach(x -> chatArea.append(x.IP + "__" + x.Name));
-				;
-			} else if (banana[0].equalsIgnoreCase("refresh")) {
-				refresh();
-			} else if (banana[0].equalsIgnoreCase("msg")) {
-				Message(clientListener, outter);
-				chatArea.append(inputLine.getText());
-			} else if (banana[0].equalsIgnoreCase("statroll")) {
-				DiceRoll.statroll();
-			} else if (banana[0].equalsIgnoreCase("help")) {
-				chatArea.append(help() + "\n");
-			} else if (banana[0].equalsIgnoreCase("lt")
-					|| banana[0].equalsIgnoreCase("loot")) {
-				// example syntax of command: Loot player1 player2:Item1 Item2,
-				// ALL: item3
-				String mani = "";
-				for (int i = 1; i < banana.length; i++)
-					// cuts off leading command (loot or lt)
-					mani += banana[i] + " ";
-				String[] params = mani.split(",");
-				for (String param : params) {
-					String[] temper = param.split(":");
-					String[] users = temper[0].split(" ");
-					Arrays.stream(users)
-							.map(user -> user.trim())
-							.filter(user -> user != null && !user.equals(""))
-							.forEach(
-									user -> {
-										user = user.trim();
 
-										if (user.equalsIgnoreCase("all")) {
+		// it's a banana split! Well I thought it was funny.
+		String[] banana = outter.split(" ");
+		switch (banana[0].toLowerCase()) {
+		case "cls":
+			chatArea.setText(chatArea.getText().split("\n")[chatArea.getText()
+					.split("\n").length - 1] + "\n");
+			break;
+		case "kick":
+			ClientHandler noob = clientListener.getClient(banana[1]);
+			kick(noob);// kicking target player
+			break;
+		case "info":
+			clientListener.getClients().stream()
+					.filter(x -> x.Name.equalsIgnoreCase(banana[1]))
+					.forEach(x -> chatArea.append(x.IP + "__" + x.Name));
+			break;
+		case "refresh":
+			refresh();
+			break;
+		case "msg":
+			Message(clientListener, outter);
+			chatArea.append(inputLine.getText());
+		case "statroll":
+			DiceRoll.statroll();
+			break;
+		case "help":
+			chatArea.append(help() + "\n");
+			break;
+		case "lt":
+		case "loot":
+			// example syntax of command: Loot player1 player2:Item1 Item2,
+			// ALL: item3
+			String mani = "";
+			for (int i = 1; i < banana.length; i++)
+				// cuts off leading command (loot or lt)
+				mani += banana[i] + " ";
+			String[] params = mani.split(",");
+			for (String param : params) {
+				String[] temper = param.split(":");
+				String[] users = temper[0].split(" ");
+				Arrays.stream(users)
+						.map(user -> user.trim())
+						.filter(user -> user != null && !user.equals(""))
+						.forEach(
+								user -> {
+									user = user.trim();
 
-											ClientConnecter.listeners
-													.stream()
-													.forEach(
-															x -> {
-																try {
-																	(new PrintWriter(
-																			x.getOutputStream(),
-																			true))
-																			.println("Loot_ "
-																					+ temper[1]);
-																} catch (Exception e) {
-																}
-															});
+									if (user.equalsIgnoreCase("all")) {
 
-										} else {
-											Message(clientListener, "msg "
-													+ user + " Loot_ "
-													+ temper[1]);
-										}
-									});
-				}
-			} else if (banana[0].equalsIgnoreCase("bc")) {
-				broadcast(banana);
-				chatArea.append(inputLine.getText() + "\n");
-			} else if (banana[0].equalsIgnoreCase("showroll")
-					|| banana[0].equalsIgnoreCase("sr")) {
-				String result = DiceRoll.roll(banana);
-				chatArea.append("You" + result + "\n");
-				broadcast(("bc DM" + result).split(" "));
-			} else if (banana[0].equalsIgnoreCase("roll")
-					|| banana[0].equalsIgnoreCase("r")) {
-				chatArea.append("You" + DiceRoll.roll(banana) + "\n");
-			} else {
-				chatArea.append(outter + "\n");
+										ClientConnecter.listeners
+												.stream()
+												.forEach(
+														x -> {
+															try {
+																(new PrintWriter(
+																		x.getOutputStream(),
+																		true))
+																		.println("Loot_ "
+																				+ temper[1]);
+															} catch (Exception e) {
+															}
+														});
+
+									} else {
+										Message(clientListener, "msg " + user
+												+ " Loot_ " + temper[1]);
+									}
+								});
 			}
-		} catch (Exception e) {
+		case "bc":
+			broadcast(banana);
+			chatArea.append(inputLine.getText() + "\n");
+			break;
+		case "showroll":
+		case "sr":
+			String result = DiceRoll.roll(banana);
+			chatArea.append("You" + result + "\n");
+			broadcast(("bc DM" + result).split(" "));
+			break;
+		case "roll":
+		case "r":
+			chatArea.append("You" + DiceRoll.roll(banana) + "\n");
+			break;
+		default:
+			chatArea.append(outter + "\n");
+			break;
 		}
+
 	}
 
 	// an individual client's thread and associated objects/methods
@@ -321,7 +327,7 @@ public class GoIPDM {
 
 		// method to test a string to see if it has an integer interpretation
 		public ClientHandler(Socket temp) { // no player list, just a socket for
-											// text communications
+			// text communications
 			this.listener = temp;
 			this.Name = this.listener.getInetAddress().toString()
 					.replace("/", "");
@@ -329,8 +335,8 @@ public class GoIPDM {
 		}
 
 		public ClientHandler(Socket temp, Socket temp2) { // Constructor with
-															// player list
-															// enabled
+			// player list
+			// enabled
 			this.listener = temp;
 			this.Name = this.listener.getInetAddress().toString()
 					.replace("/", "");
@@ -371,79 +377,87 @@ public class GoIPDM {
 						chatArea.setText(chatArea.getText() + " " + Name + ": "
 								+ inLine + "\n");
 					// begin looking for command phrases.
-					if (params[0].equalsIgnoreCase("exit")) {
+					switch (params[0].toLowerCase()) {
+					case "exit":
 						input.close();
 						listener.close();
-					} else {
-						if (params[0].equalsIgnoreCase("ping")) {
-							Date date = new Date();
-							SimpleDateFormat sdf = new SimpleDateFormat(
-									"h:mm:ss.SSSS");
-							String formattedDate = sdf.format(date);
-							out.println(Encryption.superEncrypt(formattedDate)); // 12/01/2011
-							// 4:48:16
-							// PM
-						} else if (params[0].equalsIgnoreCase("roll")
-								|| params[0].equalsIgnoreCase("r")) {
-							String result = DiceRoll.roll(params);
-							out.println(Encryption
-									.superEncrypt("You " + result));
-							chatArea.append(Name + result + "\n");
-						} else if (params[0].equalsIgnoreCase("bc")) {
-							broadcast(params, this);
-							chatArea.append(inputLine.getText() + "\n");
-						} else if (params[0].equalsIgnoreCase("msg")) {
-							String cheese = params[0] + " " + params[1] + " "
-									+ Name + ": ";
-							for (int i = 2; i < params.length; i++)
-								cheese += params[i] + " ";
-							Message(GoIPDM.clientListener, cheese);
-							chatArea.append(inputLine.getText() + "\n");
-						} else if (params[0].equalsIgnoreCase("setname")) {
-							String newName = params[1];
-							// enforces unique names.
+						break;
+					case "ping":
+						Date date = new Date();
+						SimpleDateFormat sdf = new SimpleDateFormat(
+								"h:mm:ss.SSSS");
+						String formattedDate = sdf.format(date);
+						out.println(Encryption.superEncrypt(formattedDate)); // 12/01/2011
+						// 4:48:16
+						// PM
+						break;
+					case "roll":
+					case "r":
 
-							long sharedNames = clientListener
+						String result = DiceRoll.roll(params);
+						out.println(Encryption.superEncrypt("You " + result));
+						chatArea.append(Name + result + "\n");
+						break;
+					case "bc":
+						broadcast(params, this);
+						chatArea.append(inputLine.getText() + "\n");
+						break;
+					case "msg":
+						String cheese = params[0] + " " + params[1] + " "
+								+ Name + ": ";
+						for (int i = 2; i < params.length; i++)
+							cheese += params[i] + " ";
+						Message(GoIPDM.clientListener, cheese);
+						chatArea.append(inputLine.getText() + "\n");
+						break;
+					case "setname":
+						String newName = params[1];
+						// enforces unique names.
+
+						long sharedNames = clientListener
+								.getClients()
+								.stream()
+								.filter(tempClient -> tempClient.Name
+										.equalsIgnoreCase(newName)).count();
+						if (sharedNames > 0) {
+							out.println(Encryption
+									.superEncrypt("Could not change name: Username taken."));
+
+						} else {
+							chatArea.append(Name);
+							Name = newName;
+							out.println(Encryption
+									.superEncrypt("Name changed to "
+											+ params[1]));
+							StringBuilder newplayerlist = new StringBuilder("");
+							clientListener
 									.getClients()
 									.stream()
-									.filter(tempClient -> tempClient.Name
-											.equalsIgnoreCase(newName)).count();
-							if (sharedNames > 0) {
-								out.println(Encryption
-										.superEncrypt("Could not change name: Username taken."));
+									.forEach(
+											t -> newplayerlist.append(t.Name
+													+ "\n"));
 
-							} else {
-								chatArea.append(Name);
-								Name = newName;
-								out.println(Encryption
-										.superEncrypt("Name changed to "
-												+ params[1]));
-								StringBuilder newplayerlist = new StringBuilder(
-										"");
-								clientListener
-										.getClients()
-										.stream()
-										.forEach(
-												t -> newplayerlist
-														.append(t.Name + "\n"));
-
-								listPlayers.setText(newplayerlist.toString());
-								clientListener.sendList();
-								chatArea.append(" name changed to " + Name
-										+ "\n");
-							}
-						} else if (params[0].equalsIgnoreCase("reset")) {
-							kick(this); // a "reset" command is effectively the
-										// same as kicking yourself.
-						} else if (params[0].equalsIgnoreCase("help")) {
-							out.println(Encryption
-									.superEncrypt("Roll x y - Roll x number of dice each with y sides. You can specify 2 or more types of dice as so: Roll a b y z where a and y are number of dice and b/z are number of sides per dice. A 1d6 + 2d4 attack would be Roll 1 6 2 4. Use setname (name) to change your username. "));
-						} else
-							out.println(" "); // signals that the message was
-												// recieved and allows the
-												// client to send another
-												// message if necessary --
-												// handshaking really.
+							listPlayers.setText(newplayerlist.toString());
+							clientListener.sendList();
+							chatArea.append(" name changed to " + Name + "\n");
+						}
+						break;
+					case "reset":
+						kick(this); // a "reset" command is effectively the
+						// same as kicking yourself.
+						break;
+					case "help":
+						out.println(Encryption
+								.superEncrypt("Roll x y - Roll x number of dice each with y sides. You can specify 2 or more types of dice as so: Roll a b y z where a and y are number of dice and b/z are number of sides per dice. A 1d6 + 2d4 attack would be Roll 1 6 2 4. Use setname (name) to change your username. "));
+						break;
+					default:
+						out.println(" ");
+						break;
+					// signals that the message was
+					// recieved and allows the
+					// client to send another
+					// message if necessary --
+					// handshaking really.
 					}
 				}
 			} catch (IOException e) {
