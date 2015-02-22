@@ -3,6 +3,7 @@ package Encryption;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class EncryptedReader extends BufferedReader {
@@ -21,8 +22,7 @@ public class EncryptedReader extends BufferedReader {
 
 	@Override
 	public String readLine() throws IOException {
-		String result = super.readLine();
-		result = this.encryptIt.apply(result);
-		return result;
+		Optional<String> result = Optional.ofNullable(super.readLine());
+		return result.map(e->this.encryptIt.apply(e)).orElse(null);
 	}
 }

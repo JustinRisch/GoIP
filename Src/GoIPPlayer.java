@@ -1,4 +1,5 @@
 import java.awt.EventQueue;
+
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -14,11 +15,14 @@ import java.io.*;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 
+import Encryption.DecryptedWriter;
+import Encryption.EncryptedReader;
+
 import java.awt.Dialog.ModalExclusionType;
 
 public class GoIPPlayer {
 	public static Thread listenUp;
-	public static PrintWriter out = null;
+	public static DecryptedWriter out = null;
 	public static GoIPPlayer window;
 	private static JFrame frmGoIPPlayer;
 	private static JTextField inputLine;
@@ -29,7 +33,7 @@ public class GoIPPlayer {
 	private static String lastSent = "";
 	private static Socket transSocket;
 	private static Socket playerListSocket;
-	private static BufferedReader in;
+	private static EncryptedReader in;
 	private JButton btnRollD;
 	private String me = "Me";
 
@@ -56,10 +60,10 @@ public class GoIPPlayer {
 			transSocket = new Socket(IP, 1813);
 			playerListSocket = new Socket(IP, 1813);
 			chatArea.setText(IP + " - ");
-			out = new PrintWriter(transSocket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(
+			out = new DecryptedWriter(transSocket.getOutputStream(), true);
+			in = new EncryptedReader(new InputStreamReader(
 					transSocket.getInputStream()));
-			new Thread(new playerListener(new BufferedReader(
+			new Thread(new playerListener(new EncryptedReader(
 					new InputStreamReader(playerListSocket.getInputStream()))))
 					.start();
 			new Thread(new Ears(transSocket, in)).start();
@@ -130,7 +134,7 @@ public class GoIPPlayer {
 								chatArea.setText("Failed to reconnect.");
 							}
 						} else
-							out.println(Encryption.superEncrypt(input.trim()));
+							out.println(input.trim());
 						lastSent = input;
 						inputLine.setText("");
 
@@ -182,7 +186,7 @@ public class GoIPPlayer {
 								+ db.dc.getText().trim();
 					if (!db.add.getText().trim().equals(""))
 						temp += " +" + db.add.getText().trim();
-					out.println(Encryption.superEncrypt(temp));
+					out.println(temp);
 				});
 			} else {
 				db.statbutt.addActionListener(x -> chatArea.append(DiceRoll
@@ -212,9 +216,9 @@ public class GoIPPlayer {
 
 	// handles all incoming messages.
 	static class Ears implements Runnable {
-		private BufferedReader in;
+		private EncryptedReader in;
 
-		public Ears(Socket listener, BufferedReader in) {
+		public Ears(Socket listener, EncryptedReader in) {
 			this.in = in;
 		}
 
@@ -225,7 +229,7 @@ public class GoIPPlayer {
 			try {
 				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
 					// keyDecrypting and trimming input.
-					from.map(e -> Encryption.superDecrypt(e).trim())
+					from.map(e -> e.trim())
 							.filter(fromServer -> !fromServer.equals("")
 									&& !fromServer.equals("\n"))
 							.ifPresent(
@@ -250,9 +254,9 @@ public class GoIPPlayer {
 	// this thread handles incoming information for the player list object. Does
 	// nothing else.
 	static class playerListener implements Runnable {
-		private BufferedReader in;
+		private EncryptedReader in;
 
-		public playerListener(BufferedReader in) { // the constructor that
+		public playerListener(EncryptedReader in) { // the constructor that
 			// should always be used
 			this.in = in;
 		}
@@ -265,12 +269,8 @@ public class GoIPPlayer {
 					from.filter(
 							fromServer -> !fromServer.equals("")
 									&& !fromServer.equals("\n")).ifPresent(
-							fromServer -> {
-								fromServer = Encryption
-										.superDecrypt(fromServer);
-								listPlayers.setText(fromServer.replace("|",
-										"\n"));
-							});
+							fromServer -> listPlayers.setText(fromServer
+									.replace("|", "\n")));
 				}
 			} catch (Exception e) {
 				chatArea.append("");

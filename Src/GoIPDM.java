@@ -19,6 +19,10 @@ import java.util.*;
 
 import javax.swing.JDesktopPane;
 
+import Encryption.DecryptedWriter;
+import Encryption.EncryptedReader;
+import Encryption.Encryption;
+
 import java.awt.Font;
 
 public class GoIPDM {
@@ -68,7 +72,7 @@ public class GoIPDM {
 				Message.append(params[i] + " ");
 			// send message down the socket's output stream. Probably should
 			// find a way to access the variable associated with this.
-			x.out.println(Encryption.superEncrypt(Message.toString()));
+			x.out.println(Message.toString());
 		} catch (Exception e) {
 			chatArea.append("Player not found: " + params[1]);
 
@@ -101,8 +105,7 @@ public class GoIPDM {
 			clients.stream().forEach(x -> temp.append(x.Name + "|"));
 
 			clients.stream().forEach(
-					x -> x.PlayerListWriter.println(Encryption
-							.superEncrypt(temp.toString())));
+					x -> x.PlayerListWriter.println(temp.toString()));
 		}
 
 		public ClientConnecter() {
@@ -164,9 +167,8 @@ public class GoIPDM {
 				.forEach(
 						x -> {
 							try {
-								(new PrintWriter(x.getOutputStream(), true))
-										.println(Encryption.superEncrypt("DM: "
-												+ Message));
+								(new DecryptedWriter(x.getOutputStream(), true))
+										.println("DM: " + Message);
 							} catch (Exception e) {
 							}
 						});
@@ -185,10 +187,8 @@ public class GoIPDM {
 						x -> {
 							try {
 
-								(new PrintWriter(x.getOutputStream(), true))
-										.println(Encryption
-												.superEncrypt(that.Name + ": "
-														+ Message));
+								(new DecryptedWriter(x.getOutputStream(), true))
+										.println(that.Name + ": " + Message);
 							} catch (Exception e) {
 
 							}
@@ -276,7 +276,7 @@ public class GoIPDM {
 												.forEach(
 														x -> {
 															try {
-																(new PrintWriter(
+																(new DecryptedWriter(
 																		x.getOutputStream(),
 																		true))
 																		.println("Loot_ "
@@ -318,8 +318,8 @@ public class GoIPDM {
 		private Socket playerListSocket;
 		public String Name;
 		private String IP;
-		private PrintWriter PlayerListWriter;
-		private PrintWriter out;
+		private DecryptedWriter PlayerListWriter;
+		private DecryptedWriter out;
 
 		public ClientHandler() {
 		} // Just for convention's sake
@@ -347,28 +347,23 @@ public class GoIPDM {
 		public void run() {
 			try {
 
-				out = new PrintWriter(listener.getOutputStream(), true);
+				out = new DecryptedWriter(listener.getOutputStream(), true);
 				if (clientListener.checkIPs(this.IP))
 					throw new Exception("Duplicate LAN connection.");
-				BufferedReader input = new BufferedReader(
+				EncryptedReader input = new EncryptedReader(
 						new InputStreamReader(listener.getInputStream()));
-				PlayerListWriter = new PrintWriter(
+				PlayerListWriter = new DecryptedWriter(
 						playerListSocket.getOutputStream(), true);
 				String inLine;
-				out.println(Encryption.superEncrypt("Connected!"));
-				out.println(Encryption
-						.superEncrypt("Please change your username with setname [username]"));
-				out.println(Encryption
-						.superEncrypt("You may also use roll xdy to roll x number of y sided dice!"));
-				out.println(Encryption
-						.superEncrypt("msg [username] to message a player."));
+				out.println("Connected!");
+				out.println("Please change your username with setname [username]");
+				out.println("You may also use roll xdy to roll x number of y sided dice!");
+				out.println("msg [username] to message a player.");
 				clientListener.sendList();
 				chatArea.append(this.Name + " has connected." + "\n");
 				refresh();
 
 				while ((inLine = input.readLine()) != null) {
-					// first things first, superDecrypt the message
-					inLine = Encryption.superDecrypt(inLine);
 					String[] params = inLine.split(" ");
 					// if they didn't make a roll, say what they typed
 					if (!params[0].equalsIgnoreCase("roll")
@@ -383,12 +378,12 @@ public class GoIPDM {
 						break;
 					case "ping":
 						long date = System.currentTimeMillis();
-						out.println(Encryption.superEncrypt(date+"")); 
+						out.println(date + "");
 						break;
 					case "roll":
 					case "r":
 						String result = DiceRoll.roll(params);
-						out.println(Encryption.superEncrypt("You " + result));
+						out.println("You " + result);
 						chatArea.append(Name + result + "\n");
 						break;
 					case "bc":
@@ -413,15 +408,12 @@ public class GoIPDM {
 								.filter(tempClient -> tempClient.Name
 										.equalsIgnoreCase(newName)).count();
 						if (sharedNames > 0) {
-							out.println(Encryption
-									.superEncrypt("Could not change name: Username taken."));
+							out.println("Could not change name: Username taken.");
 
 						} else {
 							chatArea.append(Name);
 							Name = newName;
-							out.println(Encryption
-									.superEncrypt("Name changed to "
-											+ params[1]));
+							out.println("Name changed to " + params[1]);
 							StringBuilder newplayerlist = new StringBuilder("");
 							clientListener
 									.getClients()
@@ -440,8 +432,7 @@ public class GoIPDM {
 						// same as kicking yourself.
 						break;
 					case "help":
-						out.println(Encryption
-								.superEncrypt("Roll x y - Roll x number of dice each with y sides. You can specify 2 or more types of dice as so: Roll a b y z where a and y are number of dice and b/z are number of sides per dice. A 1d6 + 2d4 attack would be Roll 1 6 2 4. Use setname (name) to change your username. "));
+						out.println("Roll x y - Roll x number of dice each with y sides. You can specify 2 or more types of dice as so: Roll a b y z where a and y are number of dice and b/z are number of sides per dice. A 1d6 + 2d4 attack would be Roll 1 6 2 4. Use setname (name) to change your username. ");
 						break;
 					default:
 						out.println(" ");
@@ -461,8 +452,7 @@ public class GoIPDM {
 				clientListener.sendList();
 
 			} catch (Exception e) {
-				out.println(Encryption
-						.superEncrypt("Only one connection is allowed per computer over a LAN."));
+				out.println("Only one connection is allowed per computer over a LAN.");
 				out.close();
 				chatArea.append(Name + " has disconnected. \n--"
 						+ e.getMessage() + "--");
@@ -474,15 +464,16 @@ public class GoIPDM {
 	}
 
 	// standard GUI creation method
-	@SuppressWarnings("static-access")
+	@SuppressWarnings({ "static-access", "resource" })
 	private void initialize() {
 		frame = new JFrame();
 		try { // try to find my IP via amazon's service. Should that service be
 				// down or inaccessible...
 			URL whatismyip = new URL("http://checkip.amazonaws.com");
-			BufferedReader in = new BufferedReader(new InputStreamReader(
+			EncryptedReader in = new EncryptedReader(new InputStreamReader(
 					whatismyip.openStream()));
 			String ip = in.readLine(); // you get the IP as a String
+			ip=Encryption.superDecrypt(ip);
 			frame.setTitle("GoIP DM - Ext:"
 					+ ip
 					+ " - LAN:"
