@@ -551,13 +551,13 @@ public class GoIPDM {
 		btnRoll.addActionListener(e -> {
 			final DiceBag db = new DiceBag();
 			db.btnRoll.addActionListener(y -> {
-				String temp = "roll " + db.d100.getText().trim() + "d100 "
-						+ db.d20.getText().trim() + "d20 "
-						+ db.d12.getText().trim() + "d12 "
-						+ db.d10.getText().trim() + "d10 "
-						+ db.d8.getText().trim() + "d8 "
-						+ db.d6.getText().trim() + "d6 "
-						+ db.d4.getText().trim() + "d4";
+				String temp = "roll " + db.j[0].getText().trim() + "d100 "
+						+ db.j[1].getText().trim() + "d20 "
+						+ db.j[2].getText().trim() + "d12 "
+						+ db.j[3].getText().trim() + "d10 "
+						+ db.j[4].getText().trim() + "d8 "
+						+ db.j[5].getText().trim() + "d6 "
+						+ db.j[6].getText().trim() + "d4";
 				if (!db.dc.getText().trim().equals(""))
 					temp += " " + db.cd.getText().trim() + "d"
 							+ db.dc.getText().trim();
