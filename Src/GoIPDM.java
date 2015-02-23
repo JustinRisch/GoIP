@@ -80,7 +80,7 @@ public class GoIPDM {
 		String[] params = outter.split(" ");
 		if (params[1].equalsIgnoreCase("DM"))
 			return;
-			
+
 		try {
 			// locates the socket of the intended recipient.
 			ClientHandler x = clients.getClient(params[1]);
@@ -345,7 +345,8 @@ public class GoIPDM {
 			try {
 
 				out = new DecryptedWriter(listener.getOutputStream(), true);
-				if (clientListener.checkIPs(this.IP) && !this.IP.equalsIgnoreCase("127.0.0.1"))
+				if (clientListener.checkIPs(this.IP)
+						&& !this.IP.equalsIgnoreCase("127.0.0.1"))
 					throw new Exception("Duplicate LAN connection.");
 				EncryptedReader input = new EncryptedReader(
 						new InputStreamReader(listener.getInputStream()));
@@ -383,8 +384,10 @@ public class GoIPDM {
 						out.println("You " + result);
 						chatArea.append(Name + result + "\n");
 						break;
-					default: 
-						broadcast(("bc "+String.join(" ", params)).split(" "), this);
+					default:
+						broadcast(
+								("bc " + String.join(" ", params)).split(" "),
+								this);
 						chatArea.append(inputLine.getText() + "\n");
 						break;
 					case "bc":
@@ -392,11 +395,11 @@ public class GoIPDM {
 						chatArea.append(inputLine.getText() + "\n");
 						break;
 					case "msg":
-						String cheese = params[0] + " " + params[1] + " "
-								+ Name + ": ";
+						StringBuilder cheese = new StringBuilder(params[0]
+								+ " " + params[1] + " " + Name + ": ");
 						for (int i = 2; i < params.length; i++)
-							cheese += params[i] + " ";
-						Message(GoIPDM.clientListener, cheese);
+							cheese.append(params[i] + " ");
+						Message(GoIPDM.clientListener, cheese.toString());
 						chatArea.append(inputLine.getText() + "\n");
 						break;
 					case "setname":
@@ -462,21 +465,21 @@ public class GoIPDM {
 	}
 
 	// standard GUI creation method
-	@SuppressWarnings({ "static-access", "resource" })
+	@SuppressWarnings({ "static-access" })
 	private void initialize() {
 		frame = new JFrame();
 		try { // try to find my IP via amazon's service. Should that service be
 				// down or inaccessible...
 			URL whatismyip = new URL("http://checkip.amazonaws.com");
-			EncryptedReader in = new EncryptedReader(new InputStreamReader(
+			BufferedReader in = new EncryptedReader(new InputStreamReader(
 					whatismyip.openStream()));
 			String ip = in.readLine(); // you get the IP as a String
-			ip = Encryption.superDecrypt(ip);
 			frame.setTitle("GoIP DM - Ext:"
 					+ ip
 					+ " - LAN:"
 					+ ClientConnecter.serverSocket.getInetAddress()
 							.getLocalHost().toString().split("/")[1]);
+			in.close();
 		} catch (Exception e) {
 			try { // Try to find my local IP address at least and show it in the
 					// title bar.
