@@ -224,6 +224,27 @@ public class GoIPDM {
 		// it's a banana split! Well I thought it was funny.
 		String[] banana = outter.split(" ");
 		switch (banana[0].toLowerCase()) {
+		case "checkip":
+			chatArea.append("Looking for external IP...");
+			try { // try to find my IP via amazon's service.
+				URL whatismyip = new URL("http://checkip.amazonaws.com");
+				BufferedReader in = new BufferedReader(
+						new InputStreamReader(
+								whatismyip.openStream()));
+				String ip = in.readLine(); // you get the IP as a
+											// String
+				ClientConnecter.serverSocket.getInetAddress();
+				frame.setTitle("GoIP DM - Ext:"
+						+ ip
+						+ " - LAN:"
+						+ InetAddress.getLocalHost().toString()
+								.split("/")[1]);
+				in.close();
+				chatArea.append("IP: "+ip);
+			} catch (Exception e) {
+				chatArea.append("Could not find IP.");
+			}
+			break;
 		case "cls":
 			chatArea.setText(chatArea.getText().split("\n")[chatArea.getText()
 					.split("\n").length - 1] + "\n");
@@ -373,6 +394,7 @@ public class GoIPDM {
 						input.close();
 						listener.close();
 						break;
+					
 					case "ping":
 						long date = System.currentTimeMillis();
 						out.println(date + "");
@@ -467,30 +489,18 @@ public class GoIPDM {
 	@SuppressWarnings({ "static-access" })
 	private void initialize() {
 		frame = new JFrame();
-		try { // try to find my IP via amazon's service. Should that service be
-				// down or inaccessible...
-			URL whatismyip = new URL("http://checkip.amazonaws.com");
-			BufferedReader in = new EncryptedReader(new InputStreamReader(
-					whatismyip.openStream()));
-			String ip = in.readLine(); // you get the IP as a String
-			frame.setTitle("GoIP DM - Ext:"
-					+ ip
-					+ " - LAN:"
+
+		try { // Try to find my local IP address at least and show it in the
+				// title bar.
+			frame.setTitle("GoIP DM - LAN:"
 					+ ClientConnecter.serverSocket.getInetAddress()
 							.getLocalHost().toString().split("/")[1]);
-			in.close();
-		} catch (Exception e) {
-			try { // Try to find my local IP address at least and show it in the
-					// title bar.
-				frame.setTitle("GoIP DM - LAN:"
-						+ ClientConnecter.serverSocket.getInetAddress()
-								.getLocalHost().toString().split("/")[1]);
-			} catch (Exception g) {
-				// There's really no reason that should not work... unless they
-				// lack any sort of LAN connection.
-				frame.setTitle("GoIP DM - Could not find local or external IP. That's some weird shit.");
-			}
+		} catch (Exception g) {
+			// There's really no reason that should not work... unless they
+			// lack any sort of LAN connection.
+			frame.setTitle("GoIP DM - Could not find local or external IP. That's some weird shit.");
 		}
+
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 542, 302);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

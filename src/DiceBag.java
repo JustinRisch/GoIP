@@ -40,13 +40,13 @@ public class DiceBag extends JFrame {
 			j[i].setBounds(5, 30 + i*28, 86, 20);
 			j[i].setColumns(10);
 			contentPane.add(j[i]);
-			JButton btnNewButton = new JButton("+");
-			btnNewButton.setFocusable(false);
-			btnNewButton.setBounds(132, 30 + 28 *i, 46, 23);
-			btnNewButton.addActionListener(new ButtonListener(j[i], 1));
-			contentPane.add(btnNewButton);
+			JButton button = new JButton("+");
+			button.setFocusable(false);
+			button.setBounds(132, 30 + 28 *i, 46, 23);
+			button.addActionListener(new ButtonListener(j[i], 1));
+			contentPane.add(button);
 
-			JButton button = new JButton("-");
+			button = new JButton("-");
 			button.setFocusable(false);
 			button.setBounds(179, 30 + 28 * i, 46, 23);
 			button.addActionListener(new ButtonListener(j[i], -1));
