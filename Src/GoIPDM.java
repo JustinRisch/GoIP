@@ -48,8 +48,8 @@ public class GoIPDM {
 			});
 			// begin listening for clients
 			new Thread(clientListener).start();
-		} catch(IOException e){
-			
+		} catch (IOException e) {
+
 			JDialog jd = new JDialog();
 			jd.setBounds(200, 200, 250, 150);
 			jd.setTitle("Error Establishing Port");
@@ -57,7 +57,7 @@ public class GoIPDM {
 			jd.setVisible(true);
 			jd.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		}
-		
+
 	}
 
 	public static String help() { // the internal "readme" for the DM. Can't
@@ -122,8 +122,8 @@ public class GoIPDM {
 					x -> x.PlayerListWriter.println(temp.toString()));
 		}
 
-		public ClientConnecter() throws IOException{
-				serverSocket = new ServerSocket(1813);
+		public ClientConnecter() throws IOException {
+			serverSocket = new ServerSocket(1813);
 		}
 
 		@Override
@@ -169,18 +169,13 @@ public class GoIPDM {
 	public static void broadcast(String[] params) {
 
 		final String Message = String.join(" ", params).substring(2);
-
-		ClientConnecter.listeners
-				.stream()
-				.filter(x -> x.isConnected())
-				.forEach(
-						x -> {
-							try {
-								(new DecryptedWriter(x.getOutputStream(), true))
-										.println("DM: " + Message);
-							} catch (Exception e) {
-							}
-						});
+		try {
+			ClientConnecter.clients.stream()
+					.filter(x -> x.listener.isConnected())
+					.filter(x -> !x.listener.isClosed())
+					.forEach(x -> x.out.println("DM: " + Message));
+		} catch (Exception e) {
+		}
 	}
 
 	// this is a player broadcasting
@@ -188,21 +183,14 @@ public class GoIPDM {
 
 		final String Message = String.join(" ", params).substring(2);
 
-		ClientConnecter.listeners.stream()
+		ClientConnecter.clients
+				.stream()
 				// don't spam the client that sent the message :P
-				.filter(x -> x != that.listener)
-				.filter(x -> x.isConnected())
-				.forEach(
-						x -> {
-							try {
-
-								(new DecryptedWriter(x.getOutputStream(), true))
-										.println(that.Name + ": " + Message);
-							} catch (Exception e) {
-
-							}
-						});
-
+				.filter(x -> x.listener != that.listener)
+				.filter(x -> x.listener.isBound())
+				.filter(x -> x.listener.isConnected())
+				.filter(x -> x.listener.isConnected())
+				.forEach(x -> x.out.println(that.Name + ": " + Message));
 	}
 
 	// refreshes the player list
@@ -276,23 +264,13 @@ public class GoIPDM {
 						.filter(user -> user != null && !user.equals(""))
 						.forEach(
 								user -> {
-									user = user.trim();
-
 									if (user.equalsIgnoreCase("all")) {
-
-										ClientConnecter.listeners
+										ClientConnecter.clients
 												.stream()
 												.forEach(
-														x -> {
-															try {
-																(new DecryptedWriter(
-																		x.getOutputStream(),
-																		true))
-																		.println("Loot_ "
-																				+ temper[1]);
-															} catch (Exception e) {
-															}
-														});
+														x -> x.out
+																.print("Loot_ "
+																		+ temper[1]));
 
 									} else {
 										Message(clientListener, "msg " + user
@@ -332,6 +310,10 @@ public class GoIPDM {
 		private String IP;
 		private DecryptedWriter PlayerListWriter;
 		private DecryptedWriter out;
+
+		public DecryptedWriter getTextWriter() {
+			return out;
+		}
 
 		public ClientHandler() {
 		} // Just for convention's sake
