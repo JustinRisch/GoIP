@@ -23,7 +23,6 @@ import javax.swing.JDesktopPane;
 
 import Encryption.DecryptedWriter;
 import Encryption.EncryptedReader;
-import Encryption.Encryption;
 
 import java.awt.Font;
 
