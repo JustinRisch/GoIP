@@ -2,6 +2,7 @@ package Encryption;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class DecryptedWriter extends PrintWriter implements AutoCloseable {
@@ -9,7 +10,7 @@ public class DecryptedWriter extends PrintWriter implements AutoCloseable {
 
 	public DecryptedWriter(OutputStream out, boolean truth) {
 		super(out, truth);
-		this.decryptMethod = e -> Encryption.superDecrypt(e);
+		this.decryptMethod = Encryption::superDecrypt;
 	}
 
 	public DecryptedWriter(OutputStream out, boolean truth,
@@ -20,8 +21,8 @@ public class DecryptedWriter extends PrintWriter implements AutoCloseable {
 
 	@Override
 	public void print(String x) {
-		x = this.decryptMethod.apply(x);
-		super.print(x);
+		Optional<String> y = Optional.ofNullable(x);
+		y.map(decryptMethod::apply).ifPresent(super::print);
 	}
 
 }

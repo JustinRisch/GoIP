@@ -1,6 +1,5 @@
 import java.util.Arrays;
 
-
 public class DiceRoll {
 	public static String statroll() {
 		String result = "";

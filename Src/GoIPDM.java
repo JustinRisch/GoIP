@@ -1,5 +1,7 @@
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -30,20 +32,32 @@ public class GoIPDM {
 	public static JTextField inputLine;
 	public static JTextArea chatArea;
 	public static JTextArea listPlayers;
-	public static ClientConnecter clientListener = new ClientConnecter();
+	public static ClientConnecter clientListener;
 
 	public static void main(String[] args) {
-		EventQueue.invokeLater(() -> {
-			try {
-				new GoIPDM();
-				frame.setVisible(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		try {
+			clientListener = new ClientConnecter();
+			EventQueue.invokeLater(() -> {
+				try {
+					new GoIPDM();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
-		});
-		// begin listening for clients
-		new Thread(clientListener).start();
+			});
+			// begin listening for clients
+			new Thread(clientListener).start();
+		} catch(IOException e){
+			
+			JDialog jd = new JDialog();
+			jd.setBounds(200, 200, 250, 150);
+			jd.setTitle("Error Establishing Port");
+			jd.add(new JLabel("GoIP DM already running?"), BorderLayout.CENTER);
+			jd.setVisible(true);
+			jd.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		}
+		
 	}
 
 	public static String help() { // the internal "readme" for the DM. Can't
@@ -108,13 +122,8 @@ public class GoIPDM {
 					x -> x.PlayerListWriter.println(temp.toString()));
 		}
 
-		public ClientConnecter() {
-			try {
+		public ClientConnecter() throws IOException{
 				serverSocket = new ServerSocket(1813);
-			} catch (IOException e) {
-				System.err.println("Can't listen on Port 1813");
-				System.exit(1337);
-			}
 		}
 
 		@Override
@@ -291,10 +300,7 @@ public class GoIPDM {
 									}
 								});
 			}
-		case "bc":
-			broadcast(banana);
-			chatArea.append(inputLine.getText() + "\n");
-			break;
+
 		case "showroll":
 		case "sr":
 			String result = DiceRoll.roll(banana);
@@ -305,8 +311,14 @@ public class GoIPDM {
 		case "r":
 			chatArea.append("You" + DiceRoll.roll(banana) + "\n");
 			break;
+
 		default:
-			chatArea.append(outter + "\n");
+			broadcast(("bc " + String.join(" ", banana)).split(" "));
+			chatArea.append(inputLine.getText() + "\n");
+			break;
+		case "bc":
+			broadcast(banana);
+			chatArea.append(inputLine.getText() + "\n");
 			break;
 		}
 
@@ -473,7 +485,7 @@ public class GoIPDM {
 			EncryptedReader in = new EncryptedReader(new InputStreamReader(
 					whatismyip.openStream()));
 			String ip = in.readLine(); // you get the IP as a String
-			ip=Encryption.superDecrypt(ip);
+			ip = Encryption.superDecrypt(ip);
 			frame.setTitle("GoIP DM - Ext:"
 					+ ip
 					+ " - LAN:"

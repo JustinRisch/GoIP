@@ -11,8 +11,7 @@ public class EncryptedReader extends BufferedReader {
 
 	public EncryptedReader(Reader in) {
 		super(in);
-		encryptIt = e -> Encryption.superEncrypt(e);
-
+		encryptIt = Encryption::superEncrypt;
 	}
 
 	public EncryptedReader(Reader in, Function<String, String> decryptIt) {
@@ -22,7 +21,8 @@ public class EncryptedReader extends BufferedReader {
 
 	@Override
 	public String readLine() throws IOException {
+		// read the input
 		Optional<String> result = Optional.ofNullable(super.readLine());
-		return result.map(e->this.encryptIt.apply(e)).orElse(null);
+		return result.map(encryptIt::apply).orElse(null);
 	}
 }
