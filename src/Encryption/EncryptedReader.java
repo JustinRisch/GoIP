@@ -23,6 +23,7 @@ public class EncryptedReader extends BufferedReader {
 	public String readLine() throws IOException {
 		// read the input
 		Optional<String> result = Optional.ofNullable(super.readLine());
+		// if it wasn't null, encrypt it.
 		return result.map(encryptIt::apply).orElse(null);
 	}
 }

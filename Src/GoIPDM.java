@@ -78,6 +78,9 @@ public class GoIPDM {
 	public static void Message(ClientConnecter clients, String outter) {
 		StringBuilder Message = new StringBuilder("");
 		String[] params = outter.split(" ");
+		if (params[1].equalsIgnoreCase("DM"))
+			return;
+			
 		try {
 			// locates the socket of the intended recipient.
 			ClientHandler x = clients.getClient(params[1]);
@@ -342,7 +345,7 @@ public class GoIPDM {
 			try {
 
 				out = new DecryptedWriter(listener.getOutputStream(), true);
-				if (clientListener.checkIPs(this.IP))
+				if (clientListener.checkIPs(this.IP) && !this.IP.equalsIgnoreCase("127.0.0.1"))
 					throw new Exception("Duplicate LAN connection.");
 				EncryptedReader input = new EncryptedReader(
 						new InputStreamReader(listener.getInputStream()));
@@ -379,6 +382,10 @@ public class GoIPDM {
 						String result = DiceRoll.roll(params);
 						out.println("You " + result);
 						chatArea.append(Name + result + "\n");
+						break;
+					default: 
+						broadcast(("bc "+String.join(" ", params)).split(" "), this);
+						chatArea.append(inputLine.getText() + "\n");
 						break;
 					case "bc":
 						broadcast(params, this);
@@ -427,9 +434,6 @@ public class GoIPDM {
 						break;
 					case "help":
 						out.println("Roll x y - Roll x number of dice each with y sides. You can specify 2 or more types of dice as so: Roll a b y z where a and y are number of dice and b/z are number of sides per dice. A 1d6 + 2d4 attack would be Roll 1 6 2 4. Use setname (name) to change your username. ");
-						break;
-					default:
-						out.println(" ");
 						break;
 					// signals that the message was
 					// recieved and allows the

@@ -101,15 +101,23 @@ public class GoIPPlayer {
 			@Override
 			public void keyPressed(KeyEvent e) { // when you hit enter
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					String input = inputLine.getText();
+					String input = inputLine.getText().trim();
 					// it appends what you wrote to the chat box
-					if (!input.contains("setname")) {
+					String[] params = input.split(" ");
+					if (!input.contains("setname")
+							&& params[0].equalsIgnoreCase("msg")) {
 						// avoid annoying double messages from commands
 						// and responses.
 
 						chatArea.append(me + ": " + inputLine.getText() + "\n");
-					} else if (input.split(" ").length > 1)
-						me = input.split(" ")[1];
+					} else if (params[0].equalsIgnoreCase("setname")
+							&& params.length > 1) {
+						me = params[1];
+					} else if (params[0].equalsIgnoreCase("msg")
+							&& input.split(" ").length > 1) {
+						chatArea.append("To "+params[1]+": " + inputLine.getText() + "\n");
+					}
+
 					if (!input.equals(null) && !input.equals("")) {
 						if (!connected) {
 							if (input.equalsIgnoreCase("LAN")) {

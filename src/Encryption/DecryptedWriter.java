@@ -21,8 +21,12 @@ public class DecryptedWriter extends PrintWriter implements AutoCloseable {
 
 	@Override
 	public void print(String x) {
+		//accept a string
 		Optional<String> y = Optional.ofNullable(x);
-		y.map(decryptMethod::apply).ifPresent(super::print);
+		//if present, decrypt it. Otherwise set it back to null. 
+		x =y.map(decryptMethod::apply).orElse(null);
+		
+		super.print(x);
 	}
 
 }
