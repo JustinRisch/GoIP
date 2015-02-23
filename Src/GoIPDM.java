@@ -253,11 +253,11 @@ public class GoIPDM {
 		case "loot":
 			// example syntax of command: Loot player1 player2:Item1 Item2,
 			// ALL: item3
-			String mani = "";
+			StringBuilder mani = new StringBuilder("");
 			for (int i = 1; i < banana.length; i++)
 				// cuts off leading command (loot or lt)
-				mani += banana[i] + " ";
-			String[] params = mani.split(",");
+				mani.append(banana[i] + " ");
+			String[] params = mani.toString().split(",");
 			for (String param : params) {
 				String[] temper = param.split(":");
 				String[] users = temper[0].split(" ");
