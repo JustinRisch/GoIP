@@ -1,3 +1,4 @@
+package dice;
 import java.util.Arrays;
 
 public class DiceRoll {

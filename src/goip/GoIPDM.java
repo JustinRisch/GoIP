@@ -1,6 +1,9 @@
+package goip;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
+import dice.DiceBag;
+import dice.DiceRoll;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -33,7 +36,7 @@ public class GoIPDM {
 	public static JTextArea listPlayers;
 	public static ClientConnecter clientListener;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		try {
 			clientListener = new ClientConnecter();
 			EventQueue.invokeLater(() -> {
@@ -55,6 +58,7 @@ public class GoIPDM {
 			jd.add(new JLabel("GoIP DM already running?"), BorderLayout.CENTER);
 			jd.setVisible(true);
 			jd.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			throw e;
 		}
 
 	}
@@ -228,19 +232,15 @@ public class GoIPDM {
 			chatArea.append("Looking for external IP...");
 			try { // try to find my IP via amazon's service.
 				URL whatismyip = new URL("http://checkip.amazonaws.com");
-				BufferedReader in = new BufferedReader(
-						new InputStreamReader(
-								whatismyip.openStream()));
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+						whatismyip.openStream()));
 				String ip = in.readLine(); // you get the IP as a
 											// String
 				ClientConnecter.serverSocket.getInetAddress();
-				frame.setTitle("GoIP DM - Ext:"
-						+ ip
-						+ " - LAN:"
-						+ InetAddress.getLocalHost().toString()
-								.split("/")[1]);
+				frame.setTitle("GoIP DM - Ext:" + ip + " - LAN:"
+						+ InetAddress.getLocalHost().toString().split("/")[1]);
 				in.close();
-				chatArea.append("IP: "+ip);
+				chatArea.append("IP: " + ip);
 			} catch (Exception e) {
 				chatArea.append("Could not find IP.");
 			}
@@ -394,7 +394,7 @@ public class GoIPDM {
 						input.close();
 						listener.close();
 						break;
-					
+
 					case "ping":
 						long date = System.currentTimeMillis();
 						out.println(date + "");
@@ -500,7 +500,7 @@ public class GoIPDM {
 			// lack any sort of LAN connection.
 			frame.setTitle("GoIP DM - Could not find local or external IP. That's some weird shit.");
 		}
-		
+
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 542, 302);
 		frame.setLocationRelativeTo(null);

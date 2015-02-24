@@ -1,4 +1,8 @@
+package goip;
+
 import java.awt.EventQueue;
+import dice.DiceBag;
+import dice.DiceRoll;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -37,14 +41,11 @@ public class GoIPPlayer {
 	private JButton btnRollD;
 	private String me = "Me";
 
-	public static void main(String[] args) {
+
+	public static void main(String[] args) throws Exception{
 		EventQueue.invokeLater(() -> {
-			try {
 				window = new GoIPPlayer();
 				frmGoIPPlayer.setVisible(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		});
 
 	}
