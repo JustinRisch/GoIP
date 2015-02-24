@@ -7,9 +7,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.SwingConstants;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class DiceBag extends JFrame {
 	// auto generated this thing, or it would yell at me.
@@ -28,6 +31,9 @@ public class DiceBag extends JFrame {
 		
 		this.setTitle("Dice Bag");
 		this.setBounds(100, 100, 230, 305);
+		this.setMaximumSize(new Dimension(230, 305));
+		this.setMinimumSize(new Dimension(230, 60));
+		
 		this.setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -101,6 +107,8 @@ public class DiceBag extends JFrame {
 		NoteBox.setHorizontalAlignment(SwingConstants.CENTER);
 		NoteBox.setToolTipText("Put a description of the box here! (eg: Sword Damage)");
 		NoteBox.setBounds(5, 1, 180, 20);
+		JTAListener jtalist = e->this.setTitle(NoteBox.getText());
+		NoteBox.addKeyListener( jtalist);
 		this.add(NoteBox, BorderLayout.NORTH);
 		NoteBox.setColumns(10);
 
@@ -134,5 +142,11 @@ public class DiceBag extends JFrame {
 
 		}
 
+	}
+	interface JTAListener extends KeyListener{
+		@Override
+		default public void keyPressed(KeyEvent e){}
+		@Override
+		default public void keyTyped(KeyEvent e){}
 	}
 }
