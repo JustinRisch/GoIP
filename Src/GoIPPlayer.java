@@ -115,7 +115,8 @@ public class GoIPPlayer {
 						me = params[1];
 					} else if (params[0].equalsIgnoreCase("msg")
 							&& input.split(" ").length > 1) {
-						chatArea.append("To "+params[1]+": " + inputLine.getText() + "\n");
+						chatArea.append("To " + params[1] + ": "
+								+ inputLine.getText() + "\n");
 					}
 
 					if (!input.equals(null) && !input.equals("")) {
@@ -212,8 +213,13 @@ public class GoIPPlayer {
 								+ db.dc.getText().trim();
 					if (!db.add.getText().trim().equals(""))
 						temp += " +" + db.add.getText().trim();
-					chatArea.append("You" + DiceRoll.roll(temp.split(" "))
-							+ "\n");
+					String note = db.NoteBox.getText().trim();
+					if (!note.equalsIgnoreCase("Description of Bag"))
+						chatArea.append(note + ":"
+								+ DiceRoll.roll(temp.split(" ")) + "\n");
+					else
+						chatArea.append("You "
+								+ DiceRoll.roll(temp.split(" ")).trim() + "\n");
 				});
 			}
 

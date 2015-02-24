@@ -21,7 +21,7 @@ public class DiceBag extends JFrame {
 	public JButton btnRoll;
 	public JButton statbutt;
 	private JPanel contentPane;
-	private JTextField NoteBox;
+	public JTextField NoteBox;
 
 	public DiceBag() {
 		setResizable(false);
