@@ -500,9 +500,10 @@ public class GoIPDM {
 			// lack any sort of LAN connection.
 			frame.setTitle("GoIP DM - Could not find local or external IP. That's some weird shit.");
 		}
-
+		
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 542, 302);
+		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		JScrollPane scrollPane = new JScrollPane();

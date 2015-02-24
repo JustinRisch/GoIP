@@ -90,6 +90,7 @@ public class GoIPPlayer {
 				.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
 		frmGoIPPlayer.setTitle("GoIP Player");
 		frmGoIPPlayer.setBounds(100, 100, 552, 282);
+		frmGoIPPlayer.setLocationRelativeTo(null);
 		frmGoIPPlayer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmGoIPPlayer.getContentPane().setLayout(null);
 

@@ -6,6 +6,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.SwingConstants;
 
+import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,12 +25,14 @@ public class DiceBag extends JFrame {
 	public JTextField NoteBox;
 
 	public DiceBag() {
-		setResizable(false);
+		
 		this.setTitle("Dice Bag");
-		this.setBounds(100, 100, 237, 337);
+		this.setBounds(100, 100, 230, 305);
+		this.setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		this.setContentPane(contentPane);
+		this.add(contentPane, BorderLayout.CENTER);
+	
 		contentPane.setLayout(null);
 
 		j = new JTextField[7];
@@ -37,69 +40,74 @@ public class DiceBag extends JFrame {
 		for (int i =0; i<7; i++) {
 			j[i] = new JTextField();
 			j[i].setHorizontalAlignment(SwingConstants.RIGHT);
-			j[i].setBounds(5, 30 + i*28, 86, 20);
+			j[i].setBounds(5, i*24, 86, 20);
 			j[i].setColumns(10);
 			contentPane.add(j[i]);
 			JButton button = new JButton("+");
 			button.setFocusable(false);
-			button.setBounds(132, 30 + 28 *i, 46, 23);
+			button.setBounds(132,  24 *i, 46, 23);
 			button.addActionListener(new ButtonListener(j[i], 1));
 			contentPane.add(button);
 
 			button = new JButton("-");
 			button.setFocusable(false);
-			button.setBounds(179, 30 + 28 * i, 46, 23);
+			button.setBounds(179,  24 * i, 46, 23);
 			button.addActionListener(new ButtonListener(j[i], -1));
 			contentPane.add(button);
 			JLabel lblD = new JLabel(labels[i]);
-			lblD.setBounds(98, 30+28*i, 46, 14);
+			lblD.setBounds(98, 2+24*i, 46, 14);
 			contentPane.add(lblD);
 		}
 
 		cd = new JTextField(10);
 		cd.setHorizontalAlignment(SwingConstants.RIGHT);
-		cd.setBounds(5, 231, 86, 20);
+		cd.setBounds(5, 168, 86, 20);
 		contentPane.add(cd);
-
+		
+		JPanel buttonPane = new JPanel();
+		buttonPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		this.add(buttonPane, BorderLayout.SOUTH);
+		buttonPane.setLayout(new BorderLayout());
+		
 		btnRoll = new JButton("Roll!");
 		btnRoll.setFont(new Font("Arial Black", Font.BOLD, 11));
 		btnRoll.setFocusCycleRoot(true);
-		btnRoll.setBounds(5, 262, 91, 23);
+		btnRoll.setBounds(5, 188, 91, 23);
 		// the behavior of the roll button is added by the DM / Player programs.
-		contentPane.add(btnRoll);
-		contentPane.getRootPane().setDefaultButton(btnRoll);
+		buttonPane.add(btnRoll, BorderLayout.EAST);
+		this.getRootPane().setDefaultButton(btnRoll);
 		dc = new JTextField();
 		dc.setHorizontalAlignment(SwingConstants.LEFT);
-		dc.setBounds(134, 231, 91, 20);
+		dc.setBounds(134, 168, 91, 20);
 		contentPane.add(dc);
 		dc.setColumns(10);
 
 		JLabel lblD_7 = new JLabel("d");
-		lblD_7.setBounds(98, 231, 11, 14);
+		lblD_7.setBounds(98, 168, 11, 14);
 		contentPane.add(lblD_7);
 
 		add = new JTextField();
 		add.setHorizontalAlignment(SwingConstants.LEFT);
-		add.setBounds(134, 263, 86, 20);
+		add.setBounds(134, 192, 86, 20);
 		contentPane.add(add);
 		add.setColumns(10);
 
 		JLabel label = new JLabel("+");
-		label.setBounds(121, 266, 11, 14);
+		label.setBounds(121, 192, 11, 14);
 		contentPane.add(label);
 
 		NoteBox = new JTextField();
 		NoteBox.setText("Description of Bag");
 		NoteBox.setHorizontalAlignment(SwingConstants.CENTER);
 		NoteBox.setToolTipText("Put a description of the box here! (eg: Sword Damage)");
-		NoteBox.setBounds(5, 1, 220, 20);
-		contentPane.add(NoteBox);
+		NoteBox.setBounds(5, 1, 180, 20);
+		this.add(NoteBox, BorderLayout.NORTH);
 		NoteBox.setColumns(10);
 
-		statbutt = new JButton("Stat Roll (4d6 choose 3)");
+		statbutt = new JButton("4d6 Best 3");
 		statbutt.setFocusable(false);
-		statbutt.setBounds(5, 291, 215, 16);
-		contentPane.add(statbutt);
+		statbutt.setBounds(5, 260, 215, 16);
+		buttonPane.add(statbutt, BorderLayout.WEST);
 	}
 
 	class ButtonListener implements ActionListener {
