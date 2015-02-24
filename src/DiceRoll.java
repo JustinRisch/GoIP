@@ -49,7 +49,7 @@ public class DiceRoll {
 					int roll = (int) Math.floor(Math.random() * D + 1);
 					sum += roll;
 					results += roll;
-					results += "(" + D + ") ";
+					results += "/" + D + " ";
 				}
 
 			}
@@ -57,10 +57,15 @@ public class DiceRoll {
 				int roll = (int) Math.floor(Math.random() * D + 1);
 				sum += roll;
 				results += roll;
-				results += "[" + D + "] ";
+				results += "/" + D + " ";
 			}
 			sum += adder;
-			return " rolled a " + sum + "(+" + adder + "): " + results;
+			
+			if (adder>0)
+				return " rolled a " + sum +": " + results + " (+" + adder + ").";
+			else 
+				return " rolled a " + sum +": " + results;
+			
 		} catch (Exception e) {
 			return " got an Error - " + e.getMessage(); // System.out.println(Encryption.encrypt(Message)e.getMessage());
 		}
