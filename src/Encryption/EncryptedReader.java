@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class EncryptedReader extends BufferedReader {
-	Function<String, String> encryptIt;
+	private Function<String, String> encryptIt;
 
 	public EncryptedReader(Reader in) {
 		super(in);

@@ -24,7 +24,7 @@ import Encryption.EncryptedReader;
 
 import java.awt.Dialog.ModalExclusionType;
 
-public class GoIPPlayer {
+public final class GoIPPlayer {
 	public static Thread listenUp;
 	public static DecryptedWriter out = null;
 	public static GoIPPlayer window;

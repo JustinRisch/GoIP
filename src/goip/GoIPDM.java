@@ -29,7 +29,7 @@ import Encryption.EncryptedReader;
 
 import java.awt.Font;
 
-public class GoIPDM {
+public final class GoIPDM {
 	public static JFrame frame;
 	public static JTextField inputLine;
 	public static JTextArea chatArea;
