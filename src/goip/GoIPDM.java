@@ -248,7 +248,7 @@ public class GoIPDM {
 									+ InetAddress.getLocalHost().toString()
 											.split("/")[1]);
 							in.close();
-							chatArea.append("IP: " + ip+"\n");
+							chatArea.append("IP: " + ip + "\n");
 						} catch (Exception e) {
 							chatArea.append("Could not find IP.\n");
 						}
@@ -289,28 +289,35 @@ public class GoIPDM {
 				// cuts off leading command (loot or lt)
 				mani.append(banana[i] + " ");
 			String[] params = mani.toString().split(",");
-			for (String param : params) {
-				String[] temper = param.split(":");
-				String[] users = temper[0].split(" ");
-				Arrays.stream(users)
-						.map(user -> user.trim())
-						.filter(user -> user != null && !user.equals(""))
-						.forEach(
-								user -> {
-									if (user.equalsIgnoreCase("all")) {
-										ClientConnecter.clients
-												.stream()
-												.forEach(
-														x -> x.out
-																.print("Loot_ "
-																		+ temper[1]));
+			// for (String param : params) {
+			Arrays.stream(params)
+					.forEach(
+							param -> {
+								String[] temper = param.split(":");
+								String[] users = temper[0].split(" ");
+								Arrays.stream(users)
+										.map(user -> user.trim())
+										.filter(user -> user != null
+												&& !user.equals(""))
+										.forEach(
+												user -> {
+													if (user.equalsIgnoreCase("all")) {
+														ClientConnecter.clients
+																.stream()
+																.forEach(
+																		x -> x.out
+																				.print("Loot_ "
+																						+ temper[1]));
 
-									} else {
-										Message(clientListener, "msg " + user
-												+ " Loot_ " + temper[1]);
-									}
-								});
-			}
+													} else {
+														Message(clientListener,
+																"msg "
+																		+ user
+																		+ " Loot_ "
+																		+ temper[1]);
+													}
+												});
+							});
 
 		case "showroll":
 		case "sr":
@@ -376,7 +383,7 @@ public class GoIPDM {
 
 				out = new DecryptedWriter(listener.getOutputStream(), true);
 				if (clientListener.checkIPs(this.IP)
-						&& !this.IP.equalsIgnoreCase("127.0.0.1"))
+						&& !this.IP.equals("127.0.0.1"))
 					throw new Exception("Duplicate LAN connection.");
 				EncryptedReader input = new EncryptedReader(
 						new InputStreamReader(listener.getInputStream()));
@@ -444,7 +451,6 @@ public class GoIPDM {
 										.equalsIgnoreCase(newName)).count();
 						if (sharedNames > 0) {
 							out.println("Could not change name: Username taken.");
-
 						} else {
 							chatArea.append(Name);
 							Name = newName;
@@ -484,7 +490,7 @@ public class GoIPDM {
 				clientListener.sendList();
 
 			} catch (Exception e) {
-				out.println("Only one connection is allowed per computer over a LAN.");
+				out.println("Server said no.");
 				out.close();
 				chatArea.append(Name + " has disconnected. \n--"
 						+ e.getMessage() + "--");
