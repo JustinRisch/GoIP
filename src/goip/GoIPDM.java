@@ -36,7 +36,7 @@ public class GoIPDM {
 	public static JTextArea listPlayers;
 	public static ClientConnecter clientListener;
 
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) throws Exception {
 		try {
 			clientListener = new ClientConnecter();
 			EventQueue.invokeLater(() -> {
@@ -55,6 +55,7 @@ public class GoIPDM {
 			JDialog jd = new JDialog();
 			jd.setBounds(200, 200, 250, 150);
 			jd.setTitle("Error Establishing Port");
+			jd.setLocationRelativeTo(null);
 			jd.add(new JLabel("GoIP DM already running?"), BorderLayout.CENTER);
 			jd.setVisible(true);
 			jd.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -229,21 +230,30 @@ public class GoIPDM {
 		String[] banana = outter.split(" ");
 		switch (banana[0].toLowerCase()) {
 		case "checkip":
-			chatArea.append("Looking for external IP...");
-			try { // try to find my IP via amazon's service.
-				URL whatismyip = new URL("http://checkip.amazonaws.com");
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-						whatismyip.openStream()));
-				String ip = in.readLine(); // you get the IP as a
-											// String
-				ClientConnecter.serverSocket.getInetAddress();
-				frame.setTitle("GoIP DM - Ext:" + ip + " - LAN:"
-						+ InetAddress.getLocalHost().toString().split("/")[1]);
-				in.close();
-				chatArea.append("IP: " + ip);
-			} catch (Exception e) {
-				chatArea.append("Could not find IP.");
-			}
+			chatArea.append("Looking for external IP...\n");
+			new Thread(
+					() -> {
+						try { // try to find my IP via amazon's service.
+							URL whatismyip = new URL(
+									"http://checkip.amazonaws.com");
+							BufferedReader in = new BufferedReader(
+									new InputStreamReader(whatismyip
+											.openStream()));
+							String ip = in.readLine(); // you get the IP as a
+														// String
+							ClientConnecter.serverSocket.getInetAddress();
+							frame.setTitle("GoIP DM - Ext:"
+									+ ip
+									+ " - LAN:"
+									+ InetAddress.getLocalHost().toString()
+											.split("/")[1]);
+							in.close();
+							chatArea.append("IP: " + ip+"\n");
+						} catch (Exception e) {
+							chatArea.append("Could not find IP.\n");
+						}
+					}).start();
+			;
 			break;
 		case "cls":
 			chatArea.setText(chatArea.getText().split("\n")[chatArea.getText()
