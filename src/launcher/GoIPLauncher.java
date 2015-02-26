@@ -29,7 +29,7 @@ public final class GoIPLauncher {
 
 	// version members
 	private static double currentVersion;
-	private static final double version = currentVersion = 1.13;
+	private static final double version = currentVersion = 1.14;
 
 	final public static void main(String[] args) {
 		jd.setResizable(false);

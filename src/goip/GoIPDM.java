@@ -329,7 +329,8 @@ public final class GoIPDM {
 		case "bc":
 		default:
 			broadcast(outter);
-			chatArea.append("DM: "+inputLine.getText().replaceFirst("bc", "") + "\n");
+			chatArea.append("DM: " + inputLine.getText().replaceFirst("bc", "")
+					+ "\n");
 			break;
 		}
 
