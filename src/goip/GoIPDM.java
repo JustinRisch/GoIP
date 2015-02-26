@@ -370,7 +370,6 @@ public final class GoIPDM {
 		public void broadcast(String message) {
 			ClientConnecter.clients.stream().filter(x -> x.listener.isBound())
 					.filter(x -> x.listener.isConnected())
-					.filter(x -> x.listener.isConnected())
 					.forEach(x -> x.out.println(this.Name + ": " + message));
 		}
 
@@ -503,16 +502,26 @@ public final class GoIPDM {
 			frame.setTitle("GoIP DM - Could not find local or external IP. That's some weird shit.");
 		}
 		// when it closes...
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			// kick everyone.
-				ClientConnecter.clients.stream().forEach(e -> kick(e));
-				// Needed to throw a run time exception to be able to close
-				// it...
-				// don't ask. I don't know.
-				byte[] b = {};
-				b[1] = 0;
-				System.exit(1);
-			}));
+		Runtime.getRuntime().addShutdownHook(
+				new Thread(() -> {
+					// kick everyone.
+
+						while (ClientConnecter.clients.size() > 0) {
+							ClientConnecter.clients.get(0).out
+									.println("Server closing...");
+
+							kick(ClientConnecter.clients.get(0));
+						}
+
+						// Needed to throw a run time exception to be able to
+						// close
+						// it...
+						// don't ask. I don't know.
+
+						int[] x = {};
+						x[1] = 0;
+						System.exit(1);
+					}));
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 542, 302);
 		frame.setLocationRelativeTo(null);
