@@ -18,15 +18,15 @@ import java.awt.event.KeyListener;
 public class DiceBag extends JFrame {
 	// auto generated this thing, or it would yell at me.
 	private static final long serialVersionUID = 7345177802546602894L;
-	public JTextField[] j;
+	public final JTextField[] j;
 
-	public JTextField cd;
-	public JTextField dc;
-	public JTextField add;
-	public JButton btnRoll;
-	public JButton statbutt;
-	private JPanel contentPane;
-	public JTextField NoteBox;
+	public final JTextField cd;
+	public final JTextField dc;
+	public final JTextField add;
+	public final JButton btnRoll;
+	public final JButton statbutt;
+	private final JPanel contentPane;
+	public final JTextField NoteBox;
 
 	public DiceBag() {
 		

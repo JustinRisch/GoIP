@@ -2,7 +2,7 @@ package dice;
 import java.util.Arrays;
 
 public class DiceRoll {
-	public static String statroll() {
+	public final static String statroll() {
 		String result = "";
 		int[] rolls = new int[4];
 		for (int i = 0; i < 4; i++)
@@ -14,7 +14,7 @@ public class DiceRoll {
 		return result;
 	}
 
-	public static String roll(String[] banana) {
+	public final static String roll(String[] banana) {
 		try {
 			String results = "";
 			int sum = 0;

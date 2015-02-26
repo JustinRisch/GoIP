@@ -475,11 +475,6 @@ public final class GoIPDM {
 					case "help":
 						out.println("Roll x y - Roll x number of dice each with y sides. You can specify 2 or more types of dice as so: Roll a b y z where a and y are number of dice and b/z are number of sides per dice. A 1d6 + 2d4 attack would be Roll 1 6 2 4. Use setname (name) to change your username. ");
 						break;
-					// signals that the message was
-					// recieved and allows the
-					// client to send another
-					// message if necessary --
-					// handshaking really.
 					}
 				}
 			} catch (IOException e) {
@@ -502,7 +497,7 @@ public final class GoIPDM {
 	}
 
 	// standard GUI creation method
-	@SuppressWarnings({ "static-access" })
+	@SuppressWarnings("static-access")
 	private void initialize() {
 		frame = new JFrame();
 
