@@ -15,11 +15,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class DiceBag extends JFrame {
-	// auto generated this thing, or it would yell at me.
-	private static final long serialVersionUID = 7345177802546602894L;
+@SuppressWarnings("serial")
+public final class DiceBag extends JFrame {
+	
 	public final JTextField[] j;
-
 	public final JTextField cd;
 	public final JTextField dc;
 	public final JTextField add;

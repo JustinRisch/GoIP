@@ -2,8 +2,10 @@ package goip;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+
 import dice.DiceBag;
 import dice.DiceRoll;
+
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -11,13 +13,17 @@ import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
 import javax.swing.ScrollPaneConstants;
+
 import java.awt.Component;
+
 import javax.swing.JScrollPane;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.net.*;
 import java.io.*;
 import java.util.*;
+
 import Encryption.DecryptedWriter;
 import Encryption.EncryptedReader;
 
@@ -183,19 +189,11 @@ public final class GoIPDM {
 		}
 	}
 
-	// this is a player broadcasting
-	public static void broadcast(String[] params, ClientHandler that) {
-
-		final String Message = String.join(" ", params).substring(2);
-
-		ClientConnecter.clients
-				.stream()
-				// don't spam the client that sent the message :P
-				.filter(x -> x.listener != that.listener)
-				.filter(x -> x.listener.isBound())
+	public void broadcast(String message) {
+		ClientConnecter.clients.stream().filter(x -> x.listener.isBound())
 				.filter(x -> x.listener.isConnected())
 				.filter(x -> x.listener.isConnected())
-				.forEach(x -> x.out.println(that.Name + ": " + Message));
+				.forEach(x -> x.out.println("DM: " + message));
 	}
 
 	// refreshes the player list
@@ -209,7 +207,7 @@ public final class GoIPDM {
 	}
 
 	public static void kick(ClientHandler x) {
-
+		x.out.println("You have been disconnected.");
 		x.out.close();
 		try {
 			if (!x.listener.isClosed())
@@ -329,11 +327,11 @@ public final class GoIPDM {
 			break;
 
 		default:
-			broadcast(("bc " + String.join(" ", banana)).split(" "));
+			broadcast(outter);
 			chatArea.append(inputLine.getText() + "\n");
 			break;
 		case "bc":
-			broadcast(banana);
+			broadcast(outter);
 			chatArea.append(inputLine.getText() + "\n");
 			break;
 		}
@@ -342,51 +340,50 @@ public final class GoIPDM {
 
 	// an individual client's thread and associated objects/methods
 	public static class ClientHandler extends Thread {
-		private Socket listener;
-		private Socket playerListSocket;
+		private final Socket listener;
+		private final Socket playerListSocket;
 		public String Name;
 		private String IP;
-		private DecryptedWriter PlayerListWriter;
-		private DecryptedWriter out;
+		private final DecryptedWriter PlayerListWriter;
+		private final DecryptedWriter out;
 
 		public DecryptedWriter getTextWriter() {
 			return out;
 		}
 
-		public ClientHandler() {
-		} // Just for convention's sake
-
-		// method to test a string to see if it has an integer interpretation
-		public ClientHandler(Socket temp) { // no player list, just a socket for
-			// text communications
-			this.listener = temp;
-			this.Name = this.listener.getInetAddress().toString()
-					.replace("/", "");
-			this.IP = this.Name;
-		}
-
-		public ClientHandler(Socket temp, Socket temp2) { // Constructor with
+		public ClientHandler(Socket temp, Socket temp2) throws IOException { // Constructor
+																				// with
 			// player list
 			// enabled
 			this.listener = temp;
+			out = new DecryptedWriter(listener.getOutputStream(), true);
+
 			this.Name = this.listener.getInetAddress().toString()
 					.replace("/", "");
 			this.IP = this.Name;
 			this.playerListSocket = temp2;
+			PlayerListWriter = new DecryptedWriter(
+					playerListSocket.getOutputStream(), true);
+		}
+
+		// player broadcasting without split string
+		public void broadcast(String message) {
+			ClientConnecter.clients.stream().filter(x -> x.listener.isBound())
+					.filter(x -> x.listener.isConnected())
+					.filter(x -> x.listener.isConnected())
+					.forEach(x -> x.out.println(this.Name + ": " + message));
 		}
 
 		@Override
 		public void run() {
 			try {
 
-				out = new DecryptedWriter(listener.getOutputStream(), true);
 				if (clientListener.checkIPs(this.IP)
 						&& !this.IP.equals("127.0.0.1"))
 					throw new Exception("Duplicate LAN connection.");
 				EncryptedReader input = new EncryptedReader(
 						new InputStreamReader(listener.getInputStream()));
-				PlayerListWriter = new DecryptedWriter(
-						playerListSocket.getOutputStream(), true);
+
 				String inLine;
 				out.println("Connected!");
 				out.println("Please change your username with setname [username]");
@@ -419,13 +416,11 @@ public final class GoIPDM {
 						chatArea.append(Name + result + "\n");
 						break;
 					default:
-						broadcast(
-								("bc " + String.join(" ", params)).split(" "),
-								this);
+						this.broadcast(inLine);
 						chatArea.append(inputLine.getText() + "\n");
 						break;
 					case "bc":
-						broadcast(params, this);
+						this.broadcast(inLine.substring(2));
 						chatArea.append(inputLine.getText() + "\n");
 						break;
 					case "msg":
@@ -465,6 +460,7 @@ public final class GoIPDM {
 							chatArea.append(" name changed to " + Name + "\n");
 						}
 						break;
+
 					case "reset":
 						kick(this); // a "reset" command is effectively the
 						// same as kicking yourself.
@@ -506,7 +502,17 @@ public final class GoIPDM {
 			// lack any sort of LAN connection.
 			frame.setTitle("GoIP DM - Could not find local or external IP. That's some weird shit.");
 		}
-
+		// when it closes...
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			// kick everyone.
+				ClientConnecter.clients.stream().forEach(e -> kick(e));
+				// Needed to throw a run time exception to be able to close
+				// it...
+				// don't ask. I don't know.
+				byte[] b = {};
+				b[1] = 0;
+				System.exit(1);
+			}));
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 542, 302);
 		frame.setLocationRelativeTo(null);

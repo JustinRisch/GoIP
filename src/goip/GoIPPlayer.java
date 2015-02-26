@@ -1,6 +1,7 @@
 package goip;
 
 import java.awt.EventQueue;
+
 import dice.DiceBag;
 import dice.DiceRoll;
 
@@ -33,7 +34,7 @@ public final class GoIPPlayer {
 	private static Socket playerListSocket;
 
 	// GUI components
-	private final static JFrame frmGoIPPlayer = new JFrame();;
+	private final static JFrame frame = new JFrame();;
 	private final static JTextField inputLine = new JTextField();
 	private final static JTextArea chatArea = new JTextArea();
 	private final static JTextArea listPlayers = new JTextArea();
@@ -51,7 +52,7 @@ public final class GoIPPlayer {
 	public static void main(String[] args) throws Exception {
 		EventQueue.invokeLater(() -> {
 			new GoIPPlayer();
-			frmGoIPPlayer.setVisible(true);
+			frame.setVisible(true);
 		});
 
 	}
@@ -91,18 +92,26 @@ public final class GoIPPlayer {
 
 	// standard GUI initialization
 	void initialize() {
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			System.out.println("closing...");
+			out.println("exit");
+			// Needed to throw a run time exception to be able to close it...
+			// don't ask. I don't know.
+				byte[] b = {};
+				b[1] = 0;
+				System.exit(1);
+			}));
 
-		frmGoIPPlayer.setResizable(false);
-		frmGoIPPlayer
-				.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
-		frmGoIPPlayer.setTitle("GoIP Player");
-		frmGoIPPlayer.setBounds(100, 100, 552, 282);
-		frmGoIPPlayer.setLocationRelativeTo(null);
-		frmGoIPPlayer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmGoIPPlayer.getContentPane().setLayout(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);
+		frame.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
+		frame.setTitle("GoIP Player");
+		frame.setBounds(100, 100, 552, 282);
+		frame.setLocationRelativeTo(null);
+		frame.getContentPane().setLayout(null);
 
 		inputLine.setBounds(7, 227, 422, 20);
-		frmGoIPPlayer.getContentPane().add(inputLine);
+		frame.getContentPane().add(inputLine);
 		inputLine.setColumns(10);
 		inputLine.addKeyListener(new KeyAdapter() {
 			@Override
@@ -132,7 +141,7 @@ public final class GoIPPlayer {
 								chatArea.setText("Feature Removed due to strange complications. Type in IP");
 							} else {
 								IP = input;
-								frmGoIPPlayer.setTitle("GoIP Player - " + IP);
+								frame.setTitle("GoIP Player - " + IP);
 								connected = makeconnection();
 							}
 						} else if (input.equalsIgnoreCase("reset")) {
@@ -163,7 +172,7 @@ public final class GoIPPlayer {
 		listPlayers.setBounds(369, 34, 91, 141);
 
 		scrollPane.setBounds(433, 23, 102, 200);
-		frmGoIPPlayer.getContentPane().add(scrollPane);
+		frame.getContentPane().add(scrollPane);
 
 		chatArea.setEditable(false);
 		chatArea.setBounds(10, 11, 422, 220);
@@ -173,11 +182,11 @@ public final class GoIPPlayer {
 		scrollPane2.setBounds(7, 7, 422, 216);
 		scrollPane2
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		frmGoIPPlayer.getContentPane().add(scrollPane2);
+		frame.getContentPane().add(scrollPane2);
 		chatArea.setText("Type in the IP of your DM or use the dice bag to roll without connecting.\n");
 
 		lblPlayerList.setBounds(437, -2, 98, 28);
-		frmGoIPPlayer.getContentPane().add(lblPlayerList);
+		frame.getContentPane().add(lblPlayerList);
 
 		btnRollD.setBounds(439, 226, 91, 23);
 		btnRollD.setToolTipText("Do it. I dare you.");
@@ -227,12 +236,12 @@ public final class GoIPPlayer {
 
 			db.setVisible(true);
 		});
-		frmGoIPPlayer.getContentPane().add(btnRollD);
+		frame.getContentPane().add(btnRollD);
 	}
 
 	// handles all incoming messages.
 	static class Ears implements Runnable {
-		private EncryptedReader in;
+		private final EncryptedReader in;
 
 		public Ears(Socket listener, EncryptedReader in) {
 			this.in = in;
@@ -250,10 +259,9 @@ public final class GoIPPlayer {
 									&& !fromServer.equals("\n"))
 							.ifPresent(
 									fromServer -> {
-										if (!lastSent.equalsIgnoreCase("ping"))
+										if (!lastSent.equalsIgnoreCase("ping")) {
 											chatArea.append(fromServer + "\n");
-										else if (fromServer.split(" ")[0].equalsIgnoreCase("rick")){
-											
+
 										} else {
 											long results = System
 													.currentTimeMillis()
@@ -272,7 +280,7 @@ public final class GoIPPlayer {
 	// this thread handles incoming information for the player list object. Does
 	// nothing else.
 	static class playerListener implements Runnable {
-		private EncryptedReader in;
+		private final EncryptedReader in;
 
 		public playerListener(EncryptedReader in) { // the constructor that
 			// should always be used

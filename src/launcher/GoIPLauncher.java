@@ -28,8 +28,8 @@ public final class GoIPLauncher {
 			"Please wait while it finishes");
 
 	// version members
-	private static double currentVersion = -1;
-	private static final double version = 1.11;
+	private static double currentVersion = 1.12;
+	private static final double version = 1.12;
 
 	final public static void main(String[] args) {
 		jd.setResizable(false);

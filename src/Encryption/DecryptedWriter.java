@@ -12,7 +12,7 @@ public final class DecryptedWriter extends PrintWriter implements AutoCloseable 
 		super(out, truth);
 		this.decryptMethod = Encryption::superDecrypt;
 	}
-
+	
 	public DecryptedWriter(OutputStream out, boolean truth,
 			Function<String, String> encryptMethod) {
 		super(out, truth);
