@@ -177,23 +177,17 @@ public final class GoIPDM {
 	}
 
 	// this one is for the DM to broadcast
-	public static void broadcast(String[] params) {
-
-		final String Message = String.join(" ", params).substring(2);
-		try {
-			ClientConnecter.clients.stream()
-					.filter(x -> x.listener.isConnected())
-					.filter(x -> !x.listener.isClosed())
-					.forEach(x -> x.out.println("DM: " + Message));
-		} catch (Exception e) {
-		}
-	}
 
 	public void broadcast(String message) {
+		int begin;
+		if (message.substring(0, 2).equalsIgnoreCase("bc"))
+			begin = 3;
+		else
+			begin = 0;
 		ClientConnecter.clients.stream().filter(x -> x.listener.isBound())
 				.filter(x -> x.listener.isConnected())
 				.filter(x -> x.listener.isConnected())
-				.forEach(x -> x.out.println("DM: " + message));
+				.forEach(x -> x.out.println("DM: " + message.substring(begin)));
 	}
 
 	// refreshes the player list
@@ -320,7 +314,7 @@ public final class GoIPDM {
 		case "sr":
 			String result = DiceRoll.roll(banana);
 			chatArea.append("You" + result + "\n");
-			broadcast(("bc DM" + result).split(" "));
+			broadcast("bc DM" + result);
 			break;
 		case "roll":
 		case "r":
@@ -329,8 +323,7 @@ public final class GoIPDM {
 		case "bc":
 		default:
 			broadcast(outter);
-			chatArea.append("DM: " + inputLine.getText().replaceFirst("bc", "")
-					+ "\n");
+			chatArea.append("DM: " + inputLine.getText() + "\n");
 			break;
 		}
 
@@ -366,9 +359,18 @@ public final class GoIPDM {
 
 		// player broadcasting without split string
 		public void broadcast(String message) {
-			ClientConnecter.clients.stream().filter(x -> x.listener.isBound())
+			int begin;
+			if (message.substring(0, 2).equalsIgnoreCase("bc"))
+				begin = 3;
+			else
+				begin = 0;
+			ClientConnecter.clients
+					.stream()
+					.filter(x -> x.listener.isBound())
 					.filter(x -> x.listener.isConnected())
-					.forEach(x -> x.out.println(this.Name + ": " + message));
+					.forEach(
+							x -> x.out.println(this.Name + ": "
+									+ message.substring(begin)));
 		}
 
 		@Override
@@ -413,11 +415,8 @@ public final class GoIPDM {
 						chatArea.append(Name + result + "\n");
 						break;
 					default:
-						this.broadcast(inLine);
-						chatArea.append(inputLine.getText());
-						break;
 					case "bc":
-						this.broadcast(inLine.substring(2));
+						this.broadcast(inLine);
 						chatArea.append(inputLine.getText());
 						break;
 					case "msg":
@@ -442,7 +441,7 @@ public final class GoIPDM {
 						} else {
 							chatArea.append(Name);
 							Name = newName;
-							out.println("Name changed to " + params[1]);
+							out.println("Name changed to " + params[1]+".");
 							final StringBuilder newplayerlist = new StringBuilder(
 									"");
 							clientListener
