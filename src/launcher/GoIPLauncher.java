@@ -28,8 +28,8 @@ public final class GoIPLauncher {
 			"Please wait while it finishes");
 
 	// version members
-	private static double currentVersion = 1.12;
-	private static final double version = 1.12;
+	private static double currentVersion;
+	private static final double version = currentVersion = 1.13;
 
 	final public static void main(String[] args) {
 		jd.setResizable(false);
@@ -41,31 +41,8 @@ public final class GoIPLauncher {
 			jd.setLocationRelativeTo(null);
 
 			if (currentVersion == version) {
+				setButtons();
 
-				jd.add(new JLabel(" Choose your role:"), BorderLayout.NORTH);
-
-				DMButton.addActionListener(e -> {
-					try {
-						GoIPDM.main(args);
-						jd.dispose();
-					} catch (Exception d) {
-						jd.removeAll();
-						jd.add(new JLabel(d.getMessage()));
-						jd.revalidate();
-						jd.repaint();
-					}
-				});
-				jd.add(DMButton, BorderLayout.CENTER);
-
-				PlayerButton.addActionListener(e -> {
-					try {
-						GoIPPlayer.main(args);
-						jd.dispose();
-					} catch (Exception d) {
-					}
-				});
-				jd.add(PlayerButton, BorderLayout.SOUTH);
-				jd.setVisible(true);
 			} else {
 				System.out.println(currentVersion);
 				updater.setText("Update GoIP to " + currentVersion);
@@ -76,7 +53,35 @@ public final class GoIPLauncher {
 
 		} catch (Exception e) {
 			jd.setTitle("GoIP version cannot be confirmed.");
+			setButtons();
 		}
+	}
+
+	private static final void setButtons() {
+		jd.add(new JLabel(" Choose your role:"), BorderLayout.NORTH);
+
+		DMButton.addActionListener(e -> {
+			try {
+				GoIPDM.main(new String[0]);
+				jd.dispose();
+			} catch (Exception d) {
+				jd.removeAll();
+				jd.add(new JLabel(d.getMessage()));
+				jd.revalidate();
+				jd.repaint();
+			}
+		});
+		jd.add(DMButton, BorderLayout.CENTER);
+
+		PlayerButton.addActionListener(e -> {
+			try {
+				GoIPPlayer.main(new String[0]);
+				jd.dispose();
+			} catch (Exception d) {
+			}
+		});
+		jd.add(PlayerButton, BorderLayout.SOUTH);
+		jd.setVisible(true);
 	}
 
 	private final static void update(ActionEvent e) {
@@ -92,8 +97,7 @@ public final class GoIPLauncher {
 		jd.repaint();
 
 		try {
-			download(f.getSelectedFile() + "/GoIP v" + currentVersion / 10
-					+ ".jar");
+			download(f.getSelectedFile() + "/GoIP v" + currentVersion + ".jar");
 			jd.setTitle("Complete!");
 			jd.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			jd.remove(waitMessage);
@@ -113,26 +117,22 @@ public final class GoIPLauncher {
 	}
 
 	private final static void download(String target) throws IOException {
-		URL website = new URL(
-				"https://dl.dropboxusercontent.com/u/11902673/GoIP%20Launcher.jar");
-
-		Files.copy(website.openStream(), Paths.get(target),
+		Files.copy(
+				new URL(
+						"https://dl.dropboxusercontent.com/u/11902673/GoIP%20Launcher.jar")
+						.openStream(), Paths.get(target),
 				StandardCopyOption.REPLACE_EXISTING);
 	}
 
-	private final static double getCurrentVersion() {
+	private final static double getCurrentVersion() throws IOException {
 		double version = -1;
-		try {
-			URL oracle = new URL("https://dl.dropboxusercontent.com/u/11902673/version.txt");
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					oracle.openStream()));
+		URL oracle = new URL(
+				"https://dl.dropboxusercontent.com/u/11902673/version.txt");
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+				oracle.openStream()));
 
-			version = Double.parseDouble(in.readLine());
-			in.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		version = Double.parseDouble(in.readLine());
+		in.close();
 		return version;
 	}
 }

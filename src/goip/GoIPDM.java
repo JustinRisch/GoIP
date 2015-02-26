@@ -269,7 +269,8 @@ public final class GoIPDM {
 			break;
 		case "msg":
 			Message(clientListener, outter);
-			chatArea.append(inputLine.getText());
+			chatArea.append(outter);
+			break;
 		case "statroll":
 			DiceRoll.statroll();
 			break;
@@ -325,14 +326,10 @@ public final class GoIPDM {
 		case "r":
 			chatArea.append("You" + DiceRoll.roll(banana) + "\n");
 			break;
-
+		case "bc":
 		default:
 			broadcast(outter);
-			chatArea.append(inputLine.getText() + "\n");
-			break;
-		case "bc":
-			broadcast(outter);
-			chatArea.append(inputLine.getText() + "\n");
+			chatArea.append("DM: "+inputLine.getText().replaceFirst("bc", "") + "\n");
 			break;
 		}
 
@@ -416,11 +413,11 @@ public final class GoIPDM {
 						break;
 					default:
 						this.broadcast(inLine);
-						chatArea.append(inputLine.getText() + "\n");
+						chatArea.append(inputLine.getText());
 						break;
 					case "bc":
 						this.broadcast(inLine.substring(2));
-						chatArea.append(inputLine.getText() + "\n");
+						chatArea.append(inputLine.getText());
 						break;
 					case "msg":
 						final StringBuilder cheese = new StringBuilder(
@@ -509,7 +506,6 @@ public final class GoIPDM {
 						while (ClientConnecter.clients.size() > 0) {
 							ClientConnecter.clients.get(0).out
 									.println("Server closing...");
-
 							kick(ClientConnecter.clients.get(0));
 						}
 

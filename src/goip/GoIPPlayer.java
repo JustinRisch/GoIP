@@ -120,7 +120,7 @@ public final class GoIPPlayer {
 					String input = inputLine.getText().trim();
 					// it appends what you wrote to the chat box
 					String[] params = input.split(" ");
-					if (!input.contains("setname")
+					if (!params[0].equalsIgnoreCase("setname")
 							&& params[0].equalsIgnoreCase("msg")) {
 						// avoid annoying double messages from commands
 						// and responses.
@@ -137,13 +137,9 @@ public final class GoIPPlayer {
 
 					if (!input.equals(null) && !input.equals("")) {
 						if (!connected) {
-							if (input.equalsIgnoreCase("LAN")) {
-								chatArea.setText("Feature Removed due to strange complications. Type in IP");
-							} else {
-								IP = input;
-								frame.setTitle("GoIP Player - " + IP);
-								connected = makeconnection();
-							}
+							IP = input;
+							frame.setTitle("GoIP Player - " + IP);
+							connected = makeconnection();
 						} else if (input.equalsIgnoreCase("reset")) {
 							try {
 								out.println("reset");
@@ -189,7 +185,6 @@ public final class GoIPPlayer {
 		frame.getContentPane().add(lblPlayerList);
 
 		btnRollD.setBounds(439, 226, 91, 23);
-		btnRollD.setToolTipText("Do it. I dare you.");
 		btnRollD.addActionListener(e -> {
 			final DiceBag db = new DiceBag();
 			if (connected) {
@@ -279,11 +274,10 @@ public final class GoIPPlayer {
 
 	// this thread handles incoming information for the player list object. Does
 	// nothing else.
-	static class playerListener implements Runnable {
+	static final class playerListener implements Runnable {
 		private final EncryptedReader in;
 
-		public playerListener(EncryptedReader in) { // the constructor that
-			// should always be used
+		public playerListener(EncryptedReader in) {
 			this.in = in;
 		}
 
@@ -292,11 +286,8 @@ public final class GoIPPlayer {
 			Optional<String> from;
 			try {
 				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
-					from.filter(
-							fromServer -> !fromServer.equals("")
-									&& !fromServer.equals("\n")).ifPresent(
-							fromServer -> listPlayers.setText(fromServer
-									.replace("|", "\n")));
+					from.map(e -> e.replace("|", "\n")).ifPresent(
+							fromServer -> listPlayers.setText(fromServer));
 				}
 			} catch (Exception e) {
 				chatArea.append("");

@@ -24,6 +24,6 @@ public class EncryptedReader extends BufferedReader {
 		// read the input
 		Optional<String> result = Optional.ofNullable(super.readLine());
 		// if it wasn't null, encrypt it.
-		return result.map(encryptIt::apply).orElse(null);
+		return result.map(e->e.replace("\n", "")).map(encryptIt::apply).orElse(null);
 	}
 }
