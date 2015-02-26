@@ -11,30 +11,29 @@ import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
 import javax.swing.ScrollPaneConstants;
-
 import java.awt.Component;
-
 import javax.swing.JScrollPane;
-
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.net.*;
 import java.io.*;
 import java.util.*;
-
-import javax.swing.JDesktopPane;
-
 import Encryption.DecryptedWriter;
 import Encryption.EncryptedReader;
 
-import java.awt.Font;
-
 public final class GoIPDM {
-	public static JFrame frame;
-	public static JTextField inputLine;
-	public static JTextArea chatArea;
-	public static JTextArea listPlayers;
-	public static ClientConnecter clientListener;
+
+	// GUI variables
+	private final static JFrame frame = new JFrame();
+	private final static JTextField inputLine = new JTextField();
+	private final static JTextArea chatArea = new JTextArea();
+	private final static JTextArea listPlayers = new JTextArea();
+	private final static JLabel lblPlayers = new JLabel("Players List");
+	private final static JScrollPane scrollPane = new JScrollPane();
+	private final static JScrollPane scrollPane2 = new JScrollPane();
+	private final static JButton btnRoll = new JButton("Dice Bag");
+	// Communication variables
+	private static ClientConnecter clientListener;
 
 	public static void main(String[] args) throws Exception {
 		try {
@@ -49,7 +48,7 @@ public final class GoIPDM {
 
 			});
 			// begin listening for clients
-			new Thread(clientListener).start();
+			clientListener.start();
 		} catch (IOException e) {
 
 			JDialog jd = new JDialog();
@@ -68,19 +67,19 @@ public final class GoIPDM {
 		// send to player as it contains line
 		// returns, and that screws up everything.
 
-		String message = "Action - syntax - explanation\n";
-		message += "Broadcasting - bc [message] - sends a message to all players.\n";
-		message += "Message - msg (player) [message] - sends a message to a single player. \n";
-		message += "Dice rolling - \nroll (by itself) = 1d20 roll\nroll d# = roll 1 dice of # sides.\nroll #d = roll # dice of 20 sides.\nroll #d# = roll # dice of # sides.\nroll # # = roll # dice of # sides.\n";
-		message += "Loot Distribution - \nLoot [group of players space delimited]:[group of items],[group of players space delimited]:[group of items]... \n";
-		message += "Example: 'Loot Justin Connor:1gp sword of smite, All:2 silver'\n the above would give justin and connor a sword of smite and 1 gp,\n then everyone gets an additional 2 silver\n";
+		String message = "Action - syntax - explanation\n"
+				+ "Broadcasting - bc [message] - sends a message to all players.\n"
+				+ "Message - msg (player) [message] - sends a message to a single player. \n"
+				+ "Dice rolling - \nroll (by itself) = 1d20 roll\nroll d# = roll 1 dice of # sides.\nroll #d = roll # dice of 20 sides.\nroll #d# = roll # dice of # sides.\nroll # # = roll # dice of # sides.\n"
+				+ "Loot Distribution - \nLoot [group of players space delimited]:[group of items],[group of players space delimited]:[group of items]... \n"
+				+ "Example: 'Loot Justin Connor:1gp sword of smite, All:2 silver'\n the above would give justin and connor a sword of smite and 1 gp,\n then everyone gets an additional 2 silver\n";
 		return message;
 	}
 
 	// given a connection to the clientConnector and a message, send that
 	// message to
 	public static void Message(ClientConnecter clients, String outter) {
-		StringBuilder Message = new StringBuilder("");
+		final StringBuilder Message = new StringBuilder("");
 		String[] params = outter.split(" ");
 		if (params[1].equalsIgnoreCase("DM"))
 			return;
@@ -102,10 +101,10 @@ public final class GoIPDM {
 
 	// connects clients and keeps an ArrayList of all connected clients.
 	// Great for broadcasting, messaging between active clients.
-	static class ClientConnecter implements Runnable {
+	static class ClientConnecter extends Thread {
 		private static ServerSocket serverSocket = null;
-		private static ArrayList<Socket> listeners = new ArrayList<Socket>();
-		private static ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
+		private final static ArrayList<Socket> listeners = new ArrayList<Socket>();
+		private final static ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
 
 		public ArrayList<ClientHandler> getClients() {
 			return clients;
@@ -122,7 +121,7 @@ public final class GoIPDM {
 		}
 
 		public void sendList() {
-			StringBuilder temp = new StringBuilder("");
+			final StringBuilder temp = new StringBuilder("");
 			clients.stream().forEach(x -> temp.append(x.Name + "|"));
 
 			clients.stream().forEach(
@@ -143,9 +142,8 @@ public final class GoIPDM {
 							.size() - 1), serverSocket.accept()));
 
 					// Each client gets their own thread.
-					new Thread(clients.get(clients.size() - 1)).start(); // starts
-					// said
-					// thread
+					clients.get(clients.size() - 1).start();
+
 				} catch (IOException e) {
 					System.err.println("Can't Accept connection attempt");
 				}
@@ -202,7 +200,7 @@ public final class GoIPDM {
 
 	// refreshes the player list
 	public static void refresh() {
-		StringBuilder newplayerlist = new StringBuilder("");
+		final StringBuilder newplayerlist = new StringBuilder("");
 
 		clientListener.getClients().stream()
 				.forEach(x -> newplayerlist.append(x.Name + "\n"));
@@ -284,7 +282,7 @@ public final class GoIPDM {
 		case "loot":
 			// example syntax of command: Loot player1 player2:Item1 Item2,
 			// ALL: item3
-			StringBuilder mani = new StringBuilder("");
+			final StringBuilder mani = new StringBuilder("");
 			for (int i = 1; i < banana.length; i++)
 				// cuts off leading command (loot or lt)
 				mani.append(banana[i] + " ");
@@ -343,7 +341,7 @@ public final class GoIPDM {
 	}
 
 	// an individual client's thread and associated objects/methods
-	public static class ClientHandler implements Runnable {
+	public static class ClientHandler extends Thread {
 		private Socket listener;
 		private Socket playerListSocket;
 		public String Name;
@@ -411,10 +409,8 @@ public final class GoIPDM {
 						input.close();
 						listener.close();
 						break;
-
 					case "ping":
-						long date = System.currentTimeMillis();
-						out.println(date + "");
+						out.println(System.currentTimeMillis() + "");
 						break;
 					case "roll":
 					case "r":
@@ -433,8 +429,8 @@ public final class GoIPDM {
 						chatArea.append(inputLine.getText() + "\n");
 						break;
 					case "msg":
-						StringBuilder cheese = new StringBuilder(params[0]
-								+ " " + params[1] + " " + Name + ": ");
+						final StringBuilder cheese = new StringBuilder(
+								params[0] + " " + params[1] + " " + Name + ": ");
 						for (int i = 2; i < params.length; i++)
 							cheese.append(params[i] + " ");
 						Message(GoIPDM.clientListener, cheese.toString());
@@ -455,7 +451,8 @@ public final class GoIPDM {
 							chatArea.append(Name);
 							Name = newName;
 							out.println("Name changed to " + params[1]);
-							StringBuilder newplayerlist = new StringBuilder("");
+							final StringBuilder newplayerlist = new StringBuilder(
+									"");
 							clientListener
 									.getClients()
 									.stream()
@@ -499,8 +496,6 @@ public final class GoIPDM {
 	// standard GUI creation method
 	@SuppressWarnings("static-access")
 	private void initialize() {
-		frame = new JFrame();
-
 		try { // Try to find my local IP address at least and show it in the
 				// title bar.
 			frame.setTitle("GoIP DM - LAN:"
@@ -517,14 +512,13 @@ public final class GoIPDM {
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		JScrollPane scrollPane = new JScrollPane();
+
 		scrollPane.setBounds(10, 11, 409, 222);
 		scrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		frame.getContentPane().add(scrollPane);
 		frame.getContentPane().add(scrollPane);
 
-		chatArea = new JTextArea();
 		scrollPane.setViewportView(chatArea);
 		chatArea.setFocusable(false);
 		chatArea.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -535,23 +529,18 @@ public final class GoIPDM {
 		chatArea.setLineWrap(true);
 		chatArea.setText("Quest has begun! Listening for players." + "\n");
 
-		JScrollPane scrollPane2 = new JScrollPane();
 		scrollPane2.setBounds(429, 24, 97, 209);
 		frame.getContentPane().add(scrollPane2);
 
-		listPlayers = new JTextArea();
 		listPlayers.setLineWrap(true);
 		listPlayers.setFocusable(false);
 		scrollPane2.setViewportView(listPlayers);
 		listPlayers.setTabSize(3);
 		listPlayers.setEditable(false);
 
-		final JLabel lblPlayers = new JLabel("Players List");
-		lblPlayers.setFont(new Font("Palatino Linotype", Font.BOLD, 12));
 		lblPlayers.setBounds(429, 11, 91, 14);
 		frame.getContentPane().add(lblPlayers);
 
-		inputLine = new JTextField();
 		inputLine.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -568,7 +557,6 @@ public final class GoIPDM {
 		frame.getContentPane().add(inputLine);
 		inputLine.setColumns(10);
 
-		final JButton btnRoll = new JButton("Dice Bag");
 		btnRoll.setFocusable(false);
 		btnRoll.addActionListener(e -> {
 			final DiceBag db = new DiceBag();
@@ -594,9 +582,6 @@ public final class GoIPDM {
 		btnRoll.setBounds(429, 244, 97, 23);
 		frame.getContentPane().add(btnRoll);
 
-		JDesktopPane desktopPane = new JDesktopPane();
-		desktopPane.setBounds(160, 21, 1, -21);
-		frame.getContentPane().add(desktopPane);
 	}
 
 }

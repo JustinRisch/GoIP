@@ -18,7 +18,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-public class GoIPLauncher {
+public final class GoIPLauncher {
 	private final static JFrame jd = new JFrame();;
 	private static final JButton updater = new JButton();
 	private static double currentVersion = -1;

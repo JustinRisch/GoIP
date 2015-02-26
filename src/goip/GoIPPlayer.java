@@ -25,27 +25,33 @@ import Encryption.EncryptedReader;
 import java.awt.Dialog.ModalExclusionType;
 
 public final class GoIPPlayer {
-	public static Thread listenUp;
-	public static DecryptedWriter out = null;
-	public static GoIPPlayer window;
-	private static JFrame frmGoIPPlayer;
-	private static JTextField inputLine;
-	private static JTextArea chatArea;
-	public static JTextArea listPlayers;
+
+	// communication variables
+	private static DecryptedWriter out;
+	private static EncryptedReader in;
+	private static Socket transSocket;
+	private static Socket playerListSocket;
+
+	// GUI components
+	private final static JFrame frmGoIPPlayer = new JFrame();;
+	private final static JTextField inputLine = new JTextField();
+	private final static JTextArea chatArea = new JTextArea();
+	private final static JTextArea listPlayers = new JTextArea();
+	private final static JLabel lblPlayerList = new JLabel("Player List");
+	private final static JScrollPane scrollPane = new JScrollPane(listPlayers);
+	private final static JScrollPane scrollPane2 = new JScrollPane(chatArea);
+	private final static JButton btnRollD = new JButton("Dice Bag");
+
+	// some status variables likely set once or twice.
 	private static boolean connected = false;
 	private static String IP = "";
 	private static String lastSent = "";
-	private static Socket transSocket;
-	private static Socket playerListSocket;
-	private static EncryptedReader in;
-	private JButton btnRollD;
-	private String me = "Me";
+	private static String me = "Me";
 
-
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) throws Exception {
 		EventQueue.invokeLater(() -> {
-				window = new GoIPPlayer();
-				frmGoIPPlayer.setVisible(true);
+			new GoIPPlayer();
+			frmGoIPPlayer.setVisible(true);
 		});
 
 	}
@@ -85,7 +91,7 @@ public final class GoIPPlayer {
 
 	// standard GUI initialization
 	void initialize() {
-		frmGoIPPlayer = new JFrame();
+
 		frmGoIPPlayer.setResizable(false);
 		frmGoIPPlayer
 				.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
@@ -95,7 +101,6 @@ public final class GoIPPlayer {
 		frmGoIPPlayer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmGoIPPlayer.getContentPane().setLayout(null);
 
-		inputLine = new JTextField();
 		inputLine.setBounds(7, 227, 422, 20);
 		frmGoIPPlayer.getContentPane().add(inputLine);
 		inputLine.setColumns(10);
@@ -153,32 +158,27 @@ public final class GoIPPlayer {
 				}
 			}
 		});
-		listPlayers = new JTextArea();
 		listPlayers.setTabSize(3);
 		listPlayers.setEditable(false);
 		listPlayers.setBounds(369, 34, 91, 141);
-		JScrollPane scrollPane = new JScrollPane(listPlayers);
+
 		scrollPane.setBounds(433, 23, 102, 200);
 		frmGoIPPlayer.getContentPane().add(scrollPane);
 
-		chatArea = new JTextArea();
 		chatArea.setEditable(false);
 		chatArea.setBounds(10, 11, 422, 220);
 		chatArea.setWrapStyleWord(true);
 		chatArea.setLineWrap(true);
 
-		JScrollPane scrollPane2 = new JScrollPane(chatArea);
 		scrollPane2.setBounds(7, 7, 422, 216);
 		scrollPane2
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		frmGoIPPlayer.getContentPane().add(scrollPane2);
 		chatArea.setText("Type in the IP of your DM or use the dice bag to roll without connecting.\n");
 
-		JLabel lblPlayerList = new JLabel("Player List");
 		lblPlayerList.setBounds(437, -2, 98, 28);
 		frmGoIPPlayer.getContentPane().add(lblPlayerList);
 
-		btnRollD = new JButton("Dice Bag");
 		btnRollD.setBounds(439, 226, 91, 23);
 		btnRollD.setToolTipText("Do it. I dare you.");
 		btnRollD.addActionListener(e -> {
@@ -252,7 +252,9 @@ public final class GoIPPlayer {
 									fromServer -> {
 										if (!lastSent.equalsIgnoreCase("ping"))
 											chatArea.append(fromServer + "\n");
-										else {
+										else if (fromServer.split(" ")[0].equalsIgnoreCase("rick")){
+											
+										} else {
 											long results = System
 													.currentTimeMillis()
 													- Long.parseLong(fromServer);
