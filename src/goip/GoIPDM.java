@@ -17,6 +17,7 @@ import javax.swing.ScrollPaneConstants;
 import java.awt.Component;
 
 import javax.swing.JScrollPane;
+import javax.swing.text.DefaultCaret;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -180,12 +181,12 @@ public final class GoIPDM {
 
 	public void broadcast(String message) {
 		int begin;
-		if (message.substring(0, 2).equalsIgnoreCase("bc"))
+		if (message.length() > 2
+				&& message.substring(0, 2).equalsIgnoreCase("bc"))
 			begin = 3;
 		else
 			begin = 0;
 		ClientConnecter.clients.stream().filter(x -> x.listener.isBound())
-				.filter(x -> x.listener.isConnected())
 				.filter(x -> x.listener.isConnected())
 				.forEach(x -> x.out.println("DM: " + message.substring(begin)));
 	}
@@ -360,7 +361,8 @@ public final class GoIPDM {
 		// player broadcasting without split string
 		public void broadcast(String message) {
 			int begin;
-			if (message.substring(0, 2).equalsIgnoreCase("bc"))
+			if (message.length() > 2
+					&& message.substring(0, 2).equalsIgnoreCase("bc"))
 				begin = 3;
 			else
 				begin = 0;
@@ -392,7 +394,7 @@ public final class GoIPDM {
 				chatArea.append(this.Name + " has connected." + "\n");
 				refresh();
 
-				while ((inLine = input.readLine()) != null) {
+				while ((inLine = input.readLine().trim()) != null) {
 					String[] params = inLine.split(" ");
 					// if they didn't make a roll, say what they typed
 					if (!params[0].equalsIgnoreCase("roll")
@@ -441,7 +443,7 @@ public final class GoIPDM {
 						} else {
 							chatArea.append(Name);
 							Name = newName;
-							out.println("Name changed to " + params[1]+".");
+							out.println("Name changed to " + params[1] + ".");
 							final StringBuilder newplayerlist = new StringBuilder(
 									"");
 							clientListener
@@ -474,7 +476,7 @@ public final class GoIPDM {
 				clientListener.sendList();
 
 			} catch (Exception e) {
-				out.println("Server said no.");
+				out.println("Server said no: " + e.getMessage());
 				out.close();
 				chatArea.append(Name + " has disconnected. \n--"
 						+ e.getMessage() + "--");
@@ -531,6 +533,7 @@ public final class GoIPDM {
 		frame.getContentPane().add(scrollPane);
 
 		scrollPane.setViewportView(chatArea);
+		((DefaultCaret)chatArea.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		chatArea.setFocusable(false);
 		chatArea.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		chatArea.setWrapStyleWord(true);

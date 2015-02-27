@@ -19,6 +19,7 @@ import java.io.*;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.text.DefaultCaret;
 
 import Encryption.DecryptedWriter;
 import Encryption.EncryptedReader;
@@ -169,7 +170,7 @@ public final class GoIPPlayer {
 
 		scrollPane.setBounds(433, 23, 102, 200);
 		frame.getContentPane().add(scrollPane);
-
+		((DefaultCaret)chatArea.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		chatArea.setEditable(false);
 		chatArea.setBounds(10, 11, 422, 220);
 		chatArea.setWrapStyleWord(true);
@@ -247,7 +248,8 @@ public final class GoIPPlayer {
 			Optional<String> from = null;
 
 			try {
-				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
+				while ((from = Optional.ofNullable(in.readLine())) != null
+						&& !from.equals("reset")) {
 					// keyDecrypting and trimming input.
 					from.map(e -> e.trim())
 							.filter(fromServer -> !fromServer.equals("")
@@ -268,7 +270,6 @@ public final class GoIPPlayer {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
 
@@ -290,8 +291,7 @@ public final class GoIPPlayer {
 							fromServer -> listPlayers.setText(fromServer));
 				}
 			} catch (Exception e) {
-				chatArea.append("");
-				e.printStackTrace();
+				listPlayers.setText("");
 			}
 		}
 	}
