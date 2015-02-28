@@ -25,7 +25,7 @@ public class DiceRoll {
 			int sum = 0;
 			int D = 20;
 			int dnum = 0;
-			Integer adder = 0;
+			int adder = 0;
 			for (int x = 1; x < banana.length; x++) {
 				if (banana[x].contains("+") || banana[x].contains("-")) {
 					// continue;
