@@ -313,13 +313,13 @@ public final class GoIPDM {
 
 		case "showroll":
 		case "sr":
-			String result = DiceRoll.roll(banana);
-			chatArea.append("You" + result + "\n");
-			broadcast("bc DM" + result);
+			String result = DiceRoll.roll(banana, "DM");
+			chatArea.append(result + "\n");
+			broadcast(result);
 			break;
 		case "roll":
 		case "r":
-			chatArea.append("You" + DiceRoll.roll(banana) + "\n");
+			chatArea.append(DiceRoll.roll(banana, "DM") + "\n");
 			break;
 		case "bc":
 		default:
@@ -351,7 +351,7 @@ public final class GoIPDM {
 			out = new DecryptedWriter(listener.getOutputStream(), true);
 
 			this.Name = this.listener.getInetAddress().toString()
-					.replace("/", "");
+					.replace("/", "").trim();
 			this.IP = this.Name;
 			this.playerListSocket = temp2;
 			PlayerListWriter = new DecryptedWriter(
@@ -401,6 +401,9 @@ public final class GoIPDM {
 							&& !params[0].equalsIgnoreCase("r"))
 						chatArea.setText(chatArea.getText() + " " + Name + ": "
 								+ inLine + "\n");
+					if (inLine.contains("~")) {
+						continue;
+					}
 					// begin looking for command phrases.
 					switch (params[0].toLowerCase()) {
 					case "exit":
@@ -412,7 +415,7 @@ public final class GoIPDM {
 						break;
 					case "roll":
 					case "r":
-						String result = DiceRoll.roll(params);
+						String result = DiceRoll.roll(params, this.Name);
 						out.println("You " + result);
 						chatArea.append(Name + result + "\n");
 						break;
@@ -533,7 +536,8 @@ public final class GoIPDM {
 		frame.getContentPane().add(scrollPane);
 
 		scrollPane.setViewportView(chatArea);
-		((DefaultCaret)chatArea.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		((DefaultCaret) chatArea.getCaret())
+				.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		chatArea.setFocusable(false);
 		chatArea.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		chatArea.setWrapStyleWord(true);
@@ -573,24 +577,9 @@ public final class GoIPDM {
 
 		btnRoll.setFocusable(false);
 		btnRoll.addActionListener(e -> {
-			final DiceBag db = new DiceBag();
-			db.btnRoll.addActionListener(y -> {
-				String temp = "roll " + db.j[0].getText().trim() + "d100 "
-						+ db.j[1].getText().trim() + "d20 "
-						+ db.j[2].getText().trim() + "d12 "
-						+ db.j[3].getText().trim() + "d10 "
-						+ db.j[4].getText().trim() + "d8 "
-						+ db.j[5].getText().trim() + "d6 "
-						+ db.j[6].getText().trim() + "d4";
-				if (!db.dc.getText().trim().equals(""))
-					temp += " " + db.cd.getText().trim() + "d"
-							+ db.dc.getText().trim();
-				if (!db.add.getText().trim().equals(""))
-					temp += " +" + db.add.getText().trim();
-				chatArea.append("You" + DiceRoll.roll(temp.split(" ")) + "\n");
-			});
-			db.statbutt.addActionListener(x -> chatArea.append(DiceRoll
-					.statroll()));
+			final DiceBag db = new DiceBag("DM");
+			db.setButtonBehavior(y -> chatArea.append(db.localRoll()+"\n"));
+			db.setStatButtonBehavior(x -> chatArea.append(DiceRoll.statroll()+"\n"));
 			db.setVisible(true);
 		});
 		btnRoll.setBounds(429, 244, 97, 23);

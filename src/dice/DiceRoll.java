@@ -1,4 +1,5 @@
 package dice;
+
 import java.util.Arrays;
 
 public class DiceRoll {
@@ -12,6 +13,10 @@ public class DiceRoll {
 				+ "] " + "[" + rolls[2] + "] " + "[" + rolls[1] + "] " + "["
 				+ rolls[0] + "]\n";
 		return result;
+	}
+
+	public final static String roll(String[] banana, String name) {
+		return name + " : " + roll(banana);
 	}
 
 	public final static String roll(String[] banana) {
@@ -61,12 +66,12 @@ public class DiceRoll {
 				results += "/" + D + " ";
 			}
 			sum += adder;
-			
-			if (adder>0)
-				return " rolled a " + sum +": " + results + " (+" + adder + ").";
-			else 
-				return " rolled a " + sum +": " + results;
-			
+
+			if (adder > 0)
+				return sum + ": " + results + " (+" + adder + ").";
+			else
+				return sum + ": " + results;
+
 		} catch (Exception e) {
 			return " got an Error - " + e.getMessage(); // System.out.println(Encryption.encrypt(Message)e.getMessage());
 		}

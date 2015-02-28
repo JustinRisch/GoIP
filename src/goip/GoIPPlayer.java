@@ -170,7 +170,8 @@ public final class GoIPPlayer {
 
 		scrollPane.setBounds(433, 23, 102, 200);
 		frame.getContentPane().add(scrollPane);
-		((DefaultCaret)chatArea.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		((DefaultCaret) chatArea.getCaret())
+				.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		chatArea.setEditable(false);
 		chatArea.setBounds(10, 11, 422, 220);
 		chatArea.setWrapStyleWord(true);
@@ -187,49 +188,23 @@ public final class GoIPPlayer {
 
 		btnRollD.setBounds(439, 226, 91, 23);
 		btnRollD.addActionListener(e -> {
-			final DiceBag db = new DiceBag();
+			final DiceBag db = new DiceBag(me);
 			if (connected) {
-				db.btnRoll.addActionListener(y -> {
-					String temp = "roll " + db.j[0].getText().trim() + "d100 "
-							+ db.j[1].getText().trim() + "d20 "
-							+ db.j[2].getText().trim() + "d12 "
-							+ db.j[3].getText().trim() + "d10 "
-							+ db.j[4].getText().trim() + "d8 "
-							+ db.j[5].getText().trim() + "d6 ";
-					temp += db.j[6].getText().trim() + "d4";
-					if (!db.dc.getText().trim().equals(""))
-						temp += " " + db.cd.getText().trim() + "d"
-								+ db.dc.getText().trim();
-					if (!db.add.getText().trim().equals(""))
-						temp += " +" + db.add.getText().trim();
-					out.println(temp);
+				db.setButtonBehavior(y -> {
+					String x= db.localRoll();
+					out.println("db~"+ x.replace(me,""));
+					chatArea.append(x + "\n");
+				});
+				db.setStatButtonBehavior(x -> {
+					String y;
+					chatArea.append(y = DiceRoll.statroll());
+					out.println("db~" + y);
 				});
 			} else {
-				db.statbutt.addActionListener(x -> chatArea.append(DiceRoll
+				db.setStatButtonBehavior(x -> chatArea.append(DiceRoll
 						.statroll()));
-				db.btnRoll.addActionListener(z -> {
-					String temp = "roll " + db.j[0].getText().trim() + "d100 "
-							+ db.j[1].getText().trim() + "d20 "
-							+ db.j[2].getText().trim() + "d12 "
-							+ db.j[3].getText().trim() + "d10 "
-							+ db.j[4].getText().trim() + "d8 "
-							+ db.j[5].getText().trim() + "d6 "
-							+ db.j[6].getText().trim() + "d4";
-					if (!db.dc.getText().trim().equals(""))
-						temp += " " + db.cd.getText().trim() + "d"
-								+ db.dc.getText().trim();
-					if (!db.add.getText().trim().equals(""))
-						temp += " +" + db.add.getText().trim();
-					String note = db.NoteBox.getText().trim();
-					if (!note.equalsIgnoreCase("Description of Bag"))
-						chatArea.append(note + ":"
-								+ DiceRoll.roll(temp.split(" ")) + "\n");
-					else
-						chatArea.append("You "
-								+ DiceRoll.roll(temp.split(" ")).trim() + "\n");
-				});
+				db.setButtonBehavior(z -> chatArea.append(db.localRoll() + "\n"));
 			}
-
 			db.setVisible(true);
 		});
 		frame.getContentPane().add(btnRollD);
