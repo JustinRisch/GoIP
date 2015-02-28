@@ -21,7 +21,7 @@ public class DiceRoll {
 
 	public final static String roll(String[] banana) {
 		try {
-			String results = "";
+			StringBuilder results = new StringBuilder("");
 			int sum = 0;
 			int D = 20;
 			int dnum = 0;
@@ -54,16 +54,16 @@ public class DiceRoll {
 				for (int i = 0; i < dnum; i++) {
 					int roll = (int) Math.floor(Math.random() * D + 1);
 					sum += roll;
-					results += roll;
-					results += "/" + D + " ";
+					results.append(roll);
+					results.append("/" + D + " ");
 				}
 
 			}
 			if (banana.length < 2) {
 				int roll = (int) Math.floor(Math.random() * D + 1);
 				sum += roll;
-				results += roll;
-				results += "/" + D + " ";
+				results.append(roll);
+				results.append("/" + D + " ");
 			}
 			sum += adder;
 

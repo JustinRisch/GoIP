@@ -122,6 +122,7 @@ public final class GoIPLauncher {
 						"https://dl.dropboxusercontent.com/u/11902673/GoIP%20Launcher.jar")
 						.openStream(), Paths.get(target),
 				StandardCopyOption.REPLACE_EXISTING);
+		
 	}
 
 	private final static double getCurrentVersion() throws IOException {

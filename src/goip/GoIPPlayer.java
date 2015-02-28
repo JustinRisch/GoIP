@@ -191,8 +191,8 @@ public final class GoIPPlayer {
 			final DiceBag db = new DiceBag(me);
 			if (connected) {
 				db.setButtonBehavior(y -> {
-					String x= db.localRoll();
-					out.println("db~"+ x.replace(me,""));
+					String x = db.localRoll();
+					out.println("db~" + x.replace(me, ""));
 					chatArea.append(x + "\n");
 				});
 				db.setStatButtonBehavior(x -> {

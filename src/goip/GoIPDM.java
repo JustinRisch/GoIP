@@ -578,8 +578,9 @@ public final class GoIPDM {
 		btnRoll.setFocusable(false);
 		btnRoll.addActionListener(e -> {
 			final DiceBag db = new DiceBag("DM");
-			db.setButtonBehavior(y -> chatArea.append(db.localRoll()+"\n"));
-			db.setStatButtonBehavior(x -> chatArea.append(DiceRoll.statroll()+"\n"));
+			db.setButtonBehavior(y -> chatArea.append(db.localRoll() + "\n"));
+			db.setStatButtonBehavior(x -> chatArea.append(DiceRoll.statroll()
+					+ "\n"));
 			db.setVisible(true);
 		});
 		btnRoll.setBounds(429, 244, 97, 23);

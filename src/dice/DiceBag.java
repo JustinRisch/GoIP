@@ -29,15 +29,17 @@ public final class DiceBag extends JFrame {
 	private final JTextField NoteBox;
 	private final String name;
 	private final JPanel buttonPane = new JPanel();
-	
-	public void setStatButtonBehavior(ActionListener e){
+
+	public void setStatButtonBehavior(ActionListener e) {
 		statbutt.addActionListener(e);
-	} 
-	public void setButtonBehavior(ActionListener e){
+	}
+
+	public void setButtonBehavior(ActionListener e) {
 		btnRoll.addActionListener(e);
 	}
+
 	public DiceBag(String name) {
-		this.name=name;
+		this.name = name;
 		this.setTitle("Dice Bag");
 		this.setBounds(100, 100, 230, 305);
 		this.setMaximumSize(new Dimension(230, 305));
@@ -79,7 +81,6 @@ public final class DiceBag extends JFrame {
 		cd.setBounds(5, 168, 86, 20);
 		contentPane.add(cd);
 
-		
 		buttonPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.add(buttonPane, BorderLayout.SOUTH);
 		buttonPane.setLayout(new BorderLayout());
