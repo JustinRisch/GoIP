@@ -20,8 +20,9 @@ import javax.swing.JLabel;
 
 public final class GoIPLauncher {
 	// GUI members
-	private final static JFrame jd = new JFrame();;
+	private static final JFrame jd = new JFrame();;
 	private static final JButton updater = new JButton();
+	private static final JLabel roleLabel = new JLabel(" Choose your role:");
 	private static final JButton DMButton = new JButton("Dungeon Master");
 	private static final JButton PlayerButton = new JButton("Player");
 	private static final JFileChooser f = new JFileChooser();
@@ -33,6 +34,7 @@ public final class GoIPLauncher {
 	private static final double version = currentVersion = 1.15;
 
 	final public static void main(String[] args) {
+
 		jd.setResizable(false);
 		jd.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		try {
@@ -59,7 +61,7 @@ public final class GoIPLauncher {
 	}
 
 	private static final void setButtons() {
-		jd.add(new JLabel(" Choose your role:"), BorderLayout.NORTH);
+		jd.add(roleLabel, BorderLayout.NORTH);
 
 		DMButton.addActionListener(e -> {
 			try {
@@ -72,7 +74,7 @@ public final class GoIPLauncher {
 				jd.repaint();
 			}
 		});
-		jd.add(DMButton, BorderLayout.CENTER);
+		jd.add(DMButton, BorderLayout.WEST);
 
 		PlayerButton.addActionListener(e -> {
 			try {
@@ -81,11 +83,20 @@ public final class GoIPLauncher {
 			} catch (Exception d) {
 			}
 		});
-		jd.add(PlayerButton, BorderLayout.SOUTH);
+		jd.add(PlayerButton, BorderLayout.CENTER);
+
+		updater.setText("Force update");
+		updater.addActionListener(GoIPLauncher::update);
+		updater.setVisible(true);
+		jd.add(updater, BorderLayout.SOUTH);
 		jd.setVisible(true);
+
 	}
 
 	private final static void update(ActionEvent e) {
+		jd.remove(roleLabel);
+		jd.remove(DMButton);
+		jd.remove(PlayerButton);
 
 		f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		f.showSaveDialog(null);
