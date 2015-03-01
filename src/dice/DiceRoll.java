@@ -6,12 +6,11 @@ public class DiceRoll {
 	public final static String statroll() {
 		String result = "";
 		int[] rolls = new int[4];
-		for (int i = 0; i < 4; i++)
-			rolls[i] = (int) (Math.random() * 6) + 1;
+		Arrays.setAll(rolls, e->(int) (Math.random() * 6) + 1);
 		Arrays.sort(rolls);
 		result = "Total=" + (rolls[3] + rolls[2] + rolls[1]) + "; [" + rolls[3]
 				+ "] " + "[" + rolls[2] + "] " + "[" + rolls[1] + "] " + "["
-				+ rolls[0] + "]\n";
+				+ rolls[0] + "]";
 		return result;
 	}
 

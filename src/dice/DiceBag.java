@@ -129,25 +129,25 @@ public final class DiceBag extends JFrame {
 	}
 
 	public final String localRoll() {
-		String temp = "roll " + j[0].getText().trim() + "d100 "
-				+ j[1].getText().trim() + "d20 " + j[2].getText().trim()
-				+ "d12 " + j[3].getText().trim() + "d10 "
-				+ j[4].getText().trim() + "d8 " + j[5].getText().trim() + "d6 "
-				+ j[6].getText().trim() + "d4";
+		StringBuilder temp = new StringBuilder("roll " + j[0].getText().trim()
+				+ "d100 " + j[1].getText().trim() + "d20 "
+				+ j[2].getText().trim() + "d12 " + j[3].getText().trim()
+				+ "d10 " + j[4].getText().trim() + "d8 "
+				+ j[5].getText().trim() + "d6 " + j[6].getText().trim() + "d4");
 		if (!dc.getText().trim().equals(""))
-			temp += " " + cd.getText().trim() + "d" + dc.getText().trim();
+			temp.append(" " + cd.getText().trim() + "d" + dc.getText().trim());
 		if (!add.getText().trim().equals(""))
-			temp += " +" + add.getText().trim();
+			temp.append(" +" + add.getText().trim());
 		String note = NoteBox.getText().trim();
 		if (!note.equalsIgnoreCase("Description of Bag") && !note.equals(""))
-			return DiceRoll.roll(temp.split(" "), note);
+			return DiceRoll.roll(temp.toString().split(" "), note);
 		else
-			return DiceRoll.roll(temp.split(" "), name);
+			return DiceRoll.roll(temp.toString().split(" "), name);
 	}
 
 	class ButtonListener implements ActionListener {
-		JTextField JTF;// where the button should get it's info from.
-		int increment;// how much it should increment the number in that JTF
+		final JTextField JTF;// where the button should get it's info from.
+		final int increment;// how much it should increment the number in that JTF
 
 		public ButtonListener(JTextField JTF, int increment) {
 			this.JTF = JTF;

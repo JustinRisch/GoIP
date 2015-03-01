@@ -505,7 +505,6 @@ public final class GoIPDM {
 		Runtime.getRuntime().addShutdownHook(
 				new Thread(() -> {
 					// kick everyone.
-
 						while (ClientConnecter.clients.size() > 0) {
 							ClientConnecter.clients.get(0).out
 									.println("Server closing...");
