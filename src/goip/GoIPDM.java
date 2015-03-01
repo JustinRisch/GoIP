@@ -436,11 +436,9 @@ public final class GoIPDM {
 						String newName = params[1];
 						// enforces unique names.
 
-						long sharedNames = clientListener
-								.getClients()
-								.stream()
-								.filter(tempClient -> tempClient.Name
-										.equalsIgnoreCase(newName)).count();
+						long sharedNames = clientListener.getClients().stream()
+								.filter(c -> c.Name.equalsIgnoreCase(newName))
+								.count();
 						if (sharedNames > 0) {
 							out.println("Could not change name: Username taken.");
 						} else {

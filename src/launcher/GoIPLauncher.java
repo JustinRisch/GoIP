@@ -3,7 +3,6 @@ package launcher;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -116,8 +115,7 @@ public final class GoIPLauncher {
 			jd.add(new JLabel("Your download is complete. Please run that jar."),
 					BorderLayout.CENTER);
 
-			new File(GoIPLauncher.class.getProtectionDomain().getCodeSource()
-					.getLocation().toString()).deleteOnExit();
+		
 			jd.revalidate();
 			jd.repaint();
 		} catch (Exception err) {
