@@ -30,7 +30,7 @@ public final class GoIPLauncher {
 
 	// version members
 	private static double currentVersion;
-	private static final double version = currentVersion = 1.15;
+	private static final double version = currentVersion = 1.16;
 
 	final public static void main(String[] args) {
 

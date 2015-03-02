@@ -11,6 +11,7 @@ public final class DecryptedWriter extends PrintWriter implements AutoCloseable 
 	
 	public DecryptedWriter(OutputStream out, boolean truth) {
 		super(out, truth);
+		
 		this.decryptMethod = Encryption::superDecrypt;
 	}
 	
