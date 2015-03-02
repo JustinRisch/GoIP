@@ -56,6 +56,7 @@ public final class GoIPDM {
 
 			});
 			// begin listening for clients
+
 			clientListener.start();
 		} catch (IOException e) {
 
@@ -134,6 +135,7 @@ public final class GoIPDM {
 		}
 
 		public ClientConnecter() throws IOException {
+
 			serverSocket = new ServerSocket(1813);
 		}
 
@@ -147,6 +149,7 @@ public final class GoIPDM {
 							.size() - 1), serverSocket.accept()));
 
 					// Each client gets their own thread.
+
 					clients.get(clients.size() - 1).start();
 
 				} catch (IOException e) {
@@ -341,6 +344,7 @@ public final class GoIPDM {
 																				// with
 			// player list
 			// enabled
+
 			this.listener = temp;
 			out = new DecryptedWriter(listener.getOutputStream(), true);
 
@@ -350,6 +354,7 @@ public final class GoIPDM {
 			this.playerListSocket = temp2;
 			PlayerListWriter = new DecryptedWriter(
 					playerListSocket.getOutputStream(), true);
+
 		}
 
 		public void interpret(String inLine) throws IOException {
@@ -398,7 +403,8 @@ public final class GoIPDM {
 						.count();
 				if (sharedNames > 0) {
 					out.println("Could not change name: Username taken.");
-				}else if (params[1].equalsIgnoreCase("DM") || params[1].equalsIgnoreCase("server")){
+				} else if (params[1].equalsIgnoreCase("DM")
+						|| params[1].equalsIgnoreCase("server")) {
 					out.println("Nice try.");
 				} else {
 					chatArea.append(Name);
@@ -452,9 +458,9 @@ public final class GoIPDM {
 				input = new EncryptedReader(new InputStreamReader(
 						listener.getInputStream()));
 				out.println("Connected! "
-					+"Please change your username with setname [username]. "
-					+"You may also use roll xdy to roll x number of y sided dice! "
-					+"msg [username] to message a player.");
+						+ "Please change your username with setname [username]. "
+						+ "You may also use roll xdy to roll x number of y sided dice! "
+						+ "msg [username] to message a player.");
 				clientListener.sendList();
 				chatArea.append(this.Name + " has connected." + "\n");
 				refresh();
@@ -479,7 +485,7 @@ public final class GoIPDM {
 				out.println("Server said no: " + e.getMessage());
 				out.close();
 				chatArea.append(Name + " has disconnected. \n--"
-						+ e.getMessage() + "--");
+						+ e.getMessage() + "--\n");
 				clientListener.removeClient(this);
 				refresh();
 				clientListener.sendList();
@@ -501,23 +507,24 @@ public final class GoIPDM {
 			frame.setTitle("GoIP DM - Could not find local or external IP. That's some weird shit.");
 		}
 		// when it closes...
-		Runtime.getRuntime().addShutdownHook(
-				new Thread(() -> {
+		Thread closer = new Thread(
+				() -> {
 					// kick everyone.
-						while (ClientConnecter.clients.size() > 0) {
-							ClientConnecter.clients.get(0).out
-									.println("Server closing...");
-							kick(ClientConnecter.clients.get(0));
-						}
-						// Needed to throw a run time exception to be able to
-						// close
-						// it...
-						// don't ask. I don't know.
+					while (ClientConnecter.clients.size() > 0) {
+						ClientConnecter.clients.get(0).out
+								.println("Server closing...");
+						kick(ClientConnecter.clients.get(0));
+					}
+					// Needed to throw a run time exception to be able to
+					// close
+					// it...
+					// don't ask. I don't know.
+					int[] i = {};
+					i[1]=1;
+					System.exit(0);
+				});
 
-						int[] x = {};
-						x[1] = 0;
-						System.exit(1);
-					}));
+		Runtime.getRuntime().addShutdownHook(closer);
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 542, 302);
 		frame.setLocationRelativeTo(null);

@@ -119,19 +119,20 @@ public final class GoIPPlayer {
 					String input = inputLine.getText().trim();
 					// it appends what you wrote to the chat box
 					String[] params = input.split(" ");
-					if (!params[0].equalsIgnoreCase("setname")
-							&& params[0].equalsIgnoreCase("msg")) {
-						// avoid annoying double messages from commands
-						// and responses.
-
+					switch (params[0].toLowerCase()) {
+					default:
 						chatArea.append(me + ": " + inputLine.getText() + "\n");
-					} else if (params[0].equalsIgnoreCase("setname")
-							&& params.length > 1) {
+						break;
+					case "setname":
 						me = params[1];
-					} else if (params[0].equalsIgnoreCase("msg")
-							&& input.split(" ").length > 1) {
+						break;
+					case "msg":
 						chatArea.append("To " + params[1] + ": "
 								+ inputLine.getText() + "\n");
+						break;
+					case "cls":
+						chatArea.setText("");
+						break;
 					}
 
 					if (!input.equals(null) && !input.equals("")) {
