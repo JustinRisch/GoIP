@@ -6,7 +6,7 @@ public class DiceRoll {
 	public final static String statroll() {
 		String result = "";
 		int[] rolls = new int[4];
-		Arrays.setAll(rolls, e->(int) (Math.random() * 6) + 1);
+		Arrays.setAll(rolls, e -> (int) (Math.random() * 6) + 1);
 		Arrays.sort(rolls);
 		result = "Total=" + (rolls[3] + rolls[2] + rolls[1]) + "; [" + rolls[3]
 				+ "] " + "[" + rolls[2] + "] " + "[" + rolls[1] + "] " + "["
@@ -17,7 +17,7 @@ public class DiceRoll {
 	public final static String roll(String[] banana, String name) {
 		return name + " : " + roll(banana);
 	}
-	
+
 	public final static String roll(String[] banana) {
 		try {
 			StringBuilder results = new StringBuilder("");
@@ -28,7 +28,7 @@ public class DiceRoll {
 			for (int x = 1; x < banana.length; x++) {
 				if (banana[x].contains("+") || banana[x].contains("-")) {
 					// continue;
-					adder += new Integer(banana[x]);
+					adder += Integer.parseInt(banana[x]);
 					continue;
 				}
 				if (banana[x].contains("d")) {

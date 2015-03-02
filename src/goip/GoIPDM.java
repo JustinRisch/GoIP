@@ -530,15 +530,12 @@ public final class GoIPDM {
 		scrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		frame.getContentPane().add(scrollPane);
-		frame.getContentPane().add(scrollPane);
 
 		scrollPane.setViewportView(chatArea);
 		((DefaultCaret) chatArea.getCaret())
 				.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		chatArea.setFocusable(false);
 		chatArea.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		chatArea.setWrapStyleWord(true);
-		chatArea.setLineWrap(true);
 		chatArea.setEditable(false);
 		chatArea.setWrapStyleWord(true);
 		chatArea.setLineWrap(true);
