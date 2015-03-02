@@ -392,16 +392,17 @@ public final class GoIPDM {
 				chatArea.append(inputLine.getText() + "\n");
 				break;
 			case "setname":
-				String newName = params[1];
 				// enforces unique names.
-
 				long sharedNames = clientListener.getClients().stream()
-						.filter(c -> c.Name.equalsIgnoreCase(newName)).count();
+						.filter(c -> c.Name.equalsIgnoreCase(params[1]))
+						.count();
 				if (sharedNames > 0) {
 					out.println("Could not change name: Username taken.");
+				}else if (params[1].equalsIgnoreCase("DM") || params[1].equalsIgnoreCase("server")){
+					out.println("Nice try.");
 				} else {
 					chatArea.append(Name);
-					Name = newName;
+					Name = params[1];
 					out.println("Name changed to " + params[1] + ".");
 					final StringBuilder newplayerlist = new StringBuilder("");
 					clientListener.getClients().stream()
@@ -450,10 +451,10 @@ public final class GoIPDM {
 					throw new Exception("Duplicate LAN connection.");
 				input = new EncryptedReader(new InputStreamReader(
 						listener.getInputStream()));
-				out.println("Connected!");
-				out.println("Please change your username with setname [username]");
-				out.println("You may also use roll xdy to roll x number of y sided dice!");
-				out.println("msg [username] to message a player.");
+				out.println("Connected! "
+					+"Please change your username with setname [username]. "
+					+"You may also use roll xdy to roll x number of y sided dice! "
+					+"msg [username] to message a player.");
 				clientListener.sendList();
 				chatArea.append(this.Name + " has connected." + "\n");
 				refresh();
