@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Arrays;
 
 @SuppressWarnings("serial")
 public final class DiceBag extends JFrame {
@@ -54,7 +55,7 @@ public final class DiceBag extends JFrame {
 
 		j = new JTextField[7];
 		String[] labels = { "d100", "d20", "d12", "d10", "d8", "d6", "d4" };
-		for (int i = 0; i < 7; i++) {
+		Arrays.setAll(j, i-> {
 			j[i] = new JTextField();
 			j[i].setHorizontalAlignment(SwingConstants.RIGHT);
 			j[i].setBounds(5, i * 24, 86, 20);
@@ -74,7 +75,8 @@ public final class DiceBag extends JFrame {
 			JLabel lblD = new JLabel(labels[i]);
 			lblD.setBounds(98, 2 + 24 * i, 46, 14);
 			contentPane.add(lblD);
-		}
+			return j[i];
+		});
 
 		cd = new JTextField(10);
 		cd.setHorizontalAlignment(SwingConstants.RIGHT);

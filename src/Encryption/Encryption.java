@@ -19,8 +19,8 @@ public class Encryption {
 
 	public static String superEncrypt(String start) {
 		for (int i = 0; i < 3; i++) {
-			start = scramble(start, 7);
-			start = keyEncrypt(7, start);
+			start = scramble(start, 3);
+			start = keyEncrypt(3, start);
 		}
 		return start;
 	}
@@ -29,8 +29,8 @@ public class Encryption {
 		if (start.length() < 1)
 			return start;
 		for (int i = 0; i < 3; i++) {
-			start = keyDecrypt(7, start);
-			start = descramble(start, 7);
+			start = keyDecrypt(3, start);
+			start = descramble(start, 3);
 		}
 		return start;
 	}

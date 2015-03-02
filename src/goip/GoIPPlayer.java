@@ -14,7 +14,6 @@ import javax.swing.ScrollPaneConstants;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.net.*;
-import java.util.Optional;
 import java.io.*;
 
 import javax.swing.JLabel;
@@ -219,30 +218,24 @@ public final class GoIPPlayer {
 
 		@Override
 		public void run() {
-			Optional<String> from = null;
-
-			try {
-				while ((from = Optional.ofNullable(in.readLine())) != null
-						&& !from.equals("reset")) {
-					// keyDecrypting and trimming input.
-					from.map(e -> e.trim())
-							.filter(fromServer -> !fromServer.equals("")
-									&& !fromServer.equals("\n"))
-							.ifPresent(
-									fromServer -> {
-										if (!lastSent.equalsIgnoreCase("ping")) {
-											chatArea.append(fromServer + "\n");
-										} else {
-											long results = System
-													.currentTimeMillis()
-													- Long.parseLong(fromServer);
-											chatArea.append(results + "\n");
-										}
-									});
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			while (true) {
+				in.lines()
+						.map(e -> e.trim())
+						.filter(fromServer -> !fromServer.equals("")
+								&& !fromServer.equals("\n"))
+						.forEach(
+								fromServer -> {
+									if (!lastSent.equalsIgnoreCase("ping")) {
+										chatArea.append(fromServer + "\n");
+									} else {
+										long results = System
+												.currentTimeMillis()
+												- Long.parseLong(fromServer);
+										chatArea.append(results + "\n");
+									}
+								});
 			}
+
 		}
 	}
 
@@ -257,14 +250,16 @@ public final class GoIPPlayer {
 
 		@Override
 		public void run() {
-			Optional<String> from;
 			try {
-				while ((from = Optional.ofNullable(in.readLine())).isPresent()) {
-					from.map(e -> e.replace("|", "\n")).ifPresent(
-							fromServer -> listPlayers.setText(fromServer));
+				while (true) {
+					in.lines()
+							.map(e -> e.replace("|", "\n"))
+							.forEach(
+									fromServer -> listPlayers
+											.setText(fromServer));
 				}
 			} catch (Exception e) {
-				listPlayers.setText("");
+				listPlayers.setText("Error.");
 			}
 		}
 	}

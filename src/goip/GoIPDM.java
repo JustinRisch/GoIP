@@ -409,7 +409,8 @@ public final class GoIPDM {
 					case "r":
 						String result = DiceRoll.roll(params, this.Name);
 						out.println(result);
-						chatArea.append(this.Name + result.replace(this.Name, "") + "\n");
+						chatArea.append(this.Name
+								+ result.replace(this.Name, "") + "\n");
 						break;
 					default:
 					case "bc":
