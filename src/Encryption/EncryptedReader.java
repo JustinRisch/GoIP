@@ -5,10 +5,15 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class EncryptedReader extends BufferedReader {
 	private Function<String, String> encryptIt;
 
+	@Override
+	public Stream<String> lines() {
+		return super.lines().map(encryptIt::apply);
+	}
 	public EncryptedReader(Reader in) {
 		super(in);
 		encryptIt = Encryption::superEncrypt;

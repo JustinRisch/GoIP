@@ -8,6 +8,7 @@ import java.util.function.Function;
 public final class DecryptedWriter extends PrintWriter implements AutoCloseable {
 	private Function<String, String> decryptMethod;
 
+	
 	public DecryptedWriter(OutputStream out, boolean truth) {
 		super(out, truth);
 		this.decryptMethod = Encryption::superDecrypt;

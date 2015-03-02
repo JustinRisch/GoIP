@@ -92,14 +92,12 @@ public final class GoIPDM {
 			return;
 
 		try {
-			// locates the socket of the intended recipient.
-			ClientHandler x = clients.getClient(params[1]);
 			// Easiest way to trim the user name and "msg" from the message.
 			for (int i = 2; i < params.length; i++)
 				Message.append(params[i] + " ");
 			// send message down the socket's output stream. Probably should
 			// find a way to access the variable associated with this.
-			x.out.println(Message.toString());
+			clients.getClient(params[1]).out.println(Message.toString());
 		} catch (Exception e) {
 			chatArea.append("Player not found: " + params[1]);
 
@@ -130,7 +128,6 @@ public final class GoIPDM {
 		public void sendList() {
 			final StringBuilder temp = new StringBuilder("");
 			clients.stream().forEach(x -> temp.append(x.Name + "|"));
-
 			clients.stream().forEach(
 					x -> x.PlayerListWriter.println(temp.toString()));
 		}
@@ -163,7 +160,6 @@ public final class GoIPDM {
 		}
 
 		public Socket getSocket(String x) {
-
 			return clients.stream().filter(y -> y.Name.equalsIgnoreCase(x))
 					.findFirst().map(y -> y.listener).orElse(null);
 
@@ -331,17 +327,13 @@ public final class GoIPDM {
 	}
 
 	// an individual client's thread and associated objects/methods
-	public static class ClientHandler extends Thread {
+	static class ClientHandler extends Thread {
 		private final Socket listener;
 		private final Socket playerListSocket;
 		public String Name;
-		private String IP;
+		private final String IP;
 		private final DecryptedWriter PlayerListWriter;
 		private final DecryptedWriter out;
-
-		public DecryptedWriter getTextWriter() {
-			return out;
-		}
 
 		public ClientHandler(Socket temp, Socket temp2) throws IOException { // Constructor
 																				// with
@@ -416,8 +408,8 @@ public final class GoIPDM {
 					case "roll":
 					case "r":
 						String result = DiceRoll.roll(params, this.Name);
-						out.println("You " + result);
-						chatArea.append(Name + result + "\n");
+						out.println(result);
+						chatArea.append(this.Name + result.replace(this.Name, "") + "\n");
 						break;
 					default:
 					case "bc":

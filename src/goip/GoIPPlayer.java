@@ -72,10 +72,9 @@ public final class GoIPPlayer {
 			out = new DecryptedWriter(transSocket.getOutputStream(), true);
 			in = new EncryptedReader(new InputStreamReader(
 					transSocket.getInputStream()));
-			new Thread(new playerListener(new EncryptedReader(
-					new InputStreamReader(playerListSocket.getInputStream()))))
-					.start();
-			new Thread(new Ears(transSocket, in)).start();
+			new playerListener(new EncryptedReader(new InputStreamReader(
+					playerListSocket.getInputStream()))).start();
+			new Ears(transSocket, in).start();
 
 			return true;
 		} catch (UnknownHostException e) {
@@ -211,7 +210,7 @@ public final class GoIPPlayer {
 	}
 
 	// handles all incoming messages.
-	static class Ears implements Runnable {
+	static final class Ears extends Thread {
 		private final EncryptedReader in;
 
 		public Ears(Socket listener, EncryptedReader in) {
@@ -233,7 +232,6 @@ public final class GoIPPlayer {
 									fromServer -> {
 										if (!lastSent.equalsIgnoreCase("ping")) {
 											chatArea.append(fromServer + "\n");
-
 										} else {
 											long results = System
 													.currentTimeMillis()
@@ -250,7 +248,7 @@ public final class GoIPPlayer {
 
 	// this thread handles incoming information for the player list object. Does
 	// nothing else.
-	static final class playerListener implements Runnable {
+	static final class playerListener extends Thread {
 		private final EncryptedReader in;
 
 		public playerListener(EncryptedReader in) {
