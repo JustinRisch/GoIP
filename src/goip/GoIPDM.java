@@ -508,7 +508,6 @@ public final class GoIPDM {
 									.println("Server closing...");
 							kick(ClientConnecter.clients.get(0));
 						}
-
 						// Needed to throw a run time exception to be able to
 						// close
 						// it...

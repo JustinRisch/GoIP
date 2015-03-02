@@ -9,7 +9,6 @@ import java.util.function.Function;
 public class EncryptedReader extends BufferedReader {
 	private Function<String, String> encryptIt;
 
-
 	public EncryptedReader(Reader in) {
 		super(in);
 		encryptIt = Encryption::superEncrypt;
@@ -25,6 +24,7 @@ public class EncryptedReader extends BufferedReader {
 		// read the input
 		Optional<String> result = Optional.ofNullable(super.readLine());
 		// if it wasn't null, encrypt it.
-		return result.map(e->e.replace("\n", "")).map(encryptIt::apply).orElse(null);
+		return result.map(e -> e.replace("\n", "")).map(encryptIt::apply)
+				.orElse(null);
 	}
 }
