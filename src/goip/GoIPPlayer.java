@@ -36,7 +36,7 @@ public final class GoIPPlayer {
 	// GUI components
 	private final static JFrame frame = new JFrame();;
 	private final static JTextField inputLine = new JTextField();
-	private final static JTextArea chatArea = new JTextArea();
+	private final static ChatArea chatArea = new ChatArea();
 	private final static JTextArea listPlayers = new JTextArea();
 	private final static JLabel lblPlayerList = new JLabel("Player List");
 	private final static JScrollPane scrollPane = new JScrollPane(listPlayers);
