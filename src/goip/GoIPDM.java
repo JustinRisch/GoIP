@@ -89,9 +89,9 @@ public final class GoIPDM {
 	public static void Message(String from, String to, String message) {
 		if (to.equalsIgnoreCase("DM"))
 			return;
-		
+
 		try {
-			
+
 			// send message down the socket's output stream. Probably should
 			// find a way to access the variable associated with this.
 			ClientConnecter.getClient(to).out.println("(from " + from + ") "

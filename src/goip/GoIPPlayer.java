@@ -121,14 +121,17 @@ public final class GoIPPlayer {
 					String[] params = input.split(" ");
 					switch (params[0].toLowerCase()) {
 					default:
-						
+
 						break;
 					case "setname":
 						me = params[1];
 						break;
 					case "msg":
-						chatArea.append("(To " + params[1] + "): "
-								+ inputLine.getText().replace("msg "+params[1], "") + "\n");
+						chatArea.append("(To "
+								+ params[1]
+								+ "): "
+								+ inputLine.getText().replace(
+										"msg " + params[1], "") + "\n");
 						break;
 					case "cls":
 						chatArea.setText("");

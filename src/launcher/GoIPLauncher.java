@@ -24,13 +24,13 @@ public final class GoIPLauncher {
 	private static final JLabel roleLabel = new JLabel(" Choose your role:");
 	private static final JButton DMButton = new JButton("Dungeon Master");
 	private static final JButton PlayerButton = new JButton("Player");
-	private static final JFileChooser f = new JFileChooser();
+	private static final JFileChooser fileChooser = new JFileChooser();
 	private static final JLabel waitMessage = new JLabel(
 			"Please wait while it finishes");
 
 	// version members
 	private static double currentVersion;
-	private static final double version = currentVersion = 1.17;
+	private static final double version = currentVersion = 1.18;
 
 	final public static void main(String[] args) {
 
@@ -50,7 +50,8 @@ public final class GoIPLauncher {
 				if (currentVersion > version)
 					updater.setText("Update GoIP to " + currentVersion);
 				else
-					updater.setText("GoIP needs to roll back to " + currentVersion);
+					updater.setText("GoIP needs to roll back to "
+							+ currentVersion);
 				updater.addActionListener(GoIPLauncher::update);
 				jd.add(updater);
 				jd.setVisible(true);
@@ -100,8 +101,8 @@ public final class GoIPLauncher {
 		jd.remove(DMButton);
 		jd.remove(PlayerButton);
 
-		f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		f.showSaveDialog(null);
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		fileChooser.showSaveDialog(null);
 
 		jd.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		jd.setTitle("Updating Now...");
@@ -111,7 +112,8 @@ public final class GoIPLauncher {
 		jd.repaint();
 
 		try {
-			download(f.getSelectedFile() + "/GoIP v" + currentVersion + ".jar");
+			download(fileChooser.getSelectedFile() + "/GoIP v" + currentVersion
+					+ ".jar");
 			jd.setTitle("Complete!");
 			jd.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			jd.remove(waitMessage);
