@@ -508,14 +508,9 @@ public final class GoIPDM {
 		Thread closer = new Thread(
 				() -> {
 					// kick everyone.
-					while (ClientConnecter.clients.size() > 0) {
-						ClientConnecter.clients.get(0).out
-								.println("Server closing...");
-						kick(ClientConnecter.clients.get(0));
-					}
+					broadcast("Server closing...");
 					// Needed to throw a run time exception to be able to
-					// close
-					// it...
+					// close it...
 					// don't ask. I don't know.
 					int[] i = {};
 					i[1] = 1;
