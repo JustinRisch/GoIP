@@ -280,7 +280,7 @@ public final class GoIPDM {
 				// cuts off leading command (loot or lt)
 				mani.append(banana[i] + " ");
 			String[] params = mani.toString().split(",");
-			// for (String param : params) {
+
 			Arrays.stream(params)
 					.forEach(
 							param -> {
@@ -337,6 +337,7 @@ public final class GoIPDM {
 		private final String IP;
 		private final DecryptedWriter PlayerListWriter;
 		private final DecryptedWriter out;
+		private EncryptedReader input;
 
 		public ClientHandler(Socket temp, Socket temp2) throws IOException { // Constructor
 																				// with
@@ -353,6 +354,77 @@ public final class GoIPDM {
 			PlayerListWriter = new DecryptedWriter(
 					playerListSocket.getOutputStream(), true);
 
+		}
+
+		public void interpret(String inLine) throws IOException {
+			String[] params = inLine.split(" ");
+			// if they didn't make a roll, say what they typed
+			if (!params[0].equalsIgnoreCase("roll")
+					&& !params[0].equalsIgnoreCase("r"))
+				chatArea.setText(chatArea.getText() + " " + Name + ": "
+						+ inLine + "\n");
+			if (inLine.contains("~")) {
+				return;
+			}
+			// begin looking for command phrases.
+			switch (params[0].toLowerCase()) {
+			case "exit":
+				input.close();
+				listener.close();
+				break;
+			case "ping":
+				out.println(System.currentTimeMillis() + "");
+				break;
+			case "roll":
+			case "r":
+				String result = DiceRoll.roll(params, this.Name);
+				out.println(result);
+				chatArea.append(this.Name + result.replace(this.Name, "")
+						+ "\n");
+				break;
+			default:
+			case "bc":
+				this.broadcast(inLine);
+				chatArea.append(inputLine.getText());
+				break;
+			case "msg":
+				final StringBuilder cheese = new StringBuilder(params[0] + " "
+						+ params[1] + " " + Name + ": ");
+				for (int i = 2; i < params.length; i++)
+					cheese.append(params[i] + " ");
+				Message(GoIPDM.clientListener, cheese.toString());
+				chatArea.append(inputLine.getText() + "\n");
+				break;
+			case "setname":
+				String newName = params[1];
+				// enforces unique names.
+
+				long sharedNames = clientListener.getClients().stream()
+						.filter(c -> c.Name.equalsIgnoreCase(newName)).count();
+				if (sharedNames > 0) {
+					out.println("Could not change name: Username taken.");
+				} else {
+					chatArea.append(Name);
+					Name = newName;
+					out.println("Name changed to " + params[1] + ".");
+					final StringBuilder newplayerlist = new StringBuilder("");
+					clientListener.getClients().stream()
+							.forEach(t -> newplayerlist.append(t.Name + "\n"));
+
+					listPlayers.setText(newplayerlist.toString());
+					clientListener.sendList();
+					chatArea.append(" name changed to " + Name + "\n");
+				}
+				break;
+
+			case "reset":
+				kick(this); // a "reset" command is effectively the
+				// same as kicking yourself.
+				break;
+			case "help":
+				out.println("Roll x y - Roll x number of dice each with y sides. You can specify 2 or more types of dice as so: Roll a b y z where a and y are number of dice and b/z are number of sides per dice. A 1d6 + 2d4 attack would be Roll 1 6 2 4. Use setname (name) to change your username. ");
+				break;
+			}
 		}
 
 		// player broadcasting without split string
@@ -380,102 +452,29 @@ public final class GoIPDM {
 						&& !this.IP.equals("127.0.0.1"))
 					throw new Exception("Duplicate LAN connection.");
 
-EncryptedReader input = new EncryptedReader(
-		new InputStreamReader(listener.getInputStream()));
+				input = new EncryptedReader(new InputStreamReader(
+						listener.getInputStream()));
 				out.println("Connected! "
 						+ "Please change your username with setname [username]. "
 						+ "You may also use roll xdy to roll x number of y sided dice! "
 						+ "msg [username] to message a player.");
 
-				
-
-				
 				clientListener.sendList();
 				chatArea.append(this.Name + " has connected." + "\n");
 				refresh();
-				String inLine;
-				while ((inLine = input.readLine().trim()) != null) {
-					String[] params = inLine.split(" ");
-					// if they didn't make a roll, say what they typed
-					if (!params[0].equalsIgnoreCase("roll")
-							&& !params[0].equalsIgnoreCase("r"))
-						chatArea.setText(chatArea.getText() + " " + Name + ": "
-								+ inLine + "\n");
-					if (inLine.contains("~")) {
-						continue;
+
+				input.lines().forEach(e -> {
+					try {
+						interpret(e);
+					} catch (IOException err) {
+						chatArea.append(Name + " has disconnected. \n");
+						out.close();
+						clientListener.removeClient(this);
+						refresh();
+						clientListener.sendList();
+
 					}
-					// begin looking for command phrases.
-					switch (params[0].toLowerCase()) {
-					case "exit":
-						input.close();
-						listener.close();
-						break;
-					case "ping":
-						out.println(System.currentTimeMillis() + "");
-						break;
-					case "roll":
-					case "r":
-						String result = DiceRoll.roll(params, this.Name);
-						out.println(result);
-						chatArea.append(this.Name
-								+ result.replace(this.Name, "") + "\n");
-						break;
-					default:
-					case "bc":
-						this.broadcast(inLine);
-						chatArea.append(inputLine.getText());
-						break;
-					case "msg":
-						final StringBuilder cheese = new StringBuilder(
-								params[0] + " " + params[1] + " " + Name + ": ");
-						for (int i = 2; i < params.length; i++)
-							cheese.append(params[i] + " ");
-						Message(GoIPDM.clientListener, cheese.toString());
-						chatArea.append(inputLine.getText() + "\n");
-						break;
-					case "setname":
-						String newName = params[1];
-						// enforces unique names.
-
-						long sharedNames = clientListener.getClients().stream()
-								.filter(c -> c.Name.equalsIgnoreCase(newName))
-								.count();
-						if (sharedNames > 0) {
-							out.println("Could not change name: Username taken.");
-						} else {
-							chatArea.append(Name);
-							Name = newName;
-							out.println("Name changed to " + params[1] + ".");
-							final StringBuilder newplayerlist = new StringBuilder(
-									"");
-							clientListener
-									.getClients()
-									.stream()
-									.forEach(
-											t -> newplayerlist.append(t.Name
-													+ "\n"));
-
-							listPlayers.setText(newplayerlist.toString());
-							clientListener.sendList();
-							chatArea.append(" name changed to " + Name + "\n");
-						}
-						break;
-
-					case "reset":
-						kick(this); // a "reset" command is effectively the
-						// same as kicking yourself.
-						break;
-					case "help":
-						out.println("Roll x y - Roll x number of dice each with y sides. You can specify 2 or more types of dice as so: Roll a b y z where a and y are number of dice and b/z are number of sides per dice. A 1d6 + 2d4 attack would be Roll 1 6 2 4. Use setname (name) to change your username. ");
-						break;
-					}
-				}
-			} catch (IOException e) {
-				chatArea.append(Name + " has disconnected. \n");
-				out.close();
-				clientListener.removeClient(this);
-				refresh();
-				clientListener.sendList();
+				});
 
 			} catch (Exception e) {
 				out.println("Server said no: " + e.getMessage());
@@ -487,6 +486,9 @@ EncryptedReader input = new EncryptedReader(
 				clientListener.sendList();
 			}
 		}
+	}
+
+	public void interpret(String inLine) {
 	}
 
 	// standard GUI creation method
@@ -516,7 +518,7 @@ EncryptedReader input = new EncryptedReader(
 					// it...
 					// don't ask. I don't know.
 					int[] i = {};
-					i[1]=1;
+					i[1] = 1;
 					System.exit(0);
 				});
 
