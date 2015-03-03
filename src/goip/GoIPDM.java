@@ -86,21 +86,18 @@ public final class GoIPDM {
 
 	// given a connection to the clientConnector and a message, send that
 	// message to
-	public static void Message(ClientConnecter clients, String outter) {
-		final StringBuilder Message = new StringBuilder("");
-		String[] params = outter.split(" ");
-		if (params[1].equalsIgnoreCase("DM"))
+	public static void Message(String from, String to, String message) {
+		if (to.equalsIgnoreCase("DM"))
 			return;
-
+		
 		try {
-			// Easiest way to trim the user name and "msg" from the message.
-			for (int i = 2; i < params.length; i++)
-				Message.append(params[i] + " ");
+			
 			// send message down the socket's output stream. Probably should
 			// find a way to access the variable associated with this.
-			clients.getClient(params[1]).out.println(Message.toString());
+			ClientConnecter.getClient(to).out.println("(from " + from + ") "
+					+ message);
 		} catch (Exception e) {
-			chatArea.append("Player not found: " + params[1]);
+			chatArea.append("Player not found: " + to);
 
 		}
 	}
@@ -157,7 +154,7 @@ public final class GoIPDM {
 			}
 		}
 
-		public ClientHandler getClient(String x) {
+		public static ClientHandler getClient(String x) {
 			return clients.stream().filter(y -> y.Name.equalsIgnoreCase(x))
 					.findFirst().orElse(null);
 		}
@@ -250,7 +247,7 @@ public final class GoIPDM {
 					.split("\n").length - 1] + "\n");
 			break;
 		case "kick":
-			ClientHandler noob = clientListener.getClient(banana[1]);
+			ClientHandler noob = ClientConnecter.getClient(banana[1]);
 			kick(noob);// kicking target player
 			break;
 		case "info":
@@ -262,7 +259,11 @@ public final class GoIPDM {
 			refresh();
 			break;
 		case "msg":
-			Message(clientListener, outter);
+			StringBuilder message = new StringBuilder();
+			String[] a = outter.split(" ");
+			for (int x = 2; x < a.length; x++)
+				message.append(a[x]);
+			Message("DM", a[1], message.toString());
 			chatArea.append(outter);
 			break;
 		case "statroll":
@@ -301,10 +302,9 @@ public final class GoIPDM {
 																						+ temper[1]));
 
 													} else {
-														Message(clientListener,
-																"msg "
-																		+ user
-																		+ " Loot_ "
+														Message("LOOT",
+																user,
+																" Loot_ "
 																		+ temper[1]);
 													}
 												});
@@ -388,12 +388,11 @@ public final class GoIPDM {
 				chatArea.append(inputLine.getText());
 				break;
 			case "msg":
-				final StringBuilder cheese = new StringBuilder(params[0] + " "
-						+ params[1] + " " + Name + ": ");
+				final StringBuilder cheese = new StringBuilder();
 				for (int i = 2; i < params.length; i++)
 					cheese.append(params[i] + " ");
-				Message(GoIPDM.clientListener, cheese.toString());
-				chatArea.append(inputLine.getText() + "\n");
+				Message(this.Name, params[1], cheese.toString());
+				chatArea.append(cheese.toString() + "\n");
 				break;
 			case "setname":
 				String newName = params[1];
@@ -505,17 +504,16 @@ public final class GoIPDM {
 			frame.setTitle("GoIP DM - Could not find local or external IP. That's some weird shit.");
 		}
 		// when it closes...
-		Thread closer = new Thread(
-				() -> {
-					// kick everyone.
-					broadcast("Server closing...");
-					// Needed to throw a run time exception to be able to
-					// close it...
-					// don't ask. I don't know.
-					int[] i = {};
-					i[1] = 1;
-					System.exit(0);
-				});
+		Thread closer = new Thread(() -> {
+			// kick everyone.
+				broadcast("Server closing...");
+				// Needed to throw a run time exception to be able to
+				// close it...
+				// don't ask. I don't know.
+				int[] i = {};
+				i[1] = 1;
+				System.exit(0);
+			});
 
 		Runtime.getRuntime().addShutdownHook(closer);
 		frame.setResizable(false);

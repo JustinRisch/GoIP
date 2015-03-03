@@ -127,8 +127,8 @@ public final class GoIPPlayer {
 						me = params[1];
 						break;
 					case "msg":
-						chatArea.append("To " + params[1] + ": "
-								+ inputLine.getText() + "\n");
+						chatArea.append("(To " + params[1] + "): "
+								+ inputLine.getText().replace("msg "+params[1], "") + "\n");
 						break;
 					case "cls":
 						chatArea.setText("");
