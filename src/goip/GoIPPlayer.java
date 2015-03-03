@@ -121,7 +121,7 @@ public final class GoIPPlayer {
 					String[] params = input.split(" ");
 					switch (params[0].toLowerCase()) {
 					default:
-						chatArea.append(me + ": " + inputLine.getText() + "\n");
+						
 						break;
 					case "setname":
 						me = params[1];
