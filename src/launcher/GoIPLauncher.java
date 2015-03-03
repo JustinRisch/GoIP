@@ -30,7 +30,7 @@ public final class GoIPLauncher {
 
 	// version members
 	private static double currentVersion;
-	private static final double version = currentVersion = 1.16;
+	private static final double version = currentVersion = 1.17;
 
 	final public static void main(String[] args) {
 
@@ -47,7 +47,10 @@ public final class GoIPLauncher {
 
 			} else {
 				System.out.println(currentVersion);
-				updater.setText("Update GoIP to " + currentVersion);
+				if (currentVersion > version)
+					updater.setText("Update GoIP to " + currentVersion);
+				else
+					updater.setText("GoIP needs to roll back to " + currentVersion);
 				updater.addActionListener(GoIPLauncher::update);
 				jd.add(updater);
 				jd.setVisible(true);
@@ -115,7 +118,6 @@ public final class GoIPLauncher {
 			jd.add(new JLabel("Your download is complete. Please run that jar."),
 					BorderLayout.CENTER);
 
-		
 			jd.revalidate();
 			jd.repaint();
 		} catch (Exception err) {
