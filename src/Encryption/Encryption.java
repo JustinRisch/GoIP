@@ -18,6 +18,8 @@ public class Encryption {
 			'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
 	public static String superEncrypt(String start) {
+		if (start.length()<2)
+			return start;
 		for (int i = 0; i < 3; i++) {
 			start = scramble(start, 3);
 			start = keyEncrypt(3, start);
@@ -26,7 +28,7 @@ public class Encryption {
 	}
 
 	public static String superDecrypt(String start) {
-		if (start.length() < 1)
+		if (start.length() < 2)
 			return start;
 		for (int i = 0; i < 3; i++) {
 			start = keyDecrypt(3, start);
