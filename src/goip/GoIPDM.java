@@ -196,6 +196,7 @@ public final class GoIPDM {
 		clientListener.getClients().stream()
 				.forEach(x -> newplayerlist.append(x.Name + "\n"));
 		listModel.removeAllElements();
+		listModel.addElement("DM");
 		Arrays.stream(newplayerlist.toString().split("\n")).forEach(
 
 		user -> listModel.addElement(user + "\n"));
