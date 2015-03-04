@@ -97,7 +97,7 @@ public final class GoIPDM {
 
 		try {
 			// send message down the socket's output stream.
-			ClientConnecter.getClient(to).out.println("(from " + from + ") "
+			ClientConnecter.getClient(to).out.println("(from " + from + "): "
 					+ message);
 		} catch (Exception e) {
 			chatArea.append("Player not found: " + to);
@@ -177,7 +177,7 @@ public final class GoIPDM {
 
 	// this one is for the DM to broadcast
 
-	public void broadcast(String message) {
+	public static void broadcast(String message) {
 		int begin;
 		if (message.length() > 2
 				&& message.substring(0, 2).equalsIgnoreCase("bc"))
@@ -198,7 +198,7 @@ public final class GoIPDM {
 		listModel.removeAllElements();
 		Arrays.stream(newplayerlist.toString().split("\n")).forEach(
 
-		user -> listModel.addElement(user+"\n"));
+		user -> listModel.addElement(user + "\n"));
 
 	}
 
@@ -215,6 +215,7 @@ public final class GoIPDM {
 
 		refresh();
 		clientListener.sendList();
+		GoIPDM.broadcast(x.Name + " has been kicked.");
 	}
 
 	// looks for commands in the server-side chat
@@ -329,7 +330,7 @@ public final class GoIPDM {
 			break;
 		case "bc":
 		default:
-			broadcast(outter);
+			GoIPDM.broadcast(outter);
 			chatArea.append("DM: " + inputLine.getText() + "\n");
 			break;
 		}
@@ -470,6 +471,7 @@ public final class GoIPDM {
 						interpret(e);
 					} catch (IOException err) {
 						chatArea.append(Name + " has disconnected. \n");
+						broadcast(Name + " has disconnected. \n");
 						out.close();
 						clientListener.removeClient(this);
 						refresh();
@@ -483,6 +485,7 @@ public final class GoIPDM {
 				out.close();
 				chatArea.append(Name + " has disconnected. \n--"
 						+ e.getMessage() + "--\n");
+				broadcast(Name + " has disconnected. \n");
 				clientListener.removeClient(this);
 				refresh();
 				clientListener.sendList();
@@ -542,7 +545,13 @@ public final class GoIPDM {
 		scrollPane2.setViewportView(listPlayers);
 		listPlayers
 				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		
+		listPlayers.addListSelectionListener(e->{
+			if (listPlayers.getSelectedValue() != null)
+				inputLine.setText("msg " + listPlayers.getSelectedValue());
+			listPlayers.clearSelection();
+			inputLine.requestFocusInWindow();
+			inputLine.setCaretPosition(inputLine.getText().length());
+		});
 		listPlayers.setVisibleRowCount(-1);
 
 		lblPlayers.setBounds(429, 11, 91, 14);

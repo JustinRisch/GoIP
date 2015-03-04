@@ -43,7 +43,8 @@ public final class GoIPPlayer {
 	private final static ChatArea chatArea = new ChatArea();
 
 	private final static DefaultListModel<String> listModel = new DefaultListModel<String>();
-	private final static JList<String> listPlayers = new JList<String>(listModel);
+	private final static JList<String> listPlayers = new JList<String>(
+			listModel);
 
 	private final static JLabel lblPlayerList = new JLabel("Player List");
 	private final static JScrollPane scrollPane = new JScrollPane(listPlayers);
@@ -308,14 +309,26 @@ public final class GoIPPlayer {
 			listPlayers
 					.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
+			listPlayers.addListSelectionListener(e -> {
+				if (listPlayers.getSelectedValue() != null)
+					inputLine.setText("msg " + listPlayers.getSelectedValue());
+				listPlayers.clearSelection();
+				inputLine.requestFocusInWindow();
+				inputLine.setCaretPosition(inputLine.getText().length());
+			});
 			listPlayers.setVisibleRowCount(-1);
 			try {
-				in.lines().map(e -> e.replace("|", "~")).forEach(
-						fromServer -> {
-							listModel.removeAllElements();
-							Arrays.stream(fromServer.split("~")).forEach(
-									user -> listModel.addElement(user+"\n"));
-						});
+				in.lines()
+						.map(e -> e.replace("|", "~"))
+						.forEach(
+								fromServer -> {
+									listModel.removeAllElements();
+									Arrays.stream(fromServer.split("~"))
+											.forEach(
+													user -> listModel
+															.addElement(user
+																	+ "\n"));
+								});
 			} catch (Exception e) {
 				// this blocks output on exception.
 				e.printStackTrace();
