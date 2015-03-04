@@ -128,7 +128,9 @@ public final class GoIPDM {
 
 		public void sendList() {
 			final StringBuilder temp = new StringBuilder("");
+			temp.append("DM~");
 			clients.stream().forEach(x -> temp.append(x.Name + "~"));
+			
 			clients.stream().forEach(
 					x -> x.PlayerListWriter.println(temp.toString()));
 		}
@@ -196,7 +198,6 @@ public final class GoIPDM {
 		clientListener.getClients().stream()
 				.forEach(x -> newplayerlist.append(x.Name + "\n"));
 		listModel.removeAllElements();
-		listModel.addElement("DM");
 		Arrays.stream(newplayerlist.toString().split("\n")).forEach(
 
 		user -> listModel.addElement(user + "\n"));
@@ -273,7 +274,7 @@ public final class GoIPDM {
 			for (int x = 2; x < a.length; x++)
 				message.append(a[x] + " ");
 			Message("DM", a[1], message.toString());
-			chatArea.append(outter);
+			chatArea.append("To "+a[1]+message.toString());
 			break;
 		case "statroll":
 			DiceRoll.statroll();
@@ -369,7 +370,7 @@ public final class GoIPDM {
 			String[] params = inLine.split(" ");
 			// if they didn't make a roll, say what they typed
 			if (!params[0].equalsIgnoreCase("roll")
-					&& !params[0].equalsIgnoreCase("r"))
+					&& !params[0].equalsIgnoreCase("r") && !params[0].equalsIgnoreCase("msg"))
 				chatArea.setText(chatArea.getText() + " " + Name + ": "
 						+ inLine + "\n");
 			if (inLine.contains("~")) {
@@ -401,7 +402,7 @@ public final class GoIPDM {
 				for (int i = 2; i < params.length; i++)
 					cheese.append(params[i] + " ");
 				Message(this.Name, params[1], cheese.toString());
-				chatArea.append(cheese.toString() + "\n");
+				chatArea.append(this.Name+" to "+params[1]+": "+cheese.toString() + "\n");
 				break;
 			case "setname":
 				String newName = params[1];
