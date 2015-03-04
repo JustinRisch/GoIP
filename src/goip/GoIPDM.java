@@ -6,12 +6,15 @@ import java.awt.EventQueue;
 import dice.DiceBag;
 import dice.DiceRoll;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 
 import java.awt.Component;
@@ -34,7 +37,9 @@ public final class GoIPDM {
 	private final static JFrame frame = new JFrame();
 	private final static JTextField inputLine = new JTextField();
 	private final static JTextArea chatArea = new JTextArea();
-	private final static JTextArea listPlayers = new JTextArea();
+	private final static DefaultListModel<String> listModel = new DefaultListModel<String>();
+	private final static JList<String> listPlayers = new JList<String>(
+			listModel);
 	private final static JLabel lblPlayers = new JLabel("Players List");
 	private final static JScrollPane scrollPane = new JScrollPane();
 	private final static JScrollPane scrollPane2 = new JScrollPane();
@@ -123,7 +128,7 @@ public final class GoIPDM {
 
 		public void sendList() {
 			final StringBuilder temp = new StringBuilder("");
-			clients.stream().forEach(x -> temp.append(x.Name + "|"));
+			clients.stream().forEach(x -> temp.append(x.Name + "~"));
 			clients.stream().forEach(
 					x -> x.PlayerListWriter.println(temp.toString()));
 		}
@@ -190,8 +195,11 @@ public final class GoIPDM {
 
 		clientListener.getClients().stream()
 				.forEach(x -> newplayerlist.append(x.Name + "\n"));
+		listModel.removeAllElements();
+		Arrays.stream(newplayerlist.toString().split("\n")).forEach(
 
-		listPlayers.setText(newplayerlist.toString());
+		user -> listModel.addElement(user+"\n"));
+
 	}
 
 	public static void kick(ClientHandler x) {
@@ -261,7 +269,7 @@ public final class GoIPDM {
 			StringBuilder message = new StringBuilder();
 			String[] a = outter.split(" ");
 			for (int x = 2; x < a.length; x++)
-				message.append(a[x]+ " ");
+				message.append(a[x] + " ");
 			Message("DM", a[1], message.toString());
 			chatArea.append(outter);
 			break;
@@ -405,11 +413,7 @@ public final class GoIPDM {
 					chatArea.append(Name);
 					Name = newName;
 					out.println("Name changed to " + params[1] + ".");
-					final StringBuilder newplayerlist = new StringBuilder("");
-					clientListener.getClients().stream()
-							.forEach(t -> newplayerlist.append(t.Name + "\n"));
-
-					listPlayers.setText(newplayerlist.toString());
+					refresh();
 					clientListener.sendList();
 					chatArea.append(" name changed to " + Name + "\n");
 				}
@@ -504,10 +508,10 @@ public final class GoIPDM {
 		}
 		// when it closes...
 		Thread closer = new Thread(() -> {
-				broadcast("Server closing...");
-				broadcast((String)null);
-				System.exit(0);
-			});
+			broadcast("Server closing...");
+			broadcast((String) null);
+			System.exit(0);
+		});
 
 		Runtime.getRuntime().addShutdownHook(closer);
 		frame.setResizable(false);
@@ -534,11 +538,12 @@ public final class GoIPDM {
 		scrollPane2.setBounds(429, 24, 97, 209);
 		frame.getContentPane().add(scrollPane2);
 
-		listPlayers.setLineWrap(true);
 		listPlayers.setFocusable(false);
 		scrollPane2.setViewportView(listPlayers);
-		listPlayers.setTabSize(3);
-		listPlayers.setEditable(false);
+		listPlayers
+				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		
+		listPlayers.setVisibleRowCount(-1);
 
 		lblPlayers.setBounds(429, 11, 91, 14);
 		frame.getContentPane().add(lblPlayers);

@@ -40,7 +40,7 @@ public final class GoIPLauncher {
 		try {
 			currentVersion = getCurrentVersion();
 			jd.setTitle("GoIP v" + version);
-			
+
 			jd.setLocationRelativeTo(null);
 
 			if (currentVersion.equals(version)) {

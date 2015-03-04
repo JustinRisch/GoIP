@@ -6,15 +6,18 @@ import java.awt.EventQueue;
 import dice.DiceBag;
 import dice.DiceRoll;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.net.*;
+import java.util.Arrays;
 import java.io.*;
 
 import javax.swing.JLabel;
@@ -38,7 +41,10 @@ public final class GoIPPlayer {
 	private final static JFrame frame = new JFrame();;
 	private final static JTextField inputLine = new JTextField();
 	private final static ChatArea chatArea = new ChatArea();
-	private final static JTextArea listPlayers = new JTextArea();
+
+	private final static DefaultListModel<String> listModel = new DefaultListModel<String>();
+	private final static JList<String> listPlayers = new JList<String>(listModel);
+
 	private final static JLabel lblPlayerList = new JLabel("Player List");
 	private final static JScrollPane scrollPane = new JScrollPane(listPlayers);
 	private final static JScrollPane scrollPane2 = new JScrollPane(chatArea);
@@ -58,11 +64,11 @@ public final class GoIPPlayer {
 
 	}
 
-	public GoIPPlayer() {
+	private GoIPPlayer() {
 		initialize();
 	}
 
-	boolean makeconnection() {
+	private boolean makeconnection() {
 		try {
 			transSocket = null;
 			in = null;
@@ -91,7 +97,7 @@ public final class GoIPPlayer {
 	}
 
 	// standard GUI initialization
-	void initialize() {
+	private void initialize() {
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			System.out.println("closing...");
 			out.println("exit");
@@ -177,8 +183,6 @@ public final class GoIPPlayer {
 				}
 			}
 		});
-		listPlayers.setTabSize(3);
-		listPlayers.setEditable(false);
 		listPlayers.setBounds(369, 34, 91, 141);
 
 		scrollPane.setBounds(433, 23, 102, 200);
@@ -224,7 +228,7 @@ public final class GoIPPlayer {
 	}
 
 	// handles all incoming messages.
-	static final class Ears extends Thread {
+	private static final class Ears extends Thread {
 		private final EncryptedReader in;
 
 		public Ears(Socket listener, EncryptedReader in) {
@@ -292,7 +296,7 @@ public final class GoIPPlayer {
 
 	// this thread handles incoming information for the player list object. Does
 	// nothing else.
-	static final class playerListener extends Thread {
+	private static final class playerListener extends Thread {
 		private final EncryptedReader in;
 
 		public playerListener(EncryptedReader in) {
@@ -301,11 +305,20 @@ public final class GoIPPlayer {
 
 		@Override
 		public void run() {
+			listPlayers
+					.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+
+			listPlayers.setVisibleRowCount(-1);
 			try {
-				in.lines().map(e -> e.replace("|", "\n"))
-						.forEach(fromServer -> listPlayers.setText(fromServer));
+				in.lines().map(e -> e.replace("|", "~")).forEach(
+						fromServer -> {
+							listModel.removeAllElements();
+							Arrays.stream(fromServer.split("~")).forEach(
+									user -> listModel.addElement(user+"\n"));
+						});
 			} catch (Exception e) {
 				// this blocks output on exception.
+				e.printStackTrace();
 			}
 		}
 	}
