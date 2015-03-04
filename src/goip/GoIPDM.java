@@ -130,7 +130,7 @@ public final class GoIPDM {
 			final StringBuilder temp = new StringBuilder("");
 			temp.append("DM~");
 			clients.stream().forEach(x -> temp.append(x.Name + "~"));
-			
+
 			clients.stream().forEach(
 					x -> x.PlayerListWriter.println(temp.toString()));
 		}
@@ -274,7 +274,7 @@ public final class GoIPDM {
 			for (int x = 2; x < a.length; x++)
 				message.append(a[x] + " ");
 			Message("DM", a[1], message.toString());
-			chatArea.append("To "+a[1]+message.toString());
+			chatArea.append("To " + a[1] + message.toString());
 			break;
 		case "statroll":
 			DiceRoll.statroll();
@@ -370,7 +370,8 @@ public final class GoIPDM {
 			String[] params = inLine.split(" ");
 			// if they didn't make a roll, say what they typed
 			if (!params[0].equalsIgnoreCase("roll")
-					&& !params[0].equalsIgnoreCase("r") && !params[0].equalsIgnoreCase("msg"))
+					&& !params[0].equalsIgnoreCase("r")
+					&& !params[0].equalsIgnoreCase("msg"))
 				chatArea.setText(chatArea.getText() + " " + Name + ": "
 						+ inLine + "\n");
 			if (inLine.contains("~")) {
@@ -402,7 +403,12 @@ public final class GoIPDM {
 				for (int i = 2; i < params.length; i++)
 					cheese.append(params[i] + " ");
 				Message(this.Name, params[1], cheese.toString());
-				chatArea.append(this.Name+" to "+params[1]+": "+cheese.toString() + "\n");
+				if (params[1].equals("DM"))
+					chatArea.append("(" + this.Name + "): " + cheese.toString()
+							+ "\n");
+				else
+					chatArea.append("(" + this.Name + " to " + params[1]
+							+ "): " + cheese.toString() + "\n");
 				break;
 			case "setname":
 				String newName = params[1];
@@ -547,7 +553,7 @@ public final class GoIPDM {
 		scrollPane2.setViewportView(listPlayers);
 		listPlayers
 				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		listPlayers.addListSelectionListener(e->{
+		listPlayers.addListSelectionListener(e -> {
 			if (listPlayers.getSelectedValue() != null)
 				inputLine.setText("msg " + listPlayers.getSelectedValue());
 			listPlayers.clearSelection();
