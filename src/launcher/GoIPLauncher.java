@@ -29,29 +29,25 @@ public final class GoIPLauncher {
 			"Please wait while it finishes");
 
 	// version members
-	private static double currentVersion;
-	private static final double version = currentVersion = 1.19;
+	private static String currentVersion;
+	private static final String version = currentVersion = "1.2.0";
 
 	final public static void main(String[] args) {
 
 		jd.setResizable(false);
 		jd.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jd.setBounds(100, 100, 300, 100);
 		try {
 			currentVersion = getCurrentVersion();
 			jd.setTitle("GoIP v" + version);
-			jd.setBounds(100, 100, 300, 100);
+			
 			jd.setLocationRelativeTo(null);
 
-			if (currentVersion == version) {
+			if (currentVersion.equals(version)) {
 				setButtons();
 
 			} else {
-				System.out.println(currentVersion);
-				if (currentVersion > version)
-					updater.setText("Update GoIP to " + currentVersion);
-				else
-					updater.setText("GoIP needs to roll back to "
-							+ currentVersion);
+				updater.setText("Update GoIP!");
 				updater.addActionListener(GoIPLauncher::update);
 				jd.add(updater);
 				jd.setVisible(true);
@@ -142,14 +138,14 @@ public final class GoIPLauncher {
 
 	}
 
-	private final static double getCurrentVersion() throws IOException {
-		double version = -1;
+	private final static String getCurrentVersion() throws IOException {
+		String version = "-1";
 		URL oracle = new URL(
-				"https://dl.dropboxusercontent.com/u/11902673/version.txt");
+				"https://dl.dropboxusercontent.com/u/11902673/GoIPversion.txt");
 		BufferedReader in = new BufferedReader(new InputStreamReader(
 				oracle.openStream()));
 
-		version = Double.parseDouble(in.readLine());
+		version = (in.readLine()).trim();
 		in.close();
 		return version;
 	}
