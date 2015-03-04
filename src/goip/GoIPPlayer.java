@@ -1,5 +1,6 @@
 package goip;
 
+import java.awt.Desktop;
 import java.awt.EventQueue;
 
 import dice.DiceBag;
@@ -94,6 +95,7 @@ public final class GoIPPlayer {
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			System.out.println("closing...");
 			out.println("exit");
+			out.print((String) null);
 			// Needed to throw a run time exception to be able to close it...
 			// don't ask. I don't know.
 				byte[] b = {};
@@ -115,14 +117,15 @@ public final class GoIPPlayer {
 		inputLine.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) { // when you hit enter
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_UP:
+					inputLine.setText(lastSent);
+					break;
+				case KeyEvent.VK_ENTER:
 					String input = inputLine.getText().trim();
 					// it appends what you wrote to the chat box
 					String[] params = input.split(" ");
 					switch (params[0].toLowerCase()) {
-					default:
-
-						break;
 					case "setname":
 						if (params[1].equalsIgnoreCase("dm")) {
 							chatArea.append("Nice try.\n");
@@ -156,9 +159,11 @@ public final class GoIPPlayer {
 									transSocket.close();
 								if (!playerListSocket.isClosed())
 									playerListSocket.close();
+
 								in.close();
 								out.close();
 								makeconnection();
+								chatArea.append("Disconnected.\n");
 							} catch (Exception q) {
 								chatArea.setText("Failed to reconnect.");
 							}
@@ -168,6 +173,7 @@ public final class GoIPPlayer {
 						inputLine.setText("");
 
 					}
+					break;
 				}
 			}
 		});
@@ -227,20 +233,59 @@ public final class GoIPPlayer {
 
 		@Override
 		public void run() {
-			in.lines()
-					.map(e -> e.trim())
-					.filter(fromServer -> !fromServer.equals("")
-							&& !fromServer.equals("\n"))
-					.forEach(
-							fromServer -> {
-								if (!lastSent.equalsIgnoreCase("ping")) {
-									chatArea.append(fromServer + "\n");
-								} else {
-									long results = System.currentTimeMillis()
-											- Long.parseLong(fromServer);
-									chatArea.append(results + "\n");
-								}
-							});
+			try {
+				in.lines()
+						.map(e -> e.trim())
+						.filter(fromServer -> !fromServer.equals("")
+								&& !fromServer.equals("\n"))
+						.forEach(
+								fromServer -> {
+									if (lastSent.equalsIgnoreCase("ping")) {
+										long results = System
+												.currentTimeMillis()
+												- Long.parseLong(fromServer);
+										chatArea.append(results + "\n");
+									} else if (fromServer
+											.startsWith("DM: hyperlink ")) {
+										try {
+											String link = fromServer
+													.substring("DM: hyperlink "
+															.length());
+
+											if (!(link.startsWith("https://") || link
+													.startsWith("http://")))
+												link = "https://" + link;
+											Desktop.getDesktop().browse(
+													new URI(link));
+										} catch (Exception e) {
+											System.out.println(fromServer);
+											e.printStackTrace();
+										}
+
+									} else if (fromServer
+											.startsWith("(from DM) hyperlink ")) {
+										try {
+											String link = fromServer
+													.substring("(from DM) hyperlink "
+															.length());
+
+											if (!(link.startsWith("https://") || link
+													.startsWith("http://")))
+												link = "https://" + link;
+											Desktop.getDesktop().browse(
+													new URI(link));
+										} catch (Exception e) {
+											System.out.println(fromServer);
+											e.printStackTrace();
+										}
+
+									} else {
+										chatArea.append(fromServer + "\n");
+									}
+								});
+			} catch (Exception e) {
+				// this blocks output on exception.
+			}
 
 		}
 	}
@@ -256,8 +301,12 @@ public final class GoIPPlayer {
 
 		@Override
 		public void run() {
-			in.lines().map(e -> e.replace("|", "\n"))
-					.forEach(fromServer -> listPlayers.setText(fromServer));
+			try {
+				in.lines().map(e -> e.replace("|", "\n"))
+						.forEach(fromServer -> listPlayers.setText(fromServer));
+			} catch (Exception e) {
+				// this blocks output on exception.
+			}
 		}
 	}
 }

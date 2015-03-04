@@ -160,7 +160,6 @@ public final class GoIPDM {
 		public Socket getSocket(String x) {
 			return clients.stream().filter(y -> y.Name.equalsIgnoreCase(x))
 					.findFirst().map(y -> y.listener).orElse(null);
-
 		}
 	}
 
@@ -198,13 +197,14 @@ public final class GoIPDM {
 	public static void kick(ClientHandler x) {
 		clientListener.removeClient(x);
 		x.out.println("You have been disconnected.");
+		x.out.println((String) null); // signals the listener to stop listening.
 		x.out.close();
 		try {
 			if (!x.listener.isClosed())
 				x.listener.close();
 		} catch (Exception e) {
 		} // should never fail; only attempts to close if it's not closed.
-		
+
 		refresh();
 		clientListener.sendList();
 	}
@@ -261,7 +261,7 @@ public final class GoIPDM {
 			StringBuilder message = new StringBuilder();
 			String[] a = outter.split(" ");
 			for (int x = 2; x < a.length; x++)
-				message.append(a[x]);
+				message.append(a[x]+ " ");
 			Message("DM", a[1], message.toString());
 			chatArea.append(outter);
 			break;
@@ -504,13 +504,8 @@ public final class GoIPDM {
 		}
 		// when it closes...
 		Thread closer = new Thread(() -> {
-			// kick everyone.
 				broadcast("Server closing...");
-				// Needed to throw a run time exception to be able to
-				// close it...
-				// don't ask. I don't know.
-				int[] i = {};
-				i[1] = 1;
+				broadcast((String)null);
 				System.exit(0);
 			});
 
