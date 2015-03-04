@@ -124,6 +124,11 @@ public final class GoIPPlayer {
 
 						break;
 					case "setname":
+						if (params[1].equalsIgnoreCase("dm")) {
+							chatArea.append("Nice try.\n");
+							inputLine.setText("");
+							return;
+						}
 						me = params[1];
 						break;
 					case "msg":

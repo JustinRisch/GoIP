@@ -91,9 +91,7 @@ public final class GoIPDM {
 			return;
 
 		try {
-
-			// send message down the socket's output stream. Probably should
-			// find a way to access the variable associated with this.
+			// send message down the socket's output stream.
 			ClientConnecter.getClient(to).out.println("(from " + from + ") "
 					+ message);
 		} catch (Exception e) {
