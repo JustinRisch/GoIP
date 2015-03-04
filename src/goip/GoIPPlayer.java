@@ -227,23 +227,20 @@ public final class GoIPPlayer {
 
 		@Override
 		public void run() {
-			while (true) {
-				in.lines()
-						.map(e -> e.trim())
-						.filter(fromServer -> !fromServer.equals("")
-								&& !fromServer.equals("\n"))
-						.forEach(
-								fromServer -> {
-									if (!lastSent.equalsIgnoreCase("ping")) {
-										chatArea.append(fromServer + "\n");
-									} else {
-										long results = System
-												.currentTimeMillis()
-												- Long.parseLong(fromServer);
-										chatArea.append(results + "\n");
-									}
-								});
-			}
+			in.lines()
+					.map(e -> e.trim())
+					.filter(fromServer -> !fromServer.equals("")
+							&& !fromServer.equals("\n"))
+					.forEach(
+							fromServer -> {
+								if (!lastSent.equalsIgnoreCase("ping")) {
+									chatArea.append(fromServer + "\n");
+								} else {
+									long results = System.currentTimeMillis()
+											- Long.parseLong(fromServer);
+									chatArea.append(results + "\n");
+								}
+							});
 
 		}
 	}
@@ -259,17 +256,8 @@ public final class GoIPPlayer {
 
 		@Override
 		public void run() {
-			try {
-				while (true) {
-					in.lines()
-							.map(e -> e.replace("|", "\n"))
-							.forEach(
-									fromServer -> listPlayers
-											.setText(fromServer));
-				}
-			} catch (Exception e) {
-				listPlayers.setText("Error.");
-			}
+			in.lines().map(e -> e.replace("|", "\n"))
+					.forEach(fromServer -> listPlayers.setText(fromServer));
 		}
 	}
 }

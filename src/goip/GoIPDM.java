@@ -196,6 +196,7 @@ public final class GoIPDM {
 	}
 
 	public static void kick(ClientHandler x) {
+		clientListener.removeClient(x);
 		x.out.println("You have been disconnected.");
 		x.out.close();
 		try {
@@ -203,7 +204,7 @@ public final class GoIPDM {
 				x.listener.close();
 		} catch (Exception e) {
 		} // should never fail; only attempts to close if it's not closed.
-		clientListener.removeClient(x);
+		
 		refresh();
 		clientListener.sendList();
 	}
