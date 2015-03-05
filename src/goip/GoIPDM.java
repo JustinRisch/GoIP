@@ -109,7 +109,7 @@ public final class GoIPDM {
 	// Great for broadcasting, messaging between active clients.
 	static class ClientConnecter extends Thread {
 		private static ServerSocket serverSocket = null;
-		private final static ArrayList<Socket> listeners = new ArrayList<Socket>();
+
 		private final static ArrayList<ClientHandler> clients = new ArrayList<ClientHandler>();
 
 		public ArrayList<ClientHandler> getClients() {
@@ -144,10 +144,10 @@ public final class GoIPDM {
 		public void run() {
 			while (true) {
 				try {
-					listeners.add(serverSocket.accept()); // try to connect
+
 					// client here
-					clients.add(new ClientHandler(listeners.get(listeners
-							.size() - 1), serverSocket.accept()));
+					clients.add(new ClientHandler(serverSocket.accept(),
+							serverSocket.accept()));
 
 					// Each client gets their own thread.
 
@@ -478,8 +478,8 @@ public final class GoIPDM {
 					try {
 						interpret(e);
 					} catch (IOException err) {
-						chatArea.append(Name + " has disconnected. \n");
-						broadcast(Name + " has disconnected. \n");
+						chatArea.append(Name + " has disconnected.\n");
+						broadcast(Name + " has disconnected.\n");
 						out.close();
 						clientListener.removeClient(this);
 						refresh();
@@ -491,9 +491,9 @@ public final class GoIPDM {
 			} catch (Exception e) {
 				out.println("Server said no: " + e.getMessage());
 				out.close();
-				chatArea.append(Name + " has disconnected. \n--"
+				chatArea.append(Name + " has disconnected.\n--"
 						+ e.getMessage() + "--\n");
-				broadcast(Name + " has disconnected. \n");
+				broadcast(Name + " has disconnected.\n");
 				clientListener.removeClient(this);
 				refresh();
 				clientListener.sendList();
