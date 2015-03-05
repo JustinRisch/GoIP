@@ -322,13 +322,13 @@ public final class GoIPDM {
 
 		case "showroll":
 		case "sr":
-			String result = DiceRoll.roll(banana, "DM");
+			String result = DiceRoll.roll(banana, "rolled-");
 			chatArea.append(result + "\n");
 			broadcast(result);
 			break;
 		case "roll":
 		case "r":
-			chatArea.append(DiceRoll.roll(banana, "DM") + "\n");
+			chatArea.append(DiceRoll.roll(banana, "") + "\n");
 			break;
 		case "bc":
 		default:
