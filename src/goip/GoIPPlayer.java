@@ -148,9 +148,7 @@ public final class GoIPPlayer {
 								+ inputLine.getText().replace(
 										"msg " + params[1], "") + "\n");
 						break;
-					case "cls":
-						chatArea.setText("");
-						break;
+
 					}
 
 					if (!input.equals(null) && !input.equals("")) {
@@ -174,13 +172,15 @@ public final class GoIPPlayer {
 							} catch (Exception q) {
 								chatArea.setText("Failed to reconnect.");
 							}
-						} else
+						} else {
 							out.println(input.trim());
+						}
+
 						lastSent = input;
 						inputLine.setText("");
 
 					}
-					break;
+
 				}
 			}
 		});

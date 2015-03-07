@@ -144,7 +144,7 @@ public final class GoIPDM {
 		public void run() {
 			while (true) {
 				try {
-
+					// try to connect
 					// client here
 					clients.add(new ClientHandler(serverSocket.accept(),
 							serverSocket.accept()));
@@ -164,10 +164,6 @@ public final class GoIPDM {
 					.findFirst().orElse(null);
 		}
 
-		public Socket getSocket(String x) {
-			return clients.stream().filter(y -> y.Name.equalsIgnoreCase(x))
-					.findFirst().map(y -> y.listener).orElse(null);
-		}
 	}
 
 	/**
@@ -179,7 +175,7 @@ public final class GoIPDM {
 
 	// this one is for the DM to broadcast
 
-	public static void broadcast(String message) {
+	private static void broadcast(String message) {
 		int begin;
 		if (message.length() > 2
 				&& message.substring(0, 2).equalsIgnoreCase("bc"))
@@ -192,7 +188,7 @@ public final class GoIPDM {
 	}
 
 	// refreshes the player list
-	public static void refresh() {
+	private static void refresh() {
 		final StringBuilder newplayerlist = new StringBuilder("");
 
 		clientListener.getClients().stream()
@@ -204,7 +200,7 @@ public final class GoIPDM {
 
 	}
 
-	public static void kick(ClientHandler x) {
+	private static void kick(ClientHandler x) {
 		clientListener.removeClient(x);
 		x.out.println("You have been disconnected.");
 		x.out.println((String) null); // signals the listener to stop listening.
@@ -221,7 +217,7 @@ public final class GoIPDM {
 	}
 
 	// looks for commands in the server-side chat
-	public void Decipher(String outter) {
+	private void Decipher(String outter) {
 
 		// it's a banana split! Well I thought it was funny.
 		String[] banana = outter.split(" ");
@@ -366,7 +362,7 @@ public final class GoIPDM {
 
 		}
 
-		public void interpret(String inLine) throws IOException {
+		private void interpret(String inLine) throws IOException {
 			String[] params = inLine.split(" ");
 			// if they didn't make a roll, say what they typed
 			if (!params[0].equalsIgnoreCase("roll")
@@ -439,7 +435,7 @@ public final class GoIPDM {
 		}
 
 		// player broadcasting without split string
-		public void broadcast(String message) {
+		private void broadcast(String message) {
 			int begin;
 			if (message.length() > 2
 					&& message.substring(0, 2).equalsIgnoreCase("bc"))
@@ -476,15 +472,14 @@ public final class GoIPDM {
 
 				input.lines().forEach(e -> {
 					try {
-						interpret(e);
+						if (e != null)
+							interpret(e);
 					} catch (IOException err) {
 						chatArea.append(Name + " has disconnected.\n");
-						broadcast(Name + " has disconnected.\n");
 						out.close();
 						clientListener.removeClient(this);
 						refresh();
 						clientListener.sendList();
-
 					}
 				});
 
@@ -493,15 +488,12 @@ public final class GoIPDM {
 				out.close();
 				chatArea.append(Name + " has disconnected.\n--"
 						+ e.getMessage() + "--\n");
-				broadcast(Name + " has disconnected.\n");
+
 				clientListener.removeClient(this);
 				refresh();
 				clientListener.sendList();
 			}
 		}
-	}
-
-	public void interpret(String inLine) {
 	}
 
 	// standard GUI creation method
@@ -584,7 +576,11 @@ public final class GoIPDM {
 		btnRoll.setFocusable(false);
 		btnRoll.addActionListener(e -> {
 			final DiceBag db = new DiceBag("DM");
-			db.setButtonBehavior(y -> chatArea.append(db.localRoll() + "\n"));
+			db.setButtonBehavior(y -> {
+				chatArea.append(db.localRoll() + "\n");
+				if (db.getShowRoll())
+					broadcast(" rolled a " + db.localRoll().substring(3));
+			});
 			db.setStatButtonBehavior(x -> chatArea.append(DiceRoll.statroll()
 					+ "\n"));
 			db.setVisible(true);

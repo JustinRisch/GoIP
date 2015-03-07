@@ -1,6 +1,7 @@
 package dice;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,9 +31,22 @@ public final class DiceBag extends JFrame {
 	private final JTextField NoteBox;
 	private final String name;
 	private final JPanel buttonPane = new JPanel();
+	private final JCheckBox showRollBox = new JCheckBox();
+
+	public boolean getShowRoll() {
+		return showRollBox.isSelected();
+	}
 
 	public void setStatButtonBehavior(ActionListener e) {
 		statbutt.addActionListener(e);
+	}
+
+	public static void main(String[] args) {
+		try {
+			DiceBag db = new DiceBag("DM");
+			db.setVisible(true);
+		} catch (Exception e) {
+		}
 	}
 
 	public void setButtonBehavior(ActionListener e) {
@@ -52,10 +66,16 @@ public final class DiceBag extends JFrame {
 		this.add(contentPane, BorderLayout.CENTER);
 
 		contentPane.setLayout(null);
-
+		if (this.name.equals("DM")) {
+			showRollBox.setBounds(0, 195, 23, 20);
+			contentPane.add(showRollBox);
+			JLabel shower = new JLabel("Show roll?");
+			shower.setBounds(25, 195, 70, 20);
+			contentPane.add(shower);
+		}
 		j = new JTextField[7];
 		String[] labels = { "d100", "d20", "d12", "d10", "d8", "d6", "d4" };
-		Arrays.setAll(j, i-> {
+		Arrays.setAll(j, i -> {
 			j[i] = new JTextField();
 			j[i].setHorizontalAlignment(SwingConstants.RIGHT);
 			j[i].setBounds(5, i * 24, 86, 20);
@@ -149,7 +169,8 @@ public final class DiceBag extends JFrame {
 
 	class ButtonListener implements ActionListener {
 		final JTextField JTF;// where the button should get it's info from.
-		final int increment;// how much it should increment the number in that JTF
+		final int increment;// how much it should increment the number in that
+							// JTF
 
 		public ButtonListener(JTextField JTF, int increment) {
 			this.JTF = JTF;
