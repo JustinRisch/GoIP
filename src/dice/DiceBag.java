@@ -44,6 +44,7 @@ public final class DiceBag extends JFrame {
 	public static void main(String[] args) {
 		try {
 			DiceBag db = new DiceBag("DM");
+			db.setDefaultCloseOperation(EXIT_ON_CLOSE);
 			db.setVisible(true);
 		} catch (Exception e) {
 		}
@@ -67,10 +68,10 @@ public final class DiceBag extends JFrame {
 
 		contentPane.setLayout(null);
 		if (this.name.equals("DM")) {
-			showRollBox.setBounds(0, 195, 23, 20);
+			showRollBox.setBounds(2, 195, 23, 20);
 			contentPane.add(showRollBox);
 			JLabel shower = new JLabel("Show roll?");
-			shower.setBounds(25, 195, 70, 20);
+			shower.setBounds(27, 195, 70, 20);
 			contentPane.add(shower);
 		}
 		j = new JTextField[7];
