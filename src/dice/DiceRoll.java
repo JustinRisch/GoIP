@@ -20,10 +20,11 @@ public class DiceRoll {
 		System.out.println(roll("roll +1 -2 2d6 d8 1d ", "DM"));
 
 	}
-	
+
 	public final static String roll(String banana, String name) {
 		return name + ": " + java8roll(banana);
 	}
+
 	public final static String roll(String[] banana, String name) {
 		return name + ": " + java8roll(String.join(" ", banana));
 	}
