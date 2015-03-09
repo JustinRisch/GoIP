@@ -161,9 +161,9 @@ public final class DiceBag extends JFrame {
 		String adder = add.getText().trim();
 		if (!adder.equals(""))
 			if (adder.startsWith("-"))
-				temp.append(" " + add.getText().trim());
+				temp.append(" " + adder);
 			else
-				temp.append(" +" + add.getText().trim());
+				temp.append(" +" + adder);
 		String note = NoteBox.getText().trim();
 		System.out.println(temp.toString());
 		if (!note.equalsIgnoreCase("Description of Bag") && !note.equals(""))
