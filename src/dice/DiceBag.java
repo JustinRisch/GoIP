@@ -50,6 +50,7 @@ public final class DiceBag extends JFrame {
 			DiceBag db = new DiceBag("DM");
 			db.setDefaultCloseOperation(EXIT_ON_CLOSE);
 			db.setVisible(true);
+			db.setButtonBehavior(e -> System.out.println(db.localRoll()));
 		} catch (Exception e) {
 		}
 	}
@@ -149,20 +150,26 @@ public final class DiceBag extends JFrame {
 	}
 
 	public final String localRoll() {
-		StringBuilder temp = new StringBuilder("roll " + j[0].getText().trim()
-				+ "d100 " + j[1].getText().trim() + "d20 "
-				+ j[2].getText().trim() + "d12 " + j[3].getText().trim()
-				+ "d10 " + j[4].getText().trim() + "d8 "
-				+ j[5].getText().trim() + "d6 " + j[6].getText().trim() + "d4");
+		StringBuilder temp = new StringBuilder("");
+		for (int i = 0; i < 7; i++) {
+			if (!j[i].getText().trim().equals(""))
+				temp.append(j[i].getText().trim() + labels[i].trim() + " ");
+		}
+
 		if (!dc.getText().trim().equals(""))
 			temp.append(" " + cd.getText().trim() + "d" + dc.getText().trim());
-		if (!add.getText().trim().equals(""))
-			temp.append(" +" + add.getText().trim());
+		String adder = add.getText().trim();
+		if (!adder.equals(""))
+			if (adder.startsWith("-"))
+				temp.append(" " + add.getText().trim());
+			else
+				temp.append(" +" + add.getText().trim());
 		String note = NoteBox.getText().trim();
+		System.out.println(temp.toString());
 		if (!note.equalsIgnoreCase("Description of Bag") && !note.equals(""))
-			return DiceRoll.roll(temp.toString().split(" "), note);
+			return DiceRoll.roll(temp.toString(), note);
 		else
-			return DiceRoll.roll(temp.toString().split(" "), name);
+			return DiceRoll.roll(temp.toString(), name);
 	}
 
 	class ButtonListener implements ActionListener {

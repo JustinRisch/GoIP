@@ -30,6 +30,7 @@ public class DiceRoll {
 	}
 
 	private final static String java8roll(String start) {
+		//filtering out "roll" and "r" as well as trimming.
 		start = start.toLowerCase().replace("roll", "").replace("r", "").trim();
 		ArrayList<String> banana = new ArrayList<String>();
 		Arrays.stream(start.split(" ")).forEach(e -> banana.add(e));
@@ -49,12 +50,13 @@ public class DiceRoll {
 				if (temp[0] != null && !temp[0].equals(""))
 					dnum = Integer.parseInt(temp[0]);
 				else
-					dnum = 1;
+					dnum = 0;
 
-				if (temp.length > 2)
+				if (temp.length > 1)
 					dsides = Integer.parseInt(temp[1]);
 				else
 					dsides = 20;
+				
 				while (dnum > 0) {
 					int roll = (int) Math.floor(Math.random() * dsides + 1);
 					sum.addAndGet(roll);
