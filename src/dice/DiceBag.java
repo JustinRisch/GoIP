@@ -165,7 +165,6 @@ public final class DiceBag extends JFrame {
 			else
 				temp.append(" +" + adder);
 		String note = NoteBox.getText().trim();
-		System.out.println(temp.toString());
 		if (!note.equalsIgnoreCase("Description of Bag") && !note.equals(""))
 			return DiceRoll.roll(temp.toString(), note);
 		else

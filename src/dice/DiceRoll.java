@@ -48,7 +48,7 @@ public class DiceRoll {
 				else
 					dnum = 1;
 
-				if (temp.length > 1)
+				if (temp.length > 1 && !temp[1].equals(""))
 					dsides = Integer.parseInt(temp[1]);
 				else
 					dsides = 20;
@@ -71,7 +71,7 @@ public class DiceRoll {
 				return sum + " - " + result;
 
 		} catch (Exception e) {
-			return " got an Error - " + e.getMessage(); // System.out.println(Encryption.encrypt(Message)e.getMessage());
+			return " got an Error - " + e.getMessage();
 		}
 	}
 

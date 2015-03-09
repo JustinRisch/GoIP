@@ -145,12 +145,10 @@ public final class GoIPDM {
 			while (true) {
 				try {
 					// try to connect
-					// client here
 					clients.add(new ClientHandler(serverSocket.accept(),
 							serverSocket.accept()));
 
 					// Each client gets their own thread.
-
 					clients.get(clients.size() - 1).start();
 
 				} catch (IOException e) {
@@ -345,11 +343,8 @@ public final class GoIPDM {
 		private final DecryptedWriter out;
 		private EncryptedReader input;
 
-		public ClientHandler(Socket temp, Socket temp2) throws IOException { // Constructor
-																				// with
-			// player list
-			// enabled
-
+		// Constructor with player list enabled
+		public ClientHandler(Socket temp, Socket temp2) throws IOException {
 			this.listener = temp;
 			out = new DecryptedWriter(listener.getOutputStream(), true);
 
@@ -409,7 +404,6 @@ public final class GoIPDM {
 			case "setname":
 				String newName = params[1];
 				// enforces unique names.
-
 				long sharedNames = clientListener.getClients().stream()
 						.filter(c -> c.Name.equalsIgnoreCase(newName)).count();
 				if (sharedNames > 0) {
