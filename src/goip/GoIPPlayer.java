@@ -221,7 +221,7 @@ public final class GoIPPlayer {
 			} else {
 				db.setStatButtonBehavior(x -> chatArea.append(DiceRoll
 						.statroll()));
-				db.setButtonBehavior(z -> chatArea.append(db.localRoll() + "\n"));
+				db.setButtonBehavior(x -> chatArea.append(db.localRoll() + "\n"));
 			}
 			db.setVisible(true);
 		});
