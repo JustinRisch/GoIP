@@ -25,10 +25,6 @@ public class DiceRoll {
 		return name + ": " + java8roll(banana);
 	}
 
-	public final static String roll(String[] banana, String name) {
-		return name + ": " + java8roll(String.join(" ", banana));
-	}
-
 	private final static String java8roll(String start) {
 		// filtering out "roll" and "r" as well as trimming.
 		start = start.toLowerCase().replace("roll", "").replace("r", "").trim();

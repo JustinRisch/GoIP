@@ -318,18 +318,18 @@ public final class GoIPDM {
 
 		case "showroll":
 		case "sr":
-			String result = DiceRoll.roll(banana, "rolled-");
+			String result = DiceRoll.roll(outter, "rolled-");
 			chatArea.append(result + "\n");
 			broadcast(result);
 			break;
 		case "roll":
 		case "r":
-			chatArea.append(DiceRoll.roll(banana, "") + "\n");
+			chatArea.append(DiceRoll.roll(outter, "") + "\n");
 			break;
 		case "bc":
 		default:
 			GoIPDM.broadcast(outter);
-			chatArea.append("DM: " + inputLine.getText() + "\n");
+			chatArea.append("DM: " + outter + "\n");
 			break;
 		}
 
@@ -384,7 +384,7 @@ public final class GoIPDM {
 				break;
 			case "roll":
 			case "r":
-				String result = DiceRoll.roll(params, this.Name);
+				String result = DiceRoll.roll(inLine, this.Name);
 				out.println(result);
 				chatArea.append(this.Name + result.replace(this.Name, "")
 						+ "\n");
