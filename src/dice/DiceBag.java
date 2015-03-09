@@ -21,17 +21,21 @@ import java.util.Arrays;
 @SuppressWarnings("serial")
 public final class DiceBag extends JFrame {
 
-	private final JTextField[] j;
-	private final JTextField cd;
-	private final JTextField dc;
-	private final JTextField add;
-	private final JButton btnRoll;
-	private final JButton statbutt;
-	private final JPanel contentPane;
-	private final JTextField NoteBox;
-	private final String name;
+	private final JTextField[] j = new JTextField[7];;
+	private final JTextField cd = new JTextField(10);;
+	private final JTextField dc = new JTextField();
+	private final JTextField add = new JTextField();;
+	private final JButton btnRoll = new JButton("Roll!");
+	private final JButton statbutt = new JButton("4d6 Best 3");
+	private final JPanel contentPane = new JPanel();;
+	private final JTextField NoteBox = new JTextField();
 	private final JPanel buttonPane = new JPanel();
 	private final JCheckBox showRollBox = new JCheckBox();
+
+	private final String name;
+
+	private static final String[] labels = { "d100", "d20", "d12", "d10", "d8",
+			"d6", "d4" };
 
 	public boolean getShowRoll() {
 		return showRollBox.isSelected();
@@ -62,7 +66,7 @@ public final class DiceBag extends JFrame {
 		this.setMinimumSize(new Dimension(230, 60));
 
 		this.setLocationRelativeTo(null);
-		contentPane = new JPanel();
+
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.add(contentPane, BorderLayout.CENTER);
 
@@ -74,8 +78,7 @@ public final class DiceBag extends JFrame {
 			shower.setBounds(27, 195, 70, 20);
 			contentPane.add(shower);
 		}
-		j = new JTextField[7];
-		String[] labels = { "d100", "d20", "d12", "d10", "d8", "d6", "d4" };
+
 		Arrays.setAll(j, i -> {
 			j[i] = new JTextField();
 			j[i].setHorizontalAlignment(SwingConstants.RIGHT);
@@ -99,7 +102,6 @@ public final class DiceBag extends JFrame {
 			return j[i];
 		});
 
-		cd = new JTextField(10);
 		cd.setHorizontalAlignment(SwingConstants.RIGHT);
 		cd.setBounds(5, 168, 86, 20);
 		contentPane.add(cd);
@@ -108,14 +110,12 @@ public final class DiceBag extends JFrame {
 		this.add(buttonPane, BorderLayout.SOUTH);
 		buttonPane.setLayout(new BorderLayout());
 
-		btnRoll = new JButton("Roll!");
 		btnRoll.setFont(new Font("Arial Black", Font.BOLD, 11));
 		btnRoll.setFocusCycleRoot(true);
 		btnRoll.setBounds(5, 188, 91, 23);
 		// the behavior of the roll button is added by the DM / Player programs.
 		buttonPane.add(btnRoll, BorderLayout.EAST);
 		this.getRootPane().setDefaultButton(btnRoll);
-		dc = new JTextField();
 		dc.setHorizontalAlignment(SwingConstants.LEFT);
 		dc.setBounds(134, 168, 91, 20);
 		contentPane.add(dc);
@@ -125,7 +125,6 @@ public final class DiceBag extends JFrame {
 		lblD_7.setBounds(98, 168, 11, 14);
 		contentPane.add(lblD_7);
 
-		add = new JTextField();
 		add.setHorizontalAlignment(SwingConstants.LEFT);
 		add.setBounds(134, 192, 86, 20);
 		contentPane.add(add);
@@ -135,7 +134,6 @@ public final class DiceBag extends JFrame {
 		label.setBounds(121, 192, 11, 14);
 		contentPane.add(label);
 
-		NoteBox = new JTextField();
 		NoteBox.setText("Description of Bag");
 		NoteBox.setHorizontalAlignment(SwingConstants.CENTER);
 		NoteBox.setToolTipText("Put a description of the box here! (eg: Sword Damage)");
@@ -145,7 +143,6 @@ public final class DiceBag extends JFrame {
 		this.add(NoteBox, BorderLayout.NORTH);
 		NoteBox.setColumns(10);
 
-		statbutt = new JButton("4d6 Best 3");
 		statbutt.setFocusable(false);
 		statbutt.setBounds(5, 260, 215, 16);
 		buttonPane.add(statbutt, BorderLayout.WEST);

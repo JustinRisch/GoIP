@@ -1,6 +1,8 @@
 package dice;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DiceRoll {
 	public final static String statroll() {
@@ -14,65 +16,64 @@ public class DiceRoll {
 		return result;
 	}
 
+	public static void main(String[] args) {
+		System.out.println(roll("roll +1 -2 2d6 d8 1d ", "DM"));
+
+	}
+	
+	public final static String roll(String banana, String name) {
+		return name + ": " + java8roll(banana);
+	}
 	public final static String roll(String[] banana, String name) {
-		return name + " : " + roll(banana);
+		return name + ": " + java8roll(String.join(" ", banana));
 	}
 
-	public final static String roll(String[] banana) {
+	private final static String java8roll(String start) {
+		start = start.toLowerCase().replace("roll", "").replace("r", "").trim();
+		ArrayList<String> banana = new ArrayList<String>();
+		Arrays.stream(start.split(" ")).forEach(e -> banana.add(e));
+		StringBuilder result = new StringBuilder("");
+		AtomicInteger sum = new AtomicInteger(0);
+		AtomicInteger adder = new AtomicInteger(0);
 		try {
-			StringBuilder results = new StringBuilder("");
-			int sum = 0;
-			int D = 20;
-			int dnum = 0;
-			int adder = 0;
-			for (int x = 1; x < banana.length; x++) {
-				if (banana[x].contains("+") || banana[x].contains("-")) {
-					// continue;
-					adder += Integer.parseInt(banana[x]);
-					continue;
-				}
-				if (banana[x].contains("d")) {
-					if (banana[x].split("d")[0] != null
-							&& !banana[x].split("d")[0].equals(""))
-						dnum = Integer.parseInt(banana[x].split("d")[0]);
-					else
-						dnum = 0;
-					try {
-						D = Integer.parseInt(banana[x].split("d")[1]);
-					} catch (Exception e) {
-						D = 20;
-					}
+			// flat modifiers
+			banana.stream().filter(t -> t.startsWith("+") || t.startsWith("-"))
+					.forEach(temp -> adder.addAndGet(Integer.parseInt(temp)));
+			sum.addAndGet(adder.get());
 
-				} else {
-					if (banana[x] != null && !banana[x].equals(""))
-						dnum = Integer.parseInt(banana[x]);
-					if (banana[x + 1] != null && !banana[x + 1].equals(""))
-						D = Integer.parseInt(banana[x + 1]);
-					x++;
-				}
-				for (int i = 0; i < dnum; i++) {
-					int roll = (int) Math.floor(Math.random() * D + 1);
-					sum += roll;
-					results.append(roll);
-					results.append("/" + D + " ");
+			// each dice begats it's own kind
+			banana.stream().filter(t -> t.contains("d")).forEach(t -> {
+				String[] temp = t.split("d");
+				int dnum, dsides;
+				if (temp[0] != null && !temp[0].equals(""))
+					dnum = Integer.parseInt(temp[0]);
+				else
+					dnum = 1;
+
+				if (temp.length > 2)
+					dsides = Integer.parseInt(temp[1]);
+				else
+					dsides = 20;
+				while (dnum > 0) {
+					int roll = (int) Math.floor(Math.random() * dsides + 1);
+					sum.addAndGet(roll);
+					result.append(roll + "/" + dsides + " ");
+					dnum--;
 				}
 
-			}
-			if (banana.length < 2) {
-				int roll = (int) Math.floor(Math.random() * D + 1);
-				sum += roll;
-				results.append(roll);
-				results.append("/" + D + " ");
-			}
-			sum += adder;
+			});
 
-			if (adder > 0)
-				return sum + ": " + results + " (+" + adder + ").";
+			// formatting
+			if (adder.get() > 0)
+				return sum + " - " + result + "(+" + adder + ").";
+			else if (adder.get() < 0)
+				return sum + " - " + result + "(" + adder + ").";
 			else
-				return sum + ": " + results;
+				return sum + " - " + result;
 
 		} catch (Exception e) {
 			return " got an Error - " + e.getMessage(); // System.out.println(Encryption.encrypt(Message)e.getMessage());
 		}
 	}
+
 }
