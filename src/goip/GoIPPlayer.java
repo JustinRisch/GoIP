@@ -44,7 +44,7 @@ public final class GoIPPlayer {
 	private static String lastSent = "";
 	private static String me = "Me";
 	// GUI components
-	public final static CharacterSheet cs = new CharacterSheet(me);
+	public final static CharacterSheet cs = new CharacterSheet("");
 	private final static JFrame frame = new JFrame();;
 	private final static JTextField inputLine = new JTextField();
 	private final static ChatArea chatArea = new ChatArea();
