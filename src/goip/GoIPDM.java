@@ -31,6 +31,7 @@ import java.util.*;
 import Encryption.DecryptedWriter;
 import Encryption.EncryptedReader;
 
+
 public final class GoIPDM {
 
 	// GUI variables
@@ -509,14 +510,17 @@ public final class GoIPDM {
 			broadcast((String) null);
 			System.exit(0);
 		});
-
+		
 		Runtime.getRuntime().addShutdownHook(closer);
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 542, 302);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-
+		
+		
+		
+		
 		scrollPane.setBounds(10, 11, 409, 222);
 		scrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

@@ -9,6 +9,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.SwingConstants;
 
+import character.CharacterSheet;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -21,13 +23,14 @@ import java.util.Arrays;
 @SuppressWarnings("serial")
 public final class DiceBag extends JFrame {
 
-	private final JTextField[] j = new JTextField[7];;
-	private final JTextField cd = new JTextField(10);;
+	private final JTextField[] j = new JTextField[7];
+	private final JCheckBox[] useStat = new JCheckBox[6];
+	private final JTextField cd = new JTextField(10);
 	private final JTextField dc = new JTextField();
-	private final JTextField add = new JTextField();;
+	private final JTextField add = new JTextField();
 	private final JButton btnRoll = new JButton("Roll!");
 	private final JButton statbutt = new JButton("4d6 Best 3");
-	private final JPanel contentPane = new JPanel();;
+	private final JPanel contentPane = new JPanel();
 	private final JTextField NoteBox = new JTextField();
 	private final JPanel buttonPane = new JPanel();
 	private final JCheckBox showRollBox = new JCheckBox();
@@ -36,6 +39,7 @@ public final class DiceBag extends JFrame {
 
 	private static final String[] labels = { "d100", "d20", "d12", "d10", "d8",
 			"d6", "d4" };
+	private static String[] stats = { "STR", "CON", "DEX", "INT", "WIS", "CHR" };
 
 	public boolean getShowRoll() {
 		return showRollBox.isSelected();
@@ -62,9 +66,13 @@ public final class DiceBag extends JFrame {
 	public DiceBag(String name) {
 		this.name = name;
 		this.setTitle("Dice Bag");
-		this.setBounds(100, 100, 230, 305);
-		this.setMaximumSize(new Dimension(230, 305));
-		this.setMinimumSize(new Dimension(230, 60));
+		int width = 230, height = 355;
+
+		if (name.equalsIgnoreCase("DM"))
+			height -= 50;
+		this.setBounds(100, 100, width, height);
+		this.setMaximumSize(new Dimension(width, height));
+		this.setMinimumSize(new Dimension(width, 60));
 
 		this.setLocationRelativeTo(null);
 
@@ -79,7 +87,19 @@ public final class DiceBag extends JFrame {
 			shower.setBounds(27, 195, 70, 20);
 			contentPane.add(shower);
 		}
+		if (!name.equalsIgnoreCase("DM"))
+			Arrays.setAll(stats, i -> {
+				useStat[i] = new JCheckBox();
+				useStat[i].setBounds(50 * (int) (i / 2), 215 + (25 * (i % 2)),
+						35, 25);
 
+				JLabel temp = new JLabel(stats[i]);
+				temp.setBounds(25 + 50 * (int) (i / 2), 215 + (25 * (i % 2)),
+						35, 25);
+				contentPane.add(useStat[i]);
+				contentPane.add(temp);
+				return stats[i];
+			});
 		Arrays.setAll(j, i -> {
 			j[i] = new JTextField();
 			j[i].setHorizontalAlignment(SwingConstants.RIGHT);
@@ -132,7 +152,7 @@ public final class DiceBag extends JFrame {
 		add.setColumns(10);
 
 		JLabel label = new JLabel("+");
-		label.setBounds(121, 192, 11, 14);
+		label.setBounds(121, 195, 11, 14);
 		contentPane.add(label);
 
 		NoteBox.setText("Description of Bag");
@@ -164,6 +184,21 @@ public final class DiceBag extends JFrame {
 				temp.append(" " + adder);
 			else
 				temp.append(" +" + adder);
+
+		if (!this.name.equals("DM"))
+			for (int i = 0; i < 6; i++) {
+
+				if (!useStat[i].isSelected())
+					continue;
+
+				adder = CharacterSheet.mods[i].getText();
+				if (!adder.equals(""))
+					if (adder.startsWith("-"))
+						temp.append(" " + adder);
+					else
+						temp.append(" +" + adder);
+			}
+
 		String note = NoteBox.getText().trim();
 		if (!note.equalsIgnoreCase("Description of Bag") && !note.equals(""))
 			return DiceRoll.roll(temp.toString(), note);

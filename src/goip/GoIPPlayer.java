@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.text.DefaultCaret;
 
+import character.CharacterSheet;
 import Encryption.DecryptedWriter;
 import Encryption.EncryptedReader;
 
@@ -37,7 +38,13 @@ public final class GoIPPlayer {
 	private static Socket transSocket;
 	private static Socket playerListSocket;
 
+	// some status variables likely set once or twice.
+	private static boolean connected = false;
+	private static String IP = "";
+	private static String lastSent = "";
+	private static String me = "Me";
 	// GUI components
+	public final static CharacterSheet cs = new CharacterSheet(me);
 	private final static JFrame frame = new JFrame();;
 	private final static JTextField inputLine = new JTextField();
 	private final static ChatArea chatArea = new ChatArea();
@@ -50,12 +57,7 @@ public final class GoIPPlayer {
 	private final static JScrollPane scrollPane = new JScrollPane(listPlayers);
 	private final static JScrollPane scrollPane2 = new JScrollPane(chatArea);
 	private final static JButton btnRollD = new JButton("Dice Bag");
-
-	// some status variables likely set once or twice.
-	private static boolean connected = false;
-	private static String IP = "";
-	private static String lastSent = "";
-	private static String me = "Me";
+	private final static JButton btnCS = new JButton("C. Sheet");
 
 	public static void main(String[] args) throws Exception {
 		EventQueue.invokeLater(() -> {
@@ -100,7 +102,6 @@ public final class GoIPPlayer {
 	// standard GUI initialization
 	private void initialize() {
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			System.out.println("closing...");
 			out.println("exit");
 			out.print((String) null);
 			// Needed to throw a run time exception to be able to close it...
@@ -203,8 +204,14 @@ public final class GoIPPlayer {
 
 		lblPlayerList.setBounds(437, -2, 98, 28);
 		frame.getContentPane().add(lblPlayerList);
+		btnCS.setBounds(439, 240, 91, 15);
+		btnCS.addActionListener(e -> {
+			cs.setLocationRelativeTo(null);
+			cs.setVisible(true);
+		});
+		frame.getContentPane().add(btnCS);
 
-		btnRollD.setBounds(439, 226, 91, 23);
+		btnRollD.setBounds(439, 225, 91, 15);
 		btnRollD.addActionListener(e -> {
 			final DiceBag db = new DiceBag(me);
 			if (connected) {
