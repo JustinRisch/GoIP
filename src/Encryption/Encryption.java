@@ -12,10 +12,6 @@ public class Encryption {
 	 * mistaking it for a real threat, and acting on it. Other than that, it was
 	 * a fun method to write.
 	 */
-	private static final char[] alphabet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, '!',
-			'@', '#', '$', '%', '^', '&', '*', '(', ')', 'a', 'b', 'c', 'd',
-			'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
-			'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
 	public static String superEncrypt(String start) {
 		if (start.length()<2)
@@ -193,7 +189,10 @@ public class Encryption {
 		}
 		return result.toString();
 	}
-
+	private static final char[] alphabet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, '!',
+		'@', '#', '$', '%', '^', '&', '*', '(', ')', 'a', 'b', 'c', 'd',
+		'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
+		'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 	public static String keyDecrypt(String start) {
 		StringBuilder result = new StringBuilder("");
 		char[] decrypter = start.toCharArray();
