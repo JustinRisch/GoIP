@@ -139,14 +139,14 @@ public final class GoIPLauncher {
 	}
 
 	private final static String getCurrentVersion() throws IOException {
-		String version = "-1";
+		String subversion = "-1";
 		URL oracle = new URL(
 				"https://dl.dropboxusercontent.com/u/11902673/GoIPversion.txt");
 		BufferedReader in = new BufferedReader(new InputStreamReader(
 				oracle.openStream()));
 
-		version = (in.readLine()).trim();
+		subversion = (in.readLine()).trim();
 		in.close();
-		return version;
+		return subversion;
 	}
 }
