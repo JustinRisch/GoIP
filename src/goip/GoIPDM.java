@@ -13,8 +13,7 @@ import java.awt.Component;
 import javax.swing.JScrollPane;
 import javax.swing.text.DefaultCaret;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -28,7 +27,7 @@ public final class GoIPDM {
     private final static JFrame frame = new JFrame();
     private final static JPanel contentPane = new JPanel();
     private final static JTextField inputLine = new JTextField();
-    private final static JTextArea chatArea = new JTextArea();
+    public final static JTextArea chatArea = new JTextArea();
     private final static DefaultListModel<String> listModel = new DefaultListModel<String>();
     private final static JList<String> listPlayers = new JList<String>(
 	    listModel);
@@ -36,10 +35,13 @@ public final class GoIPDM {
     private final static JScrollPane scrollPane = new JScrollPane();
     private final static JScrollPane scrollPane2 = new JScrollPane();
     private final static JButton btnRoll = new JButton("Dice Bag");
-    private final static JMenuBar menuBar = new JMenuBar();
+
     // Communication variables
     private static ClientConnecter clientListener;
     private static String lastsent = "";
+    // DB
+    public final static ArrayList<DiceBag> dblist = new ArrayList<DiceBag>();
+    private final static JMenuBar menuBar = new PlayerMenu(dblist, true);
 
     public static void main(String[] args) throws Exception {
 
@@ -167,7 +169,7 @@ public final class GoIPDM {
 
     // this one is for the DM to broadcast
 
-    private static void broadcast(String message) {
+    static void broadcast(String message) {
 	int begin;
 	if (message.length() > 2
 		&& message.substring(0, 2).equalsIgnoreCase("bc"))
@@ -581,19 +583,11 @@ public final class GoIPDM {
 	});
 	btnRoll.setBounds(429, 244, 97, 23);
 	contentPane.add(btnRoll);
-	JMenu menu = new JMenu("File");
-	JMenuItem item = new JMenuItem("Exit");
-	item.addActionListener(e -> {
-	    System.exit(0);
-	});
-	menu.add(item);
-	menuBar.add(menu);
-	menu = new JMenu("Spoof");
-	item = new JMenuItem("Client");
+	JMenu menu = new JMenu("Spoof");
+	JMenuItem item = new JMenuItem("Client");
 	item.addActionListener(e -> {
 	    try {
 		GoIPPlayer.main(new String[2]);
-
 	    } catch (Exception error) {
 		error.printStackTrace();
 	    }
@@ -604,5 +598,4 @@ public final class GoIPDM {
 	frame.add(contentPane, BorderLayout.CENTER);
 
     }
-
 }

@@ -1,22 +1,15 @@
 package goip;
 
-import java.awt.Desktop;
-import java.awt.EventQueue;
+import java.awt.*;
 
 import dice.DiceBag;
 import dice.DiceRoll;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.*;
 
 import java.awt.event.*;
 import java.net.*;
-import java.util.Arrays;
+import java.util.*;
 import java.io.*;
 
 import javax.swing.JLabel;
@@ -32,25 +25,26 @@ import java.awt.Dialog.ModalExclusionType;
 public final class GoIPPlayer {
 
     // communication variables
-    private static DecryptedWriter out;
-    private static EncryptedReader in;
+    public  static DecryptedWriter out;
+    public static EncryptedReader in;
     private static Socket transSocket;
     private static Socket playerListSocket;
     // some status variables likely set once or twice.
-    private boolean connected = false;
+    public static boolean connected = false;
     private static String IP = "";
-
-    private static String me = "Me";
+    static String me = "Me";
     // GUI components
     public final static CharacterSheet cs = new CharacterSheet("");
     private final static JFrame frame = new JFrame();
+    private final static JPanel contentPane = new JPanel();
     private final static JTextField inputLine = new JTextField();
-    private final static ChatArea chatArea = new ChatArea();
-
+    public final static ChatArea chatArea = new ChatArea();
+   
     private final static DefaultListModel<String> listModel = new DefaultListModel<String>();
     private final static JList<String> listPlayers = new JList<String>(
 	    listModel);
-
+    public  final static ArrayList<DiceBag> dblist = new ArrayList<DiceBag>();
+    private final static JMenuBar menubar = new PlayerMenu(dblist, false);
     private final static JLabel lblPlayerList = new JLabel("Player List");
     private final static JScrollPane scrollPane = new JScrollPane(listPlayers);
     private final static JScrollPane scrollPane2 = new JScrollPane(chatArea);
@@ -108,9 +102,10 @@ public final class GoIPPlayer {
 
     // standard GUI initialization
     private void initialize() {
+	frame.add(contentPane, BorderLayout.CENTER);
 	Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 	    out.println("exit");
-	    out.print((String) null);
+	    out.print((String) null); //severs connection
 	    out.close();
 	    // Needed to throw a run time exception to be able to close it...
 	    // don't ask. I don't know.
@@ -123,12 +118,12 @@ public final class GoIPPlayer {
 	frame.setResizable(false);
 	frame.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
 	frame.setTitle("GoIP Player");
-	frame.setBounds(100, 100, 552, 282);
+	frame.setBounds(100, 100, 545, 300);
 	frame.setLocationRelativeTo(null);
-	frame.getContentPane().setLayout(null);
+	contentPane.setLayout(null);
 
 	inputLine.setBounds(7, 227, 422, 20);
-	frame.getContentPane().add(inputLine);
+	contentPane.add(inputLine);
 	inputLine.setColumns(10);
 	inputLine.addKeyListener(new KeyAdapter() {
 	    @Override
@@ -201,7 +196,7 @@ public final class GoIPPlayer {
 	listPlayers.setBounds(369, 34, 91, 141);
 
 	scrollPane.setBounds(433, 23, 102, 200);
-	frame.getContentPane().add(scrollPane);
+	contentPane.add(scrollPane);
 	((DefaultCaret) chatArea.getCaret())
 		.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 	chatArea.setEditable(false);
@@ -222,17 +217,17 @@ public final class GoIPPlayer {
 	scrollPane2.setBounds(7, 7, 422, 216);
 	scrollPane2
 		.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-	frame.getContentPane().add(scrollPane2);
+	contentPane.add(scrollPane2);
 	chatArea.setText("Type in the IP of your DM or use the dice bag to roll without connecting.\n");
 
 	lblPlayerList.setBounds(437, -2, 98, 28);
-	frame.getContentPane().add(lblPlayerList);
+	contentPane.add(lblPlayerList);
 	btnCS.setBounds(439, 240, 91, 15);
 	btnCS.addActionListener(e -> {
 	    cs.setLocationRelativeTo(null);
 	    cs.setVisible(true);
 	});
-	frame.getContentPane().add(btnCS);
+	contentPane.add(btnCS);
 
 	btnRollD.setBounds(439, 225, 91, 15);
 	btnRollD.addActionListener(e -> {
@@ -256,8 +251,10 @@ public final class GoIPPlayer {
 		db.setButtonBehavior(x -> chatArea.append(db.localRoll() + "\n"));
 	    }
 	    db.setVisible(true);
+	    dblist.add(db);
 	});
-	frame.getContentPane().add(btnRollD);
+	frame.add(menubar, BorderLayout.NORTH);
+	contentPane.add(btnRollD);
     }
 
     // handles all incoming messages.
