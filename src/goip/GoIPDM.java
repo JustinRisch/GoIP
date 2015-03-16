@@ -39,6 +39,7 @@ public final class GoIPDM {
     private final static JMenuBar menuBar = new JMenuBar();
     // Communication variables
     private static ClientConnecter clientListener;
+    private static String lastsent = "";
 
     public static void main(String[] args) throws Exception {
 
@@ -548,13 +549,18 @@ public final class GoIPDM {
 	inputLine.addKeyListener(new KeyAdapter() {
 	    @Override
 	    public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-		    if (!inputLine.getText().equals(null)
-			    && !inputLine.getText().equals(""))
-			Decipher(inputLine.getText());
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_UP:
+		    inputLine.setText(lastsent);
+		    break;
+		case KeyEvent.VK_ENTER:
+		    String text = inputLine.getText().trim();
+		    if (text != null && !text.equals(""))
+			Decipher(text);
+		    lastsent = text;
 		    inputLine.setText("");
+		    break;
 		}
-
 	    }
 	});
 	inputLine.setBounds(10, 244, 409, 22);

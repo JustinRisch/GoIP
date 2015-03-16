@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Arrays;
+
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -41,7 +42,8 @@ public class CharacterSheet extends JFrame {
     private static final JTextField[] stats = new JTextField[6];
     private static final JTextField[] tempMods = new JTextField[6];
     public static final JTextField[] mods = new JTextField[6];
-    private static String[] labels = { "STR", "CON", "DEX", "INT", "WIS", "CHR" };
+    private static String[] labels = { "STR", "DEX", "CON", "INT", "WIS", "CHR" };
+
     private static final JMenuBar menubar = new CharacterMenuBar(labels, stats, tempMods);
 
     public CharacterSheet(String namer) {

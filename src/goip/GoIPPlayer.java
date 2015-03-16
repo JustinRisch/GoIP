@@ -32,15 +32,15 @@ import java.awt.Dialog.ModalExclusionType;
 public final class GoIPPlayer {
 
     // communication variables
-    private DecryptedWriter out;
-    private EncryptedReader in;
-    private Socket transSocket;
-    private Socket playerListSocket;
+    private static DecryptedWriter out;
+    private static EncryptedReader in;
+    private static Socket transSocket;
+    private static Socket playerListSocket;
     // some status variables likely set once or twice.
     private boolean connected = false;
-    private String IP = "";
+    private static String IP = "";
 
-    private String me = "Me";
+    private static String me = "Me";
     // GUI components
     public final static CharacterSheet cs = new CharacterSheet("");
     private final static JFrame frame = new JFrame();
@@ -56,7 +56,7 @@ public final class GoIPPlayer {
     private final static JScrollPane scrollPane2 = new JScrollPane(chatArea);
     private final static JButton btnRollD = new JButton("Dice Bag");
     private final static JButton btnCS = new JButton("C. Sheet");
-    private Ears ears;
+    private static Ears ears;
 
     public static void main(String[] args) throws Exception {
 	EventQueue.invokeLater(() -> {
@@ -65,7 +65,7 @@ public final class GoIPPlayer {
 	    if (args.length == 2) {
 		self.IP = "localhost";
 		self.connected = self.makeconnection();
-		self.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		disconnectOnDispose dod = new disconnectOnDispose(e -> {
 		    self.out.println("exit");
 		});
@@ -104,7 +104,7 @@ public final class GoIPPlayer {
 	}
     }
 
-    private String lastSent = "";
+    private static String lastSent = "";
 
     // standard GUI initialization
     private void initialize() {
@@ -190,7 +190,7 @@ public final class GoIPPlayer {
 			    out.println(input.trim());
 			}
 
-			ears.lastSent = input;
+			lastSent = input;
 			inputLine.setText("");
 
 		    }
@@ -244,13 +244,15 @@ public final class GoIPPlayer {
 		    chatArea.append(x + "\n");
 		});
 		db.setStatButtonBehavior(x -> {
-		    String y;
-		    chatArea.append(y = DiceRoll.statroll());
+		    String y = DiceRoll.statroll();
+		    chatArea.append(y + "\n");
 		    out.println("db~" + y);
 		});
 	    } else {
-		db.setStatButtonBehavior(x -> chatArea.append(DiceRoll
-			.statroll()));
+		db.setStatButtonBehavior(x -> {
+		    String y = DiceRoll.statroll();
+		    chatArea.append(y+"\n");
+		});
 		db.setButtonBehavior(x -> chatArea.append(db.localRoll() + "\n"));
 	    }
 	    db.setVisible(true);
@@ -261,7 +263,6 @@ public final class GoIPPlayer {
     // handles all incoming messages.
     private static final class Ears extends Thread {
 	private final EncryptedReader encryptedIN;
-	private String lastSent = "";
 
 	public Ears(EncryptedReader in) {
 	    this.encryptedIN = in;

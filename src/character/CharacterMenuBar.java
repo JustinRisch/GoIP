@@ -12,6 +12,7 @@ import javax.swing.filechooser.FileFilter;
 
 /**
  */
+@SuppressWarnings("serial")
 public class CharacterMenuBar extends JMenuBar {
     public CharacterMenuBar(String[] labels, JTextField[] stats,
 	    JTextField[] tempMods) {

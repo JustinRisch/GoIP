@@ -39,7 +39,7 @@ public final class DiceBag extends JFrame {
 
     private static final String[] labels = { "d100", "d20", "d12", "d10", "d8",
 	    "d6", "d4" };
-    private static String[] stats = { "STR", "CON", "DEX", "INT", "WIS", "CHR" };
+    private static String[] stats = { "STR", "DEX", "CON", "INT", "WIS", "CHR" };
 
     public boolean getShowRoll() {
 	return !showRollBox.isSelected();
