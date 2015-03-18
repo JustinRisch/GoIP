@@ -56,6 +56,7 @@ public class CharacterMenuBar extends JMenuBar {
 		    }
 		    f.incrementAndGet();
 		});
+		CharacterSheet.refresh();
 		read.close();
 	    } catch (Exception error) {
 		error.printStackTrace();

@@ -91,7 +91,7 @@ public class CharacterSheet extends JFrame {
 	isLoaded = true;
     }
 
-    public void refresh() {
+    public static  void refresh() {
 
 	for (int i = 0; i < 6; i++) {
 	    try {

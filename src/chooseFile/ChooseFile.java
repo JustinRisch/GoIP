@@ -18,7 +18,6 @@ public abstract class ChooseFile {
 	FileFilter filter = new FileNameExtensionFilter(ext, ext);
 	fileChooser.setAcceptAllFileFilterUsed(false);
 	fileChooser.setFileFilter(filter);
-
 	fileChooser.showSaveDialog(null);
 	return fileChooser.getSelectedFile();
     }
