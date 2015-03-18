@@ -232,8 +232,7 @@ public final class GoIPPlayer {
 	btnRollD.setBounds(439, 225, 91, 15);
 	btnRollD.addActionListener(e -> {
 	    final DiceBag db = new DiceBag(me);
-	    setBehavior(db);
-
+	    setBehavior(db); 
 	    dblist.add(db);
 	});
 	frame.add(menubar, BorderLayout.NORTH);

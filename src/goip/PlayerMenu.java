@@ -27,8 +27,8 @@ public class PlayerMenu extends JMenuBar {
 	item.addActionListener(e -> {
 
 	    try {
-		File SaveTo = ChooseFile.saveFile();
-		if (!SaveTo.getName().endsWith(".dbag"))
+		File SaveTo = ChooseFile.saveFile("dbag");
+		if (!SaveTo.getName().endsWith("dbag"))
 		    SaveTo = new File(SaveTo.getAbsoluteFile() + ".dbag");
 		SaveTo.createNewFile();
 		FileWriter fw = new FileWriter(SaveTo);
@@ -50,7 +50,7 @@ public class PlayerMenu extends JMenuBar {
 	item = new JMenuItem("Load Dice Bags...");
 	item.addActionListener(e -> {
 	    try {
-		File LoadFrom = ChooseFile.loadFile();
+		File LoadFrom = ChooseFile.loadFile("dbag");
 		BufferedReader br = new BufferedReader(new FileReader(LoadFrom));
 		br.lines()
 			.forEach(

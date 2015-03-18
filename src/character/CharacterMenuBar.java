@@ -7,8 +7,8 @@ import java.io.*;
 import java.util.concurrent.atomic.*;
 
 import javax.swing.*;
-import javax.swing.filechooser.*;
-import javax.swing.filechooser.FileFilter;
+
+import chooseFile.*;
 
 /**
  */
@@ -19,21 +19,10 @@ public class CharacterMenuBar extends JMenuBar {
 	JMenu menu = new JMenu("File");
 	JMenuItem save = new JMenuItem("Save");
 	save.addActionListener(e -> {
-	    JFileChooser fileChooser = new JFileChooser("Save as...");
-
-	    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-	    FileFilter filter = new FileNameExtensionFilter("CSJ files only",
-		    "CSJ");
-	    fileChooser.setFileFilter(filter);
-	    fileChooser.setAcceptAllFileFilterUsed(false);
-	    fileChooser.showSaveDialog(null);
 	    try {
-		File SaveTo;
-		if (fileChooser.getSelectedFile().toString().endsWith(".CSJ"))
-		    SaveTo = fileChooser.getSelectedFile();
-		else
-		    SaveTo = new File(fileChooser.getSelectedFile().toString()
-			    + ".CSJ");
+		File SaveTo = ChooseFile.saveFile("CSJ");
+		if (!SaveTo.getName().endsWith("CSJ"))
+		    SaveTo = new File(SaveTo.getName() + ".CSJ");
 		SaveTo.createNewFile();
 		FileWriter fw = new FileWriter(SaveTo);
 		fw.write("");
@@ -50,20 +39,11 @@ public class CharacterMenuBar extends JMenuBar {
 	menu.add(save);
 	JMenuItem load = new JMenuItem("Load");
 	load.addActionListener(e -> {
-	    JFileChooser fileChooser = new JFileChooser("Load");
-
-	    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-	    FileFilter filter = new FileNameExtensionFilter("CSJ files only",
-		    "CSJ");
-	    fileChooser.setAcceptAllFileFilterUsed(false);
-	    fileChooser.setFileFilter(filter);
-	    fileChooser.showOpenDialog(null);
 
 	    try {
 
 		BufferedReader read = new BufferedReader(new FileReader(
-			fileChooser.getSelectedFile()));
+			ChooseFile.loadFile("CSJ")));
 
 		AtomicInteger f = new AtomicInteger(0);
 		read.lines().forEachOrdered(x -> {
