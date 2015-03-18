@@ -184,7 +184,7 @@ public final class GoIPDM {
     // refreshes the player list
     public static void refresh() {
 	final StringBuilder newplayerlist = new StringBuilder("");
-
+	
 	clientListener.getClients().stream()
 		.forEach(x -> newplayerlist.append(x.Name + "\n"));
 	listModel.removeAllElements();

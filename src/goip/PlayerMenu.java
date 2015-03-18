@@ -29,10 +29,10 @@ public class PlayerMenu extends JMenuBar {
 	    JFileChooser fileChooser = new JFileChooser("Save as...");
 
 	    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-	    FileFilter filter = new FileNameExtensionFilter("dbag files only",
+	    FileFilter filter = new FileNameExtensionFilter("dbag",
 		    "dbag");
-	    fileChooser.setFileFilter(filter);
 	    fileChooser.setAcceptAllFileFilterUsed(false);
+	    fileChooser.setFileFilter(filter);
 	    fileChooser.showSaveDialog(null);
 	    try {
 		File SaveTo;
