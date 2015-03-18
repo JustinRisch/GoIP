@@ -34,8 +34,7 @@ public class PlayerMenu extends JMenuBar {
 		FileWriter fw = new FileWriter(SaveTo);
 		fw.write("");
 		dblist.stream().forEach(x -> {
-		    System.out.println(x.stringForSave());
-		    try {
+		   try {
 			fw.append(x.stringForSave() + "\n");
 		    } catch (Exception err) {
 		    }

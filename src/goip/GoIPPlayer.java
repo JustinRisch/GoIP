@@ -84,7 +84,7 @@ public final class GoIPPlayer {
 	    new playerListener(new EncryptedReader(new InputStreamReader(
 		    playerListSocket.getInputStream()))).start();
 	    new Ears(in).start();
-	  
+
 	    return true;
 
 	} catch (IOException e) {
@@ -232,7 +232,7 @@ public final class GoIPPlayer {
 	btnRollD.setBounds(439, 225, 91, 15);
 	btnRollD.addActionListener(e -> {
 	    final DiceBag db = new DiceBag(me);
-	    setBehavior(db); 
+	    setBehavior(db);
 	    dblist.add(db);
 	});
 	frame.add(menubar, BorderLayout.NORTH);
@@ -326,7 +326,6 @@ public final class GoIPPlayer {
 	    });
 	    db.setButtonBehavior(z -> chatArea.append(db.localRoll() + "\n"));
 	}
-	db.setVisible(true);
     }
 
     // this thread handles incoming information for the player list object. Does

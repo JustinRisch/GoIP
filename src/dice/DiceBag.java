@@ -35,7 +35,6 @@ public final class DiceBag extends JFrame {
     private final JCheckBox showRollBox = new JCheckBox();
     private final DiceBag self;
     private final String name;
-    private final boolean isDM;
     private static final String[] labels = { "d100", "d20", "d12", "d10", "d8",
 	    "d6", "d4" };
     private static String[] stats = { "STR", "DEX", "CON", "INT", "WIS", "CHR" };
@@ -48,23 +47,12 @@ public final class DiceBag extends JFrame {
 	statbutt.addActionListener(e);
     }
 
-    public static void main(String[] args) {
-	try {
-	    DiceBag db = new DiceBag("DM");
-	    db.setDefaultCloseOperation(EXIT_ON_CLOSE);
-	    db.setVisible(true);
-	    db.setButtonBehavior(e -> System.out.println(db.localRoll()));
-	} catch (Exception e) {
-	}
-    }
-
     public void setButtonBehavior(ActionListener e) {
 	btnRoll.addActionListener(e);
     }
 
     public DiceBag(String name) {
 	this.name = name;
-	isDM = this.name.equalsIgnoreCase("DM");
 	self = this;
 	this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -225,58 +213,48 @@ public final class DiceBag extends JFrame {
 
     public final String stringForSave() {
 	StringBuilder sb = new StringBuilder("");
-	sb.append(NoteBox.getText());
-	sb.append("~");
+	sb.append(NoteBox.getText() + ":");
 	// all the dice, in order
 	Arrays.stream(j).forEachOrdered(e -> sb.append(e.getText() + ":"));
-	sb.append("~");
 	// custom number : custom sides : adder
-	sb.append(cd.getText() + ":" + dc.getText() + ":" + add.getText());
-	sb.append("~");
-	if (!isDM)
-	    Arrays.stream(useStat).forEachOrdered(
-		    e -> sb.append(e.isSelected()+":"));
-	else
-	    sb.append(":::::");
-	sb.append("~");
-	if (isDM)
-	    sb.append(showRollBox.isSelected());
-	else
-	    sb.append("false");
+	sb.append(cd.getText() + ":" + dc.getText() + ":" + add.getText() + ":");
+	sb.append(Optional.ofNullable(showRollBox.isSelected()).orElse(false)
+		+ ":");
+	Arrays.stream(useStat).forEachOrdered(
+		e -> sb.append(Optional.ofNullable(e.isSelected())
+			.orElse(false) + ":"));
+
 	return sb.toString();
 
     }
 
     public void setValues(String banana) {
-	String[] text = banana.split("~");
-	String localname = text[0];
-	System.out.println("--" + localname + "--");
+	String[] text = banana.split(":");
+	int i = 0;
+	String localname = text[i++];
 	NoteBox.setText(localname);
-	String[] diceNums = text[1].split(":");
-	for (int i = 0; i < j.length; i++) {
-	    try{
-	    j[i].setText(diceNums[i]);
-	    System.out.println(labels[i] + ":" + diceNums[i]);
-	    }catch(Exception e){}
+	while (i <= j.length) {
+	    try {
+		j[i - 1].setText(text[i]);
+	    } catch (Exception e) {
+	    } finally {
+		i++;
+	    }
+
 	}
-	String[] customDice = text[2].split(":");
-	if (customDice.length > 2) {
-	    cd.setText(customDice[0]);
-	    dc.setText(customDice[1]);
-	    add.setText(customDice[2]);
-	}
+	cd.setText(text[i++]);
+	dc.setText(text[i++]);
+	add.setText(text[i++]);
 	try {
-	    showRollBox.setSelected(Boolean.parseBoolean(text[4]));
+	    showRollBox.setSelected(Boolean.parseBoolean(text[i++]));
 	} catch (Exception e) {
 
 	}
+	try {
+	    for (JCheckBox user : useStat)
+		user.setSelected(Boolean.parseBoolean(text[i++]));
+	} catch (Exception e) {
 
-	String[] users = text[3].split(":");
-	try{
-	for (int i = 0; i < useStat.length; i++)
-	    useStat[i].setSelected(Boolean.parseBoolean(users[i]));
-	} catch (Exception e){
-	    
 	}
     }
 
