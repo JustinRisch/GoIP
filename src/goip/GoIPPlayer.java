@@ -50,7 +50,6 @@ public final class GoIPPlayer {
     private final static JScrollPane scrollPane2 = new JScrollPane(chatArea);
     private final static JButton btnRollD = new JButton("Dice Bag");
     private final static JButton btnCS = new JButton("C. Sheet");
-    private static Ears ears;
 
     public static void main(String[] args) throws Exception {
 	EventQueue.invokeLater(() -> {
@@ -84,8 +83,8 @@ public final class GoIPPlayer {
 		    transSocket.getInputStream()));
 	    new playerListener(new EncryptedReader(new InputStreamReader(
 		    playerListSocket.getInputStream()))).start();
-	    ears = new Ears(in);
-	    ears.start();
+	    new Ears(in).start();
+	  
 	    return true;
 
 	} catch (IOException e) {
