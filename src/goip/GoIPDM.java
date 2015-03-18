@@ -184,7 +184,7 @@ public final class GoIPDM {
     // refreshes the player list
     public static void refresh() {
 	final StringBuilder newplayerlist = new StringBuilder("");
-	
+
 	clientListener.getClients().stream()
 		.forEach(x -> newplayerlist.append(x.Name + "\n"));
 	listModel.removeAllElements();
@@ -486,6 +486,16 @@ public final class GoIPDM {
 	}
     }
 
+    public static void setBehavior(DiceBag db) {
+	db.setButtonBehavior(y -> {
+	    GoIPDM.chatArea.append(db.localRoll() + "\n");
+	    if (db.getShowRoll())
+		GoIPDM.broadcast(" rolled a " + db.localRoll().substring(3));
+	});
+	db.setStatButtonBehavior(z -> GoIPDM.chatArea.append(DiceRoll
+		.statroll() + "\n"));
+    }
+
     // standard GUI creation method
     @SuppressWarnings("static-access")
     private void initialize() {
@@ -572,13 +582,7 @@ public final class GoIPDM {
 	btnRoll.setFocusable(false);
 	btnRoll.addActionListener(e -> {
 	    final DiceBag db = new DiceBag("DM");
-	    db.setButtonBehavior(y -> {
-		chatArea.append(db.localRoll() + "\n");
-		if (db.getShowRoll())
-		    broadcast(" rolled a " + db.localRoll().substring(3));
-	    });
-	    db.setStatButtonBehavior(x -> chatArea.append(DiceRoll.statroll()
-		    + "\n"));
+	    setBehavior(db);
 	    db.setVisible(true);
 	});
 	btnRoll.setBounds(429, 244, 97, 23);

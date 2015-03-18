@@ -25,7 +25,7 @@ import java.awt.Dialog.ModalExclusionType;
 public final class GoIPPlayer {
 
     // communication variables
-    public  static DecryptedWriter out;
+    public static DecryptedWriter out;
     public static EncryptedReader in;
     private static Socket transSocket;
     private static Socket playerListSocket;
@@ -39,11 +39,11 @@ public final class GoIPPlayer {
     private final static JPanel contentPane = new JPanel();
     private final static JTextField inputLine = new JTextField();
     public final static ChatArea chatArea = new ChatArea();
-   
+
     private final static DefaultListModel<String> listModel = new DefaultListModel<String>();
     private final static JList<String> listPlayers = new JList<String>(
 	    listModel);
-    public  final static ArrayList<DiceBag> dblist = new ArrayList<DiceBag>();
+    public final static ArrayList<DiceBag> dblist = new ArrayList<DiceBag>();
     private final static JMenuBar menubar = new PlayerMenu(dblist, false);
     private final static JLabel lblPlayerList = new JLabel("Player List");
     private final static JScrollPane scrollPane = new JScrollPane(listPlayers);
@@ -105,10 +105,11 @@ public final class GoIPPlayer {
 	frame.add(contentPane, BorderLayout.CENTER);
 	Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 	    out.println("exit");
-	    out.print((String) null); //severs connection
-	    out.close();
-	    // Needed to throw a run time exception to be able to close it...
-	    // don't ask. I don't know.
+	    out.print((String) null); // severs connection
+		out.close();
+		// Needed to throw a run time exception to be able to close
+		// it...
+		// don't ask. I don't know.
 		byte[] b = {};
 		b[1] = 0;
 		System.exit(1);
@@ -232,25 +233,8 @@ public final class GoIPPlayer {
 	btnRollD.setBounds(439, 225, 91, 15);
 	btnRollD.addActionListener(e -> {
 	    final DiceBag db = new DiceBag(me);
-	    if (connected) {
-		db.setButtonBehavior(y -> {
-		    String x = db.localRoll();
-		    out.println("db~" + x.replace(me, ""));
-		    chatArea.append(x + "\n");
-		});
-		db.setStatButtonBehavior(x -> {
-		    String y = DiceRoll.statroll();
-		    chatArea.append(y + "\n");
-		    out.println("db~" + y);
-		});
-	    } else {
-		db.setStatButtonBehavior(x -> {
-		    String y = DiceRoll.statroll();
-		    chatArea.append(y+"\n");
-		});
-		db.setButtonBehavior(x -> chatArea.append(db.localRoll() + "\n"));
-	    }
-	    db.setVisible(true);
+	    setBehavior(db);
+
 	    dblist.add(db);
 	});
 	frame.add(menubar, BorderLayout.NORTH);
@@ -323,6 +307,28 @@ public final class GoIPPlayer {
 	    }
 
 	}
+    }
+
+    public static void setBehavior(DiceBag db) {
+	if (connected) {
+	    db.setButtonBehavior(y -> {
+		String z = db.localRoll();
+		out.println("db~" + z.replace(me, ""));
+		chatArea.append(z + "\n");
+	    });
+	    db.setStatButtonBehavior(z -> {
+		String y = DiceRoll.statroll();
+		chatArea.append(y + "\n");
+		out.println("db~" + y);
+	    });
+	} else {
+	    db.setStatButtonBehavior(z -> {
+		String y = DiceRoll.statroll();
+		chatArea.append(y + "\n");
+	    });
+	    db.setButtonBehavior(z -> chatArea.append(db.localRoll() + "\n"));
+	}
+	db.setVisible(true);
     }
 
     // this thread handles incoming information for the player list object. Does
