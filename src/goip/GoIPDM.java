@@ -587,17 +587,6 @@ public final class GoIPDM {
 	});
 	btnRoll.setBounds(429, 244, 97, 23);
 	contentPane.add(btnRoll);
-	JMenu menu = new JMenu("Spoof");
-	JMenuItem item = new JMenuItem("Client");
-	item.addActionListener(e -> {
-	    try {
-		GoIPPlayer.main(new String[2]);
-	    } catch (Exception error) {
-		error.printStackTrace();
-	    }
-	});
-	menu.add(item);
-	menuBar.add(menu);
 	frame.add(menuBar, BorderLayout.NORTH);
 	frame.add(contentPane, BorderLayout.CENTER);
 

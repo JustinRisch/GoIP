@@ -34,7 +34,7 @@ public class PlayerMenu extends JMenuBar {
 		FileWriter fw = new FileWriter(SaveTo);
 		fw.write("");
 		dblist.stream().forEach(x -> {
-		   try {
+		    try {
 			fw.append(x.stringForSave() + "\n");
 		    } catch (Exception err) {
 		    }
@@ -51,20 +51,18 @@ public class PlayerMenu extends JMenuBar {
 	    try {
 		File LoadFrom = ChooseFile.loadFile("dbag");
 		BufferedReader br = new BufferedReader(new FileReader(LoadFrom));
-		br.lines()
-			.forEach(
-				x -> {
-				    DiceBag db;
-				    if (isDM) {
-					db = new DiceBag("DM");
-					GoIPDM.setBehavior(db);
-				    } else {
-					db = new DiceBag("Player");
-					GoIPPlayer.setBehavior(db);
-				    }
-				    db.setValues(x);
-				    db.setVisible(true);
-				});
+		br.lines().forEach(x -> {
+		    DiceBag db;
+		    if (isDM) {
+			db = new DiceBag("DM");
+			GoIPDM.setBehavior(db);
+		    } else {
+			db = new DiceBag("Player");
+			GoIPPlayer.setBehavior(db);
+		    }
+		    db.setValues(x);
+		    db.setVisible(true);
+		});
 		br.close();
 	    } catch (Exception error) {
 		error.printStackTrace();

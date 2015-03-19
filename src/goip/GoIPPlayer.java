@@ -53,17 +53,8 @@ public final class GoIPPlayer {
 
     public static void main(String[] args) throws Exception {
 	EventQueue.invokeLater(() -> {
-	    GoIPPlayer self = new GoIPPlayer();
+	    new GoIPPlayer();
 	    frame.setVisible(true);
-	    if (args.length == 2) {
-		self.IP = "localhost";
-		self.connected = self.makeconnection();
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		disconnectOnDispose dod = new disconnectOnDispose(e -> {
-		    self.out.println("exit");
-		});
-		frame.addWindowListener(dod);
-	    }
 	});
 
     }
