@@ -4,11 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Arrays;
 
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -17,7 +14,6 @@ public class CharacterSheet extends JFrame {
 
     private static final long serialVersionUID = 2870798817354394618L;
     private static final JPanel contentPane = new JPanel();
-    private static String name = "";
     public static boolean isLoaded = false;
 
     public static void main(String[] args) {
@@ -26,6 +22,7 @@ public class CharacterSheet extends JFrame {
 		try {
 		    CharacterSheet frame = new CharacterSheet("");
 		    frame.setVisible(true);
+		    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
@@ -37,22 +34,19 @@ public class CharacterSheet extends JFrame {
      * Create the frame.
      */
 
-   
-
     private static final JTextField[] stats = new JTextField[6];
     private static final JTextField[] tempMods = new JTextField[6];
     public static final JTextField[] mods = new JTextField[6];
-    private static String[] labels = { "STR", "DEX", "CON", "INT", "WIS", "CHR" };
-
-    private static final JMenuBar menubar = new CharacterMenuBar(labels, stats, tempMods);
+    private static final String[] labels = { "STR", "DEX", "CON", "INT", "WIS",
+	    "CHR" };
+    private static final JMenuBar menubar = new CharacterMenuBar(labels, stats,
+	    tempMods);
 
     public CharacterSheet(String namer) {
-	name = namer;
 
-	if (name.equals("") || name.equalsIgnoreCase("me"))
-	    this.setTitle("Character Sheet");
-	else
-	    this.setTitle(name);
+	// can adjust the whole screen up and down.
+	int bump = 0;
+	this.setTitle("Character Sheet");
 
 	setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 	setResizable(false);
@@ -62,36 +56,37 @@ public class CharacterSheet extends JFrame {
 	contentPane.setLayout(null);
 	this.add(contentPane, BorderLayout.CENTER);
 	this.add(menubar, BorderLayout.NORTH);
+	// yeah screw formatting! spaces all day!
 	JLabel top = new JLabel("Stat      Temp    Modifier");
-	top.setBounds(43, 5, 200, 20);
+	top.setBounds(43, bump, 200, 20);
 	contentPane.add(top);
-	Arrays.parallelSetAll(stats, e -> {
+	for (int e = 0; e < 6; e++) {
 	    stats[e] = new JTextField();
-	    stats[e].setBounds(40, 25 + 20 * e, 50, 20);
+	    stats[e].setBounds(40, bump += 20, 50, 20);
 	    stats[e].setColumns(10);
 	    contentPane.add(stats[e]);
 	    JLabel lblStr = new JLabel(labels[e] + ":");
-	    lblStr.setBounds(5, 25 + 20 * e, 33, 16);
+	    lblStr.setBounds(5, bump, 33, 16);
 	    contentPane.add(lblStr);
 	    tempMods[e] = new JTextField();
 	    stats[e].setColumns(10);
-	    tempMods[e].setBounds(90, 25 + 20 * e, 50, 20);
+	    tempMods[e].setBounds(90, bump, 50, 20);
 	    contentPane.add(tempMods[e]);
 	    mods[e] = new JTextField();
-	    mods[e].setBounds(140, 25 + 20 * e, 50, 20);
+	    mods[e].setBounds(140, bump, 50, 20);
 	    mods[e].setEnabled(false);
 	    mods[e].setEditable(false);
 	    stats[e].addKeyListener(new JTAListener(mods[e], stats[e],
 		    tempMods[e]));
 	    tempMods[e].addKeyListener(new JTAListener(mods[e], stats[e],
 		    tempMods[e]));
+
 	    contentPane.add(mods[e]);
-	    return stats[e];
-	});
+	}
 	isLoaded = true;
     }
 
-    public static  void refresh() {
+    public static void refresh() {
 
 	for (int i = 0; i < 6; i++) {
 	    try {
