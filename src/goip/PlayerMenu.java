@@ -3,6 +3,8 @@
  */
 package goip;
 
+import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 
@@ -76,6 +78,32 @@ public class PlayerMenu extends JMenuBar {
 	});
 	menu.add(item);
 	this.add(menu);
+	menu = new JMenu("Help");
+	item = new JMenuItem("Controls");
+	item.addActionListener(PlayerMenu::showHelp);
+	menu.add(item);
+	this.add(menu);
+    }
 
+    private static JDialog help;
+    static final String helpmessage = "Press enter to broadcast a message.\n "
+	    + "Click on a player in the playerlist to send a message to that player.\n "
+	    + "Press left arrow to send another message to the last person you messaged.\n "
+	    + "Press right to clear your message line.\n";
+
+    public static void showHelp(ActionEvent e) {
+	if (help == null) {
+	    help = new JDialog();
+	    help.setLayout(new FlowLayout());
+	    help.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+	    help.setTitle("Controls");
+	    help.setLocation(0, 0);
+	    help.setLocationRelativeTo(null);
+	    for (String x : helpmessage.split("\n"))
+		help.add(new JLabel(x));
+	    help.setSize(500, 120);
+
+	}
+	help.setVisible(true);
     }
 }
