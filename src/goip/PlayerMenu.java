@@ -1,6 +1,3 @@
-/*
- * Copyright Orchestra Networks 2000-2013. All rights reserved.
- */
 package goip;
 
 import java.awt.*;
@@ -13,8 +10,6 @@ import javax.swing.*;
 import chooseFile.*;
 import dice.*;
 
-/**
- */
 public class PlayerMenu extends JMenuBar {
 
     static JMenuItem item;

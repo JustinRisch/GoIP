@@ -32,7 +32,7 @@ public final class GoIPPlayer {
     // some status variables likely set once or twice.
     public static boolean connected = false;
     private static String IP = "";
-    static String me = "Me", lastMessage="";
+    static String me = "Me", lastMessage = "";
     // GUI components
     public final static CharacterSheet cs = new CharacterSheet("");
     private final static JFrame frame = new JFrame();
@@ -127,7 +127,7 @@ public final class GoIPPlayer {
 		    inputLine.setText("");
 		    break;
 		case KeyEvent.VK_LEFT:
-		    inputLine.setText("msg "+lastMessage+"  ");
+		    inputLine.setText("msg " + lastMessage + "  ");
 		    break;
 		case KeyEvent.VK_ENTER:
 		    String input = inputLine.getText().trim();
@@ -149,7 +149,7 @@ public final class GoIPPlayer {
 			me = params[1];
 			break;
 		    case "msg":
-			lastMessage=params[1];
+			lastMessage = params[1];
 			chatArea.append("(To "
 				+ params[1]
 				+ "): "
@@ -232,6 +232,7 @@ public final class GoIPPlayer {
 	    final DiceBag db = new DiceBag(me);
 	    setBehavior(db);
 	    dblist.add(db);
+	    db.setVisible(true);
 	});
 	frame.add(menubar, BorderLayout.NORTH);
 	contentPane.add(btnRollD);

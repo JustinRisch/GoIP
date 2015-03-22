@@ -1,6 +1,3 @@
-/*
- * Copyright Orchestra Networks 2000-2013. All rights reserved.
- */
 package chooseFile;
 
 import java.io.*;
@@ -9,8 +6,6 @@ import javax.swing.*;
 import javax.swing.filechooser.*;
 import javax.swing.filechooser.FileFilter;
 
-/**
- */
 public abstract class ChooseFile {
     public static File saveFile(String ext) {
 	JFileChooser fileChooser = new JFileChooser("Save as...");

@@ -1,13 +1,8 @@
-/*
- * Copyright Orchestra Networks 2000-2013. All rights reserved.
- */
 package goip;
 
 import java.awt.event.*;
 import java.util.function.*;
 
-/**
- */
 public class disconnectOnDispose implements WindowListener {
     Consumer<WindowEvent> doit; 
     public disconnectOnDispose(Consumer<WindowEvent> e) {

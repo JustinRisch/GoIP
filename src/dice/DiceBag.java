@@ -13,9 +13,7 @@ import javax.swing.SwingConstants;
 
 import character.CharacterSheet;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
@@ -34,7 +32,10 @@ public final class DiceBag extends JFrame {
     private final JPanel buttonPane = new JPanel();
     private final JCheckBox showRollBox = new JCheckBox();
     private final DiceBag self;
+    private final JLabel avgBox = new JLabel("Avg: -");
+    private final JLabel maxBox = new JLabel("Max: -");
     private final String name;
+    private static final double[] vals = { 100, 20, 12, 10, 8, 6, 4 };
     private static final String[] labels = { "d100", "d20", "d12", "d10", "d8",
 	    "d6", "d4" };
     private static String[] stats = { "STR", "DEX", "CON", "INT", "WIS", "CHR" };
@@ -73,10 +74,9 @@ public final class DiceBag extends JFrame {
 	contentPane.setLayout(null);
 	if (this.name.equals("DM")) {
 	    showRollBox.setBounds(2, 195, 23, 20);
+	    showRollBox.setText("Hide Roll?");
 	    contentPane.add(showRollBox);
-	    JLabel shower = new JLabel("Hide roll?");
-	    shower.setBounds(27, 195, 70, 20);
-	    contentPane.add(shower);
+	    buttonPane.add(showRollBox, BorderLayout.WEST);
 
 	    this.addWindowListener(new WindowListener() {
 		public void windowOpened(WindowEvent e) {
@@ -148,6 +148,7 @@ public final class DiceBag extends JFrame {
 	    j[i].setBounds(5, i * 24, 86, 20);
 	    j[i].setColumns(10);
 	    contentPane.add(j[i]);
+
 	    JButton button = new JButton("+");
 	    button.setFocusable(false);
 	    button.setBounds(132, 24 * i, 46, 23);
@@ -194,8 +195,13 @@ public final class DiceBag extends JFrame {
 	add.setColumns(10);
 
 	JLabel label = new JLabel("+");
-	label.setBounds(121, 195, 11, 14);
+	label.setBounds(120, 195, 11, 14);
 	contentPane.add(label);
+	avgBox.setBounds(10, 187, 80, 14);
+	contentPane.add(avgBox);
+
+	maxBox.setBounds(10, 202, 80, 14);
+	contentPane.add(maxBox);
 
 	NoteBox.setText("Description of Bag");
 	NoteBox.setHorizontalAlignment(SwingConstants.CENTER);
@@ -208,7 +214,12 @@ public final class DiceBag extends JFrame {
 
 	statbutt.setFocusable(false);
 	statbutt.setBounds(5, 260, 215, 16);
-	buttonPane.add(statbutt, BorderLayout.WEST);
+	if (!this.name.equalsIgnoreCase("DM"))
+	    buttonPane.add(statbutt, BorderLayout.WEST);
+	else
+	    buttonPane.add(showRollBox, BorderLayout.WEST);
+	Arrays.stream(contentPane.getComponents()).forEach(e -> setBehavior(e));
+
     }
 
     public final String stringForSave() {
@@ -258,7 +269,66 @@ public final class DiceBag extends JFrame {
 	}
     }
 
+    public final double min() {
+	double sum = 0;
+	for (int i = 0; i < 7; i++) {
+	    if (!j[i].getText().trim().equals(""))
+		sum += Integer.parseInt(j[i].getText().trim());
+	}
+	if (!cd.getText().trim().equals("") && !dc.getText().trim().equals(""))
+	    sum += Integer.parseInt(cd.getText().trim());
+	if (!add.getText().trim().equals(""))
+	    sum += Integer.parseInt(add.getText().trim());
+
+	if (!this.name.equals("DM"))
+	    for (int i = 0; i < 6; i++) {
+
+		if (!useStat[i].isSelected())
+		    continue;
+
+		CharacterSheet.mods[i].getText();
+		if (!CharacterSheet.mods[i].getText().trim().equals(""))
+		    sum += Integer.parseInt(CharacterSheet.mods[i].getText());
+	    }
+	return sum;
+    }
+
+    public final double avg() {
+	return (max() + min()) / 2;
+    }
+
+    public final int max() {
+	int sum = 0;
+	for (int i = 0; i < 7; i++) {
+	    if (!j[i].getText().trim().equals(""))
+		sum += Integer.parseInt(j[i].getText().trim()) * vals[i];
+	}
+	if (!cd.getText().trim().equals("") && !dc.getText().trim().equals(""))
+	    sum += Integer.parseInt(cd.getText().trim())
+		    * Integer.parseInt(dc.getText().trim());
+	if (!add.getText().trim().equals(""))
+	    sum += Integer.parseInt(add.getText().trim());
+	if (!this.name.equals("DM"))
+	    for (int i = 0; i < 6; i++) {
+		if (!useStat[i].isSelected())
+		    continue;
+		if (!CharacterSheet.mods[i].getText().trim().equals(""))
+		    sum += Integer.parseInt(CharacterSheet.mods[i].getText());
+	    }
+	return sum;
+    }
+
+    public final void setBehavior(Component c) {
+	JTAListener jta = e -> {
+	    avgBox.setText("Avg: " + avg());
+	    maxBox.setText("Max: " + max());
+	};
+	if (c instanceof JTextField)
+	    c.addKeyListener(jta);
+    }
+
     public final String localRoll() {
+	System.out.println("min: " + min());
 	StringBuilder temp = new StringBuilder("");
 	for (int i = 0; i < 7; i++) {
 	    if (!j[i].getText().trim().equals(""))
@@ -317,7 +387,8 @@ public final class DiceBag extends JFrame {
 	    if (x < 0)
 		x = 0;
 	    JTF.setText(x.toString());
-
+	    avgBox.setText("Avg: " + avg());
+	    maxBox.setText("Max: " + max());
 	}
 
     }

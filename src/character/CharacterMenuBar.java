@@ -1,6 +1,3 @@
-/*
- * Copyright Orchestra Networks 2000-2013. All rights reserved.
- */
 package character;
 
 import java.io.*;
@@ -10,8 +7,6 @@ import javax.swing.*;
 
 import chooseFile.*;
 
-/**
- */
 @SuppressWarnings("serial")
 public class CharacterMenuBar extends JMenuBar {
     public CharacterMenuBar(String[] labels, JTextField[] stats,

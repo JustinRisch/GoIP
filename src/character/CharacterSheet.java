@@ -29,11 +29,6 @@ public class CharacterSheet extends JFrame {
 	    }
 	});
     }
-
-    /**
-     * Create the frame.
-     */
-
     private static final JTextField[] stats = new JTextField[6];
     private static final JTextField[] tempMods = new JTextField[6];
     public static final JTextField[] mods = new JTextField[6];

@@ -38,7 +38,7 @@ public final class GoIPDM {
 
     // Communication variables
     private static ClientConnecter clientListener;
-    private static String lastsent = "", lastMessage="";
+    private static String lastsent = "", lastMessage = "";
     // DB
     public final static ArrayList<DiceBag> dblist = new ArrayList<DiceBag>();
     private final static JMenuBar menuBar = new PlayerMenu(dblist, true);
@@ -264,7 +264,7 @@ public final class GoIPDM {
 	    for (int x = 2; x < a.length; x++)
 		message.append(a[x] + " ");
 	    Message("DM", a[1], message.toString());
-	    lastMessage=a[1];
+	    lastMessage = a[1];
 	    chatArea.append("To " + a[1] + message.toString());
 	    break;
 	case "statroll":
@@ -493,8 +493,6 @@ public final class GoIPDM {
 	    if (db.getShowRoll())
 		GoIPDM.broadcast(" rolled a " + db.localRoll().substring(3));
 	});
-	db.setStatButtonBehavior(z -> GoIPDM.chatArea.append(DiceRoll
-		.statroll() + "\n"));
     }
 
     // standard GUI creation method
@@ -567,7 +565,7 @@ public final class GoIPDM {
 		    inputLine.setText("");
 		    break;
 		case KeyEvent.VK_LEFT:
-		    inputLine.setText("msg "+lastMessage+"  ");
+		    inputLine.setText("msg " + lastMessage + "  ");
 		    break;
 		case KeyEvent.VK_UP:
 		    inputLine.setText(lastsent);
