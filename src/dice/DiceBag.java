@@ -328,7 +328,6 @@ public final class DiceBag extends JFrame {
     }
 
     public final String localRoll() {
-	System.out.println("min: " + min());
 	StringBuilder temp = new StringBuilder("");
 	for (int i = 0; i < 7; i++) {
 	    if (!j[i].getText().trim().equals(""))
