@@ -16,6 +16,7 @@ import character.CharacterSheet;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.concurrent.atomic.*;
 
 @SuppressWarnings("serial")
 public final class DiceBag extends JFrame {
@@ -128,9 +129,11 @@ public final class DiceBag extends JFrame {
 		}
 	    });
 	}
+	final AtomicInteger ai = new AtomicInteger(0);
 	if (CharacterSheet.isLoaded)
-	    Arrays.setAll(stats,
-		    i -> {
+	    Arrays.stream(stats).forEach(
+		    x -> {
+			final int i = ai.getAndIncrement();
 			useStat[i] = new JCheckBox();
 			useStat[i].setBounds(50 * (i / 2),
 				215 + (25 * (i % 2)), 35, 25);
@@ -140,9 +143,10 @@ public final class DiceBag extends JFrame {
 				35, 25);
 			contentPane.add(useStat[i]);
 			contentPane.add(temp);
-			return stats[i];
 		    });
-	Arrays.setAll(j, i -> {
+	ai.set(0);
+	Arrays.stream(j).forEach(x -> {
+	    final int i = ai.getAndIncrement();
 	    j[i] = new JTextField();
 	    j[i].setHorizontalAlignment(SwingConstants.RIGHT);
 	    j[i].setBounds(5, i * 24, 86, 20);
@@ -163,7 +167,6 @@ public final class DiceBag extends JFrame {
 	    JLabel lblD = new JLabel(labels[i]);
 	    lblD.setBounds(98, 2 + 24 * i, 46, 14);
 	    contentPane.add(lblD);
-	    return j[i];
 	});
 
 	cd.setHorizontalAlignment(SwingConstants.RIGHT);

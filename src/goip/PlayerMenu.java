@@ -1,7 +1,5 @@
 package goip;
 
-import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 
@@ -75,29 +73,42 @@ public class PlayerMenu extends JMenuBar {
 	this.add(menu);
 	menu = new JMenu("Help");
 	item = new JMenuItem("Controls");
-	item.addActionListener(PlayerMenu::showHelp);
+	item.addActionListener(e -> {
+	    showHelp("Controls", helpControls);
+	    help.setSize(475, 100);
+	});
+	menu.add(item);
+	item = new JMenuItem("Commands");
+	item.addActionListener(e -> {
+	    showHelp("Commands", helpCommands);
+	    help.setSize(275, 135);
+	});
 	menu.add(item);
 	this.add(menu);
+
     }
 
     private static JDialog help;
-    static final String helpmessage = "Press enter to broadcast a message.\n "
-	    + "Click on a player in the playerlist to send a message to that player.\n "
-	    + "Press left arrow to send another message to the last person you messaged.\n "
+    static final String helpCommands = "literal, (optional), [mandatory]\n"
+	    + "ping\n" + "msg [Player] [your message to the player]\n"
+	    + "(bc) [message to broadcast]\n" + "setname [new name]\n"
+	    + "exit\nreset";
+    static final String helpControls = "Press enter to broadcast a message.\n"
+	    + "Click on a player in the playerlist to send a message to that player.\n"
+	    + "Press left arrow to send another message to the last person you messaged.\n"
 	    + "Press right to clear your message line.\n";
 
-    public static void showHelp(ActionEvent e) {
-	if (help == null) {
-	    help = new JDialog();
-	    help.setLayout(new FlowLayout());
-	    help.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-	    help.setTitle("Controls");
-	    help.setLocation(0, 0);
-	    help.setLocationRelativeTo(null);
-	    for (String x : helpmessage.split("\n"))
-		help.add(new JLabel(x));
-	    help.setSize(500, 120);
-
+    public static void showHelp(String title, String message) {
+	help = new JDialog();
+	help.setContentPane(Box.createVerticalBox());
+	help.setResizable(false);
+	help.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+	help.setTitle(title);
+	help.setLocation(0, 0);
+	help.setLocationRelativeTo(null);
+	help.setSize(0, 120);
+	for (String x : message.split("\n")) {
+	    help.add(new JLabel(x));
 	}
 	help.setVisible(true);
     }
