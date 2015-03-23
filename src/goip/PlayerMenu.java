@@ -18,9 +18,7 @@ public class PlayerMenu extends JMenuBar {
 	this.isDM = isDM;
 	menu = new JMenu("File");
 	item = new JMenuItem("Save Dice Bags...");
-
 	item.addActionListener(e -> {
-
 	    try {
 		File SaveTo = ChooseFile.saveFile("dbag");
 		if (!SaveTo.getName().endsWith("dbag"))
@@ -39,7 +37,6 @@ public class PlayerMenu extends JMenuBar {
 		error.printStackTrace();
 	    }
 	});
-
 	menu.add(item);
 	item = new JMenuItem("Load Dice Bags...");
 	item.addActionListener(e -> {
@@ -62,7 +59,6 @@ public class PlayerMenu extends JMenuBar {
 	    } catch (Exception error) {
 		error.printStackTrace();
 	    }
-
 	});
 	menu.add(item);
 	item = new JMenuItem("Exit");
@@ -85,7 +81,6 @@ public class PlayerMenu extends JMenuBar {
 	});
 	menu.add(item);
 	this.add(menu);
-
     }
 
     private static JDialog help;
@@ -104,9 +99,7 @@ public class PlayerMenu extends JMenuBar {
 	help.setResizable(false);
 	help.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 	help.setTitle(title);
-	help.setLocation(0, 0);
 	help.setLocationRelativeTo(null);
-	help.setSize(0, 120);
 	for (String x : message.split("\n")) {
 	    help.add(new JLabel(x));
 	}
